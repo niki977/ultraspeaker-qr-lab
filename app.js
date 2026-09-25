@@ -173,6 +173,7 @@
   // Migrazione dai nomi usati nella prima versione
   if (S.design.cornerSqType === "dot") S.design.cornerSqType = "circle";
   if (S.design.cornerDotType === "dot") S.design.cornerDotType = "circle";
+  if (S.design.logo && /^data:image\/svg/.test(S.design.logo) && !(S.design.logoName || "").startsWith("icon:")) { /* verrà convertito all'avvio */ }
   const saveState = () => {
     const d = Object.assign({}, S.design);
     if (d.logo && d.logo.length > 300000) { d.logo = null; d.logoName = ""; }
@@ -229,14 +230,13 @@
 
   /* ---------- UI: design ---------- */
   const SAMPLE = "https://example.com/qr";
-  function miniQR(opts, el, zoom) {
-    const size = zoom ? 300 : 120;
-    const q = new QRCodeStyling(Object.assign({ type: "svg", width: size, height: size, margin: 0, data: SAMPLE, qrOptions: { errorCorrectionLevel: "L", typeNumber: 2 } }, opts));
-    q.getRawData("svg").then((b) => b.text()).then((t) => {
-      // Nei riquadri di stile ingrandisce l'angolo in alto a sinistra, così la forma si vede
-      if (zoom) t = t.replace(/<svg([^>]*?)>/, (m, a) => "<svg" + a.replace(/\sviewBox="[^"]*"/, "") + ' viewBox="0 0 130 130">');
-      el.innerHTML = '<img alt="" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(t) + '">';
-    }).catch(() => {});
+  // Miniature: stesso motore del QR vero, con un contenuto di esempio
+  function miniQR(over, el, zoom) {
+    const d = Object.assign({}, DEFAULT_DESIGN, { logo: null, frame: "none", margin: 0, transparentBg: false, bgColor: "#ffffff" }, over);
+    try {
+      const out = buildSVG(SAMPLE, d, "L", zoom ? { crop: true } : {});
+      el.innerHTML = out.svg;
+    } catch (e) { /* miniatura non essenziale */ }
   }
   const DOTS = [["square", "Quadrati"], ["rounded", "Arrotondati"], ["extra-rounded", "Morbidi"], ["dots", "Punti"], ["classy", "Classy"], ["classy-rounded", "Elegante"]];
   const CSQ = [["square", "Quadrato"], ["rounded", "Smussato"], ["extra-rounded", "Arrotondato"], ["circle", "Cerchio"],
@@ -247,7 +247,8 @@
   /* ---------- Occhi (marcatori d'angolo) disegnati in proprio ----------
      Le forme sono definite per l'occhio in alto a sinistra; gli altri due vengono ruotati
      così gli angoli "speciali" (foglia, goccia) puntano sempre verso il centro del QR. */
-  const f2 = (n) => Math.round(n * 100) / 100;
+  const f2 = (n) => Math.round(n * 1000) / 1000;
+  const circ = (cx, cy, r) => `M${f2(cx - r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0Z`;
   function rrect(x, y, w, h, r) { // r = [tl, tr, br, bl]
     const [a, b, c, d] = r.map((v) => Math.max(0, Math.min(v, w / 2, h / 2)));
     return `M${f2(x + a)} ${f2(y)}H${f2(x + w - b)}` + (b ? `A${f2(b)} ${f2(b)} 0 0 1 ${f2(x + w)} ${f2(y + b)}` : "") +
@@ -263,9 +264,8 @@
     const S7 = 7 * u, S5 = 5 * u;
     if (kind === "dots") {
       let o = "";
-      for (let i = 0; i < 7; i++) for (let j = 0; j < 7; j++) if (i === 0 || j === 0 || i === 6 || j === 6)
-        o += `<circle cx="${f2(x + (i + 0.5) * u)}" cy="${f2(y + (j + 0.5) * u)}" r="${f2(u * 0.5)}" fill="${fill}"/>`;
-      return o;
+      for (let i = 0; i < 7; i++) for (let j = 0; j < 7; j++) if (i === 0 || j === 0 || i === 6 || j === 6) o += circ(x + (i + 0.5) * u, y + (j + 0.5) * u, u * 0.5);
+      return `<path d="${o}" fill="${fill}"/>`;
     }
     let d;
     if (kind === "octagon") d = octo(x, y, S7, 0.26) + octo(x + u, y + u, S5, 0.2);
@@ -289,8 +289,8 @@
       }
       case "dots9": {
         let o = "";
-        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) o += `<circle cx="${f2(x + (i + 0.5) * u)}" cy="${f2(y + (j + 0.5) * u)}" r="${f2(u * 0.6)}" fill="${fill}"/>`;
-        return o;
+        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) o += circ(x + (i + 0.5) * u, y + (j + 0.5) * u, u * 0.6);
+        return `<path d="${o}" fill="${fill}"/>`;
       }
       default: return `<path d="${rrect(x, y, S3, S3, (RADII[kind] || RADII.square).map((k) => k * S3))}" fill="${fill}"/>`;
     }
@@ -299,7 +299,6 @@
     const on = "#222", off = "#c9ccd6";
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.6 -0.6 8.2 8.2">${eyeFrame(outer, 0, 0, 1, active === "outer" ? on : off)}${eyeBall(inner, 2, 2, 1, active === "inner" ? on : off)}</svg>`;
   }
-  const LIB_EYE = (k, inner) => (k === "circle" ? "dot" : inner ? (k === "square" ? "square" : "dot") : ["square", "extra-rounded"].includes(k) ? k : k === "rounded" ? "extra-rounded" : "dot");
   const PRESETS = [
     { name: "Classico", d: { dotType: "square", cornerSqType: "square", cornerDotType: "square", dotColor: "#000000", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
     { name: "Morbido", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#171a26", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
@@ -330,11 +329,10 @@
     $("#presets").innerHTML = PRESETS.map((p, i) => `<button type="button" class="tile" data-i="${i}"><span class="thumb"></span>${p.name}</button>`).join("");
     $$("#presets .tile").forEach((b) => {
       const p = PRESETS[+b.dataset.i].d;
-      miniQR({ dotsOptions: { type: p.dotType, color: p.dotColor, gradient: p.useGradient ? { type: "linear", rotation: (p.gradRot * Math.PI) / 180, colorStops: [{ offset: 0, color: p.dotColor }, { offset: 1, color: p.gradColor2 }] } : undefined },
-        cornersSquareOptions: { type: LIB_EYE(p.cornerSqType), color: p.eyesSame ? p.dotColor : p.cornerSqColor }, cornersDotOptions: { type: LIB_EYE(p.cornerDotType, true), color: p.eyesSame ? p.dotColor : p.cornerDotColor } }, $(".thumb", b));
+      miniQR(p, $(".thumb", b));
       b.addEventListener("click", () => { Object.assign(S.design, p); syncDesignUI(); update(); toast("Modello applicato"); });
     });
-    tileGroup("#dotTypes", DOTS, "dotType", (v, el) => miniQR({ dotsOptions: { type: v, color: "#222" }, cornersSquareOptions: { type: "square", color: "#222" }, cornersDotOptions: { type: "square", color: "#222" } }, el, true));
+    tileGroup("#dotTypes", DOTS, "dotType", (v, el) => miniQR({ dotType: v, dotColor: "#222222", useGradient: false, eyesSame: true, cornerSqType: "square", cornerDotType: "square" }, el, true));
     tileGroup("#cornerSqTypes", CSQ, "cornerSqType", (v, el) => { el.innerHTML = eyeThumb(v, "square", "outer"); });
     tileGroup("#cornerDotTypes", CDOT, "cornerDotType", (v, el) => { el.innerHTML = eyeThumb("square", v, "inner"); });
     tileGroup("#frames", FRAMES, "frame", (v, el) => { el.innerHTML = frameThumb(v); });
@@ -346,7 +344,7 @@
     $$("#iconLogos .tile").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.ico;
       if (!k) { S.design.logo = null; S.design.logoName = ""; }
-      else { S.design.logo = iconLogo(k, S.design.useGradient ? S.design.gradColor2 : S.design.dotColor); S.design.logoName = "icon:" + k; }
+      else { S.design.logoName = "icon:" + k; setIconLogo(); return; }
       syncDesignUI(); update();
     }));
 
@@ -359,8 +357,7 @@
       txt.addEventListener("change", () => { let c = txt.value.trim(); if (!c.startsWith("#")) c = "#" + c; if (/^#[0-9a-f]{6}$/i.test(c)) { S.design[k] = c.toLowerCase(); pick.value = S.design[k]; afterColor(k); } else txt.value = S.design[k]; });
     });
     function afterColor(k) {
-      if (S.design.logoName && S.design.logoName.startsWith("icon:") && (k === "dotColor" || k === "gradColor2"))
-        S.design.logo = iconLogo(S.design.logoName.slice(5), S.design.useGradient ? S.design.gradColor2 : S.design.dotColor);
+      if (S.design.logoName && S.design.logoName.startsWith("icon:") && (k === "dotColor" || k === "gradColor2")) { clearTimeout(iconT); iconT = setTimeout(setIconLogo, 120); }
       update();
     }
     const bindCheck = (id, k, re) => $(id).addEventListener("change", (e) => { S.design[k] = e.target.checked; if (re) syncDesignUI(); update(); });
@@ -395,18 +392,41 @@
     $("#resetDesign").addEventListener("click", () => { S.design = Object.assign({}, DEFAULT_DESIGN); syncDesignUI(); update(); toast("Design ripristinato"); });
   }
 
+  let iconT;
+  // Le icone vengono convertite in PNG: PowerPoint non mostra SVG annidati dentro un altro SVG
+  function setIconLogo() {
+    const k = S.design.logoName.slice(5);
+    rasterize(iconLogo(k, S.design.useGradient ? S.design.gradColor2 : S.design.dotColor), 256).then((url) => {
+      if (S.design.logoName !== "icon:" + k) return;
+      S.design.logo = url; syncDesignUI(); update();
+    });
+  }
+  function rasterize(src, max) {
+    return new Promise((res) => {
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth || max, h = img.naturalHeight || max, s = max / Math.max(w, h);
+        const c = document.createElement("canvas"); c.width = Math.round(w * s); c.height = Math.round(h * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        res(c.toDataURL("image/png"));
+      };
+      img.onerror = () => res(src);
+      img.src = src;
+    });
+  }
+
   function segBind(sel, fn) {
     $$(sel + " button").forEach((b) => b.addEventListener("click", () => { fn(b.dataset.v); syncDesignUI(); update(); }));
   }
 
   // Riduce loghi raster molto grandi, così il file resta leggero
   function shrinkImage(dataUrl, mime) {
-    if (mime === "image/svg+xml") return Promise.resolve(dataUrl);
+    if (mime === "image/svg+xml") return rasterize(dataUrl, 512);
     return new Promise((res) => {
       const img = new Image();
       img.onload = () => {
-        const max = 600, s = Math.min(1, max / Math.max(img.width, img.height));
-        if (s === 1 && dataUrl.length < 400000) return res(dataUrl);
+        const max = 400, s = Math.min(1, max / Math.max(img.width, img.height));
+        if (s === 1 && dataUrl.length < 200000) return res(dataUrl);
         const c = document.createElement("canvas"); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
         c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
         res(c.toDataURL("image/png"));
@@ -463,145 +483,177 @@
   }
   const contrast = (a, b) => { const x = hexLum(a), y = hexLum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-  function qrOptions(data) {
-    const d = S.design;
-    const grad = d.useGradient ? { type: d.gradType, rotation: (d.gradRot * Math.PI) / 180, colorStops: [{ offset: 0, color: d.dotColor }, { offset: 1, color: d.gradColor2 }] } : undefined;
-    return {
-      type: "svg", width: 1000, height: 1000, margin: d.margin, data,
-      image: d.logo || undefined,
-      qrOptions: { errorCorrectionLevel: effectiveEC() },
-      imageOptions: { hideBackgroundDots: d.hideDots, imageSize: d.logoSize, margin: d.logoMargin, crossOrigin: "anonymous" },
-      dotsOptions: { type: d.dotType, color: d.dotColor, gradient: grad },
-      // Gli occhi li disegna The Ultraspeaker QR Lab (più forme): la libreria li lascia invisibili
-      cornersSquareOptions: { type: "square", color: "rgba(0,0,0,0)" },
-      cornersDotOptions: { type: "square", color: "rgba(0,0,0,0)" },
-      backgroundOptions: { color: d.transparentBg ? "rgba(0,0,0,0)" : d.bgColor },
-    };
+  /* Motore di disegno leggero: tutti i moduli in un unico tracciato, niente maschere.
+     Il QR è disegnato in "unità modulo" dentro un gruppo scalato: file piccolo e veloce da gestire in PowerPoint. */
+  function matrix(data, ec) {
+    qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];
+    const q = qrcode(0, ec);
+    q.addData(data, "Byte");
+    q.make();
+    return q;
   }
+  const DOT_R = { // raggi degli angoli esposti [tl, tr, br, bl], in frazioni di modulo
+    rounded: [0.3, 0.3, 0.3, 0.3], "extra-rounded": [0.5, 0.5, 0.5, 0.5], classy: [0.5, 0, 0.5, 0], "classy-rounded": [0.5, 0.2, 0.5, 0.2] };
 
-  function eyesMarkup(qr, uid) {
-    const d = S.design, n = qr._qr.getModuleCount(), m = d.margin;
-    const u = Math.floor((1000 - 2 * m) / n), off = Math.floor((1000 - n * u) / 2);
-    let defs = "", outerFill, innerFill;
-    if (d.eyesSame) {
-      if (d.useGradient) {
-        const stops = `<stop offset="0" stop-color="${d.dotColor}"/><stop offset="1" stop-color="${d.gradColor2}"/>`;
-        if (d.gradType === "radial") defs = `<radialGradient id="${uid}eyeg" gradientUnits="userSpaceOnUse" cx="500" cy="500" r="${f2(n * u / Math.SQRT2)}">${stops}</radialGradient>`;
-        else {
-          const a = (d.gradRot * Math.PI) / 180, L = (n * u) / 2, dx = Math.cos(a) * L, dy = Math.sin(a) * L;
-          defs = `<linearGradient id="${uid}eyeg" gradientUnits="userSpaceOnUse" x1="${f2(500 - dx)}" y1="${f2(500 - dy)}" x2="${f2(500 + dx)}" y2="${f2(500 + dy)}">${stops}</linearGradient>`;
+  function bodyPath(q, n, skip, type) {
+    const dark = (r, c) => r >= 0 && c >= 0 && r < n && c < n && !skip(r, c) && q.isDark(r, c);
+    const E = 0.04; // leggera sovrapposizione: niente righine bianche tra moduli vicini
+    let d = "";
+    if (type === "square") {
+      for (let r = 0; r < n; r++) {
+        let c = 0;
+        while (c < n) {
+          if (!dark(r, c)) { c++; continue; }
+          let e = c; while (e + 1 < n && dark(r, e + 1)) e++;
+          d += `M${c} ${r}h${e - c + 1}v${1 + E}h${-(e - c + 1)}Z`;
+          c = e + 1;
         }
-        outerFill = innerFill = `url(#${uid}eyeg)`;
-      } else outerFill = innerFill = d.dotColor;
-    } else { outerFill = d.cornerSqColor; innerFill = d.cornerDotColor; }
-    let g = defs ? `<defs>${defs}</defs>` : "";
-    [[0, 0, 0], [1, 0, 90], [0, 1, -90]].forEach(([cx, cy, rot]) => {
-      const x = off + cx * u * (n - 7), y = off + cy * u * (n - 7), c = 3.5 * u;
-      const ball = eyeBall(d.cornerDotType, x + 2 * u, y + 2 * u, u, innerFill);
-      const keepUp = d.cornerDotType === "star"; // la stella resta sempre dritta
-      g += `<g transform="rotate(${rot} ${f2(x + c)} ${f2(y + c)})">${eyeFrame(d.cornerSqType, x, y, u, outerFill)}${keepUp ? "" : ball}</g>${keepUp ? ball : ""}`;
-    });
-    return g;
+      }
+      return d;
+    }
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      if (!dark(r, c)) continue;
+      if (type === "dots") { d += circ(c + 0.5, r + 0.5, 0.48); continue; }
+      const T = dark(r - 1, c), B = dark(r + 1, c), L = dark(r, c - 1), R = dark(r, c + 1);
+      const k = DOT_R[type] || DOT_R.rounded;
+      const rad = [!T && !L ? k[0] : 0, !T && !R ? k[1] : 0, !B && !R ? k[2] : 0, !B && !L ? k[3] : 0];
+      d += rrect(c, r, 1 + (R ? E : 0), 1 + (B ? E : 0), rad);
+    }
+    return d;
   }
 
-  async function buildSVG(data) {
-    const qr = new QRCodeStyling(qrOptions(data));
-    // Se il logo non si carica entro pochi secondi, non bloccare l'anteprima
-    const blob = await Promise.race([qr.getRawData("svg"), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 6000))]);
-    let inner = await blob.text();
-    const doc = new DOMParser().parseFromString(inner, "image/svg+xml");
-    const root = doc.documentElement;
-    const d = S.design;
-    const Q = 1000;
-    // Rende unici gli id interni (evita conflitti se più QR sono nella stessa slide in SVG)
+  function buildSVG(data, d = S.design, ec = effectiveEC(), opt = {}) {
+    const q = matrix(data, ec), n = q.getModuleCount();
     const uid = "q" + Math.random().toString(36).slice(2, 7);
-    root.querySelectorAll("[id]").forEach((el) => { el.id = uid + el.id; });
-    root.querySelectorAll("*").forEach((el) => {
-      for (const a of Array.from(el.attributes)) if (a.value.includes("url('#") || a.value.includes("url(#")) el.setAttribute(a.name, a.value.replace(/url\('?#([^')]+)'?\)/g, "url('#" + uid + "$1')"));
+    // Zona del logo (in moduli), centrata e con numero dispari di moduli
+    let logoBox = null;
+    if (d.logo) {
+      // Stesso limite di sicurezza di prima: l'area coperta resta entro ciò che la correzione "Max" recupera
+      const side = n * Math.sqrt(d.logoSize * 0.2);
+      let hid = Math.ceil(side + (2 * d.logoMargin * n) / 1000);
+      if (hid % 2 !== n % 2) hid++;
+      hid = Math.min(hid, n - 16);
+      const h0 = (n - hid) / 2;
+      logoBox = { h0, hid, x: (n - side) / 2, side };
+    }
+    const inFinder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
+    const inLogo = (r, c) => logoBox && d.hideDots && r >= logoBox.h0 && r < logoBox.h0 + logoBox.hid && c >= logoBox.h0 && c < logoBox.h0 + logoBox.hid;
+    const body = bodyPath(q, n, (r, c) => inFinder(r, c) || inLogo(r, c), d.dotType);
+
+    // Colori: una sola sfumatura condivisa da moduli e occhi
+    let defs = "", fill = d.dotColor;
+    if (d.useGradient) {
+      const stops = `<stop offset="0" stop-color="${d.dotColor}"/><stop offset="1" stop-color="${d.gradColor2}"/>`;
+      if (d.gradType === "radial") defs = `<radialGradient id="${uid}g" gradientUnits="userSpaceOnUse" cx="${n / 2}" cy="${n / 2}" r="${f2(n / Math.SQRT2)}">${stops}</radialGradient>`;
+      else {
+        const a = (d.gradRot * Math.PI) / 180, L = n / 2, dx = Math.cos(a) * L, dy = Math.sin(a) * L;
+        defs = `<linearGradient id="${uid}g" gradientUnits="userSpaceOnUse" x1="${f2(L - dx)}" y1="${f2(L - dy)}" x2="${f2(L + dx)}" y2="${f2(L + dy)}">${stops}</linearGradient>`;
+      }
+      fill = `url(#${uid}g)`;
+    }
+    const outerFill = d.eyesSame ? fill : d.cornerSqColor, innerFill = d.eyesSame ? fill : d.cornerDotColor;
+    let eyes = "";
+    [[0, 0, 0], [1, 0, 90], [0, 1, -90]].forEach(([cx, cy, rot]) => {
+      const x = cx * (n - 7), y = cy * (n - 7);
+      const ball = eyeBall(d.cornerDotType, x + 2, y + 2, 1, innerFill);
+      const keepUp = d.cornerDotType === "star";
+      eyes += `<g transform="rotate(${rot} ${x + 3.5} ${y + 3.5})">${eyeFrame(d.cornerSqType, x, y, 1, outerFill)}${keepUp ? "" : ball}</g>${keepUp ? ball : ""}`;
     });
-    const eyes = eyesMarkup(qr, uid);
-    const place = (x, y) => { root.setAttribute("x", x); root.setAttribute("y", y); root.setAttribute("width", Q); root.setAttribute("height", Q); root.setAttribute("viewBox", "0 0 " + Q + " " + Q); const t = new XMLSerializer().serializeToString(root); const i = t.lastIndexOf("</svg>"); return t.slice(0, i) + eyes + t.slice(i); };
+    let logo = "";
+    if (logoBox) {
+      const lx = f2(logoBox.x), ls = f2(logoBox.side);
+      logo = `<image x="${lx}" y="${lx}" width="${ls}" height="${ls}" preserveAspectRatio="xMidYMid meet" href="${d.logo}" xlink:href="${d.logo}"/>`;
+    }
+    const inner = `${defs ? `<defs>${defs}</defs>` : ""}<path d="${body}" fill="${fill}"/>${eyes}${logo}`;
+
+    // Miniature: solo il QR, eventualmente ingrandito sull'angolo
+    if (opt.crop) return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${f2(n * 0.3)} ${f2(n * 0.3)} ${f2(n * 0.4)} ${f2(n * 0.4)}"><rect x="-1" y="-1" width="${n + 2}" height="${n + 2}" fill="#fff"/>${inner}</svg>` };
+
+    const Q = 1000, m = d.margin, sc = (Q - 2 * m) / n;
+    const bgFill = d.transparentBg ? null : d.bgColor;
+    const place = (x, y) => (bgFill && d.frame === "none" ? `<rect x="${x}" y="${y}" width="${Q}" height="${Q}" fill="${bgFill}"/>` : "") +
+      `<g transform="translate(${f2(x + m)} ${f2(y + m)}) scale(${f2(sc)})">${inner}</g>`;
     const bg = d.transparentBg ? "none" : d.bgColor;
     const txt = esc(trim(d.frameText) || " ");
     const fontFam = "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif";
     const fs = (w, base) => Math.min(base, Math.floor(w / (Math.max(txt.length, 4) * 0.62)));
-    let W = Q, H = Q, body = "";
+    let W = Q, H = Q, body2 = "";
     const fc = d.frameColor, tc = d.frameTextColor;
     const text = (x, y, w, color, base) => `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-family="${fontFam}" font-weight="700" font-size="${fs(w, base)}" letter-spacing="2" fill="${color}">${txt}</text>`;
     switch (d.frame) {
-      case "none": body = place(0, 0); break;
+      case "none": body2 = place(0, 0); break;
       case "bottom": case "top": {
         const p = 50, band = 200; W = Q + 2 * p; H = Q + 2 * p + band - p;
         const qy = d.frame === "top" ? band : p;
         const ty = d.frame === "top" ? band / 2 + 8 : qy + Q + (H - qy - Q) / 2 - 4;
-        body = `<rect width="${W}" height="${H}" rx="70" fill="${fc}"/><rect x="${p - 10}" y="${qy - 10}" width="${Q + 20}" height="${Q + 20}" rx="40" fill="${d.transparentBg ? "#ffffff" : d.bgColor}"/>` + place(p, qy) + text(W / 2, ty, W - 120, tc, 120);
+        body2 = `<rect width="${W}" height="${H}" rx="70" fill="${fc}"/><rect x="${p - 10}" y="${qy - 10}" width="${Q + 20}" height="${Q + 20}" rx="40" fill="${d.transparentBg ? "#ffffff" : d.bgColor}"/>` + place(p, qy) + text(W / 2, ty, W - 120, tc, 120);
         break;
       }
       case "border": {
         const p = 60, band = 190; W = Q + 2 * p; H = Q + p + band;
-        body = `<rect x="14" y="14" width="${W - 28}" height="${H - 28}" rx="60" fill="${bg}" stroke="${fc}" stroke-width="28"/>` + place(p, p) + text(W / 2, p + Q + band / 2 - 20, W - 160, fc, 110);
+        body2 = `<rect x="14" y="14" width="${W - 28}" height="${H - 28}" rx="60" fill="${bg}" stroke="${fc}" stroke-width="28"/>` + place(p, p) + text(W / 2, p + Q + band / 2 - 20, W - 160, fc, 110);
         break;
       }
       case "bubble": {
         const gap = 40, bh = 180; W = Q; H = Q + gap + bh;
-        body = (bg !== "none" ? `<rect width="${Q}" height="${Q}" fill="${bg}"/>` : "") + place(0, 0) +
+        body2 = (bg !== "none" ? `<rect width="${Q}" height="${Q}" fill="${bg}"/>` : "") + place(0, 0) +
           `<path d="M${W / 2 - 50} ${Q + gap + 2}L${W / 2} ${Q + gap - 45}L${W / 2 + 50} ${Q + gap + 2}z" fill="${fc}"/><rect x="40" y="${Q + gap}" width="${W - 80}" height="${bh}" rx="${bh / 2}" fill="${fc}"/>` + text(W / 2, Q + gap + bh / 2, W - 200, tc, 100);
         break;
       }
       case "corners": {
         const p = 70, band = 190, L = 170, sw = 26; W = Q + 2 * p; H = Q + 2 * p + band - 30;
         const x2 = W - sw / 2, y2 = Q + 2 * p - sw / 2, o = sw / 2;
-        body = (bg !== "none" ? `<rect width="${W}" height="${H}" rx="40" fill="${bg}"/>` : "") +
+        body2 = (bg !== "none" ? `<rect width="${W}" height="${H}" rx="40" fill="${bg}"/>` : "") +
           `<path d="M${o} ${o + L}V${o + 30}Q${o} ${o} ${o + 30} ${o}H${o + L}M${x2 - L} ${o}H${x2 - 30}Q${x2} ${o} ${x2} ${o + 30}V${o + L}M${x2} ${y2 - L}V${y2 - 30}Q${x2} ${y2} ${x2 - 30} ${y2}H${x2 - L}M${o + L} ${y2}H${o + 30}Q${o} ${y2} ${o} ${y2 - 30}V${y2 - L}" fill="none" stroke="${fc}" stroke-width="${sw}" stroke-linecap="round"/>` +
           place(p, p) + text(W / 2, Q + 2 * p + (band - 30) / 2, W - 120, fc, 110);
         break;
       }
     }
-    return { svg: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${body}</svg>`, W, H };
+    return { svg: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${body2}</svg>`, W, H };
   }
 
   function svgToPng(svg, W, H, targetW) {
     return new Promise((res, rej) => {
       const img = new Image();
+      const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
       img.onload = () => {
-        const draw = () => {
-          const s = targetW / W, c = document.createElement("canvas");
-          c.width = Math.round(W * s); c.height = Math.round(H * s);
-          const ctx = c.getContext("2d"); ctx.imageSmoothingQuality = "high";
-          ctx.drawImage(img, 0, 0, c.width, c.height);
-          res(c.toDataURL("image/png"));
-        };
-        // Safari a volte non ha ancora decodificato le immagini annidate: breve attesa
-        setTimeout(draw, 30);
+        const s = targetW / W, c = document.createElement("canvas");
+        c.width = Math.round(W * s); c.height = Math.round(H * s);
+        const ctx = c.getContext("2d"); ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        res(c.toDataURL("image/png"));
       };
-      img.onerror = () => rej(new Error("render"));
-      img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+      img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("render")); };
+      img.src = url;
     });
   }
 
   /* ---------- Aggiornamento anteprima ---------- */
-  let gen = 0, timer, current = null;
-  function update() { saveState(); syncDesignUI(); clearTimeout(timer); timer = setTimeout(render, 140); }
+  let timer, saveT, current = null, previewUrl = null;
+  function update() {
+    syncDesignUI();
+    clearTimeout(timer); timer = setTimeout(render, 60);
+    clearTimeout(saveT); saveT = setTimeout(saveState, 600); // salvataggio differito: niente scatti mentre scrivi
+  }
 
-  async function render() {
-    const my = ++gen;
+  function render() {
     const data = encode(S.type, vals());
     const empty = !data;
     const warns = [];
     const d = S.design;
     let out;
     try {
-      out = await buildSVG(empty ? "https://example.com" : data);
+      out = buildSVG(empty ? "https://example.com" : data);
     } catch (e) {
-      if (my !== gen) return;
       current = null; setReady(false);
-      const msg = String(e && e.message);
-      $("#status").textContent = /overflow|length/i.test(msg) ? "Contenuto troppo lungo per un QR: accorcialo" : msg === "timeout" && S.design.logo ? "Il logo non si carica: prova un altro file (PNG o JPG)" : "Impossibile generare il QR con questi dati";
+      const msg = String(e && (e.message || e));
+      $("#status").textContent = /overflow|length/i.test(msg) ? "Contenuto troppo lungo per un QR: accorcialo" : "Impossibile generare il QR con questi dati";
       return;
     }
-    if (my !== gen) return;
-    const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(out.svg);
-    $("#previewImg").src = url; $("#barImg").src = url;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(new Blob([out.svg], { type: "image/svg+xml" }));
+    $("#previewImg").src = previewUrl; $("#barImg").src = previewUrl;
     $("#preview").classList.toggle("dim", empty);
     current = empty ? null : Object.assign({ data }, out);
     setReady(!empty);
@@ -646,7 +698,8 @@
         await setData(current.svg, { coercionType: Office.CoercionType.XmlSvg, imageWidth: wPt, imageHeight: hPt });
       } else {
         if (S.format === "svg") toast("Questa versione di PowerPoint non accetta SVG: inserisco un PNG ad alta risoluzione");
-        const png = await svgToPng(current.svg, current.W, current.H, 1600);
+        const px = Math.max(600, Math.min(1800, Math.round(((+S.sizeCm || 5) / 2.54) * 300))); // 300 dpi
+        const png = await svgToPng(current.svg, current.W, current.H, px);
         await setData(png.split(",")[1], { coercionType: Office.CoercionType.Image, imageWidth: wPt, imageHeight: hPt });
       }
       toast("QR inserito nella slide ✓");
@@ -707,8 +760,11 @@
     $("#dlSvg").addEventListener("click", () => download("svg"));
     if (window.QR_DEMO) { $("#dlPng").parentElement.hidden = true; $("#insertLabel").textContent = "Inserisci nella slide (prova)"; }
     else if (!inOffice) { $("#insertLabel").textContent = "Inserisci (scarica PNG)"; $("#barInsert").textContent = "Scarica PNG"; }
+    if (S.design.logoName && S.design.logoName.startsWith("icon:") && /^data:image\/svg/.test(S.design.logo || "")) setIconLogo();
     render();
   }
+
+  window.__qrLab = { svg: () => (current ? current.svg : null) }; // per diagnostica
 
   let started = false;
   const start = () => { if (!started) { started = true; init(); } };
