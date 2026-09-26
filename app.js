@@ -181,11 +181,11 @@
 
   /* ---------- Stato ---------- */
   const DEFAULT_DESIGN = {
-    dotType: "rounded", dotColor: "#171a26", useGradient: false, gradColor2: "#3b5bfd", gradType: "linear", gradRot: 45,
-    cornerSqType: "extra-rounded", cornerDotType: "circle", eyesSame: true, cornerSqColor: "#171a26", cornerDotColor: "#171a26",
+    dotType: "rounded", dotColor: "#000000", useGradient: false, gradColor2: "#6b6b6b", gradType: "linear", gradRot: 45,
+    cornerSqType: "extra-rounded", cornerDotType: "circle", eyesSame: true, cornerSqColor: "#000000", cornerDotColor: "#000000",
     bgColor: "#ffffff", transparentBg: false,
     logo: null, logoName: "", logoSize: 0.3, logoMargin: 6, hideDots: true,
-    frame: "none", frameText: "SCANSIONAMI", frameColor: "#171a26", frameTextColor: "#ffffff",
+    frame: "none", frameText: "SCANSIONAMI", frameColor: "#000000", frameTextColor: "#ffffff",
     ec: "M", margin: 20,
   };
   const state = store.get("qrstudio.state", null) || {};
@@ -196,6 +196,10 @@
     format: state.format || "png",
     sizeCm: state.sizeCm || 5,
   };
+  // Il vecchio nero predefinito (#171a26) diventa il nero pieno del marchio
+  ["dotColor", "cornerSqColor", "cornerDotColor", "frameColor"].forEach((k) => { if (S.design[k] === "#171a26") S.design[k] = "#000000"; });
+  // La forma "Elegante" (classy-rounded) è stata tolta: diventa "Classy"
+  if (S.design.dotType === "classy-rounded") S.design.dotType = "classy";
   // Migrazione dai nomi usati nella prima versione
   if (S.design.cornerSqType === "dot") S.design.cornerSqType = "circle";
   if (S.design.cornerDotType === "dot") S.design.cornerDotType = "circle";
@@ -265,7 +269,7 @@
       el.innerHTML = out.svg;
     } catch (e) { /* miniatura non essenziale */ }
   }
-  const DOTS = [["square", "dot.square"], ["rounded", "dot.rounded"], ["extra-rounded", "dot.extra"], ["dots", "dot.dots"], ["classy", "dot.classy"], ["classy-rounded", "dot.classyR"]];
+  const DOTS = [["square", "dot.square"], ["rounded", "dot.rounded"], ["extra-rounded", "dot.extra"], ["dots", "dot.dots"], ["classy", "dot.classy"], ["connected", "dot.connected"], ["vpills", "dot.vpills"], ["lines", "dot.lines"]];
   const CSQ = [["square", "eye.square"], ["rounded", "eye.rounded"], ["extra-rounded", "eye.extra"], ["circle", "eye.circle"],
     ["leaf", "eye.leaf"], ["leaf-inv", "eye.leafInv"], ["drop-in", "eye.dropIn"], ["drop-out", "eye.dropOut"], ["corner-in", "eye.corner"], ["octagon", "eye.octagon"], ["dots", "eye.dots"]];
   const CDOT = [["square", "eye.square"], ["rounded", "eye.rounded"], ["circle", "eye.circle"], ["leaf", "eye.leaf"], ["leaf-inv", "eye.leafInv"],
@@ -327,14 +331,16 @@
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.6 -0.6 8.2 8.2">${eyeFrame(outer, 0, 0, 1, active === "outer" ? on : off)}${eyeBall(inner, 2, 2, 1, active === "inner" ? on : off)}</svg>`;
   }
   const PRESETS = [
+    { name: "preset.brand", brand: true, d: { dotType: "rounded", cornerSqType: "drop-in", cornerDotType: "circle", dotColor: "#000000", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
     { name: "preset.classic", d: { dotType: "square", cornerSqType: "square", cornerDotType: "square", dotColor: "#000000", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
     { name: "preset.soft", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#171a26", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
     { name: "preset.clinic", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#0a5cad", useGradient: false, eyesSame: false, cornerSqColor: "#062f5c", cornerDotColor: "#16a3c9", bgColor: "#ffffff" } },
-    { name: "preset.elegant", d: { dotType: "classy-rounded", cornerSqType: "extra-rounded", cornerDotType: "square", dotColor: "#1d2b64", useGradient: true, gradColor2: "#6b4fd8", gradType: "linear", gradRot: 45, eyesSame: true, bgColor: "#ffffff" } },
+    { name: "preset.elegant", d: { dotType: "vpills", cornerSqType: "extra-rounded", cornerDotType: "square", dotColor: "#1d2b64", useGradient: true, gradColor2: "#6b4fd8", gradType: "linear", gradRot: 45, eyesSame: true, bgColor: "#ffffff" } },
     { name: "preset.dots", d: { dotType: "dots", cornerSqType: "circle", cornerDotType: "circle", dotColor: "#0f766e", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
     { name: "preset.sunset", d: { dotType: "extra-rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#c2185b", useGradient: true, gradColor2: "#ef6c00", gradType: "linear", gradRot: 135, eyesSame: true, bgColor: "#ffffff" } },
   ];
   const FRAMES = [["none", "frame.none"], ["bottom", "frame.bottom"], ["top", "frame.top"], ["border", "frame.border"], ["bubble", "frame.bubble"], ["corners", "frame.corners"]];
+  const BRAND_LOGO = "assets/ultraspeaker-logo.png"; // simbolo The Ultraspeaker su cerchio bianco
   const LOGO_ICONS = ["url", "email", "phone", "wifi", "location", "event", "vcard", "social"];
 
   function iconLogo(key, color) {
@@ -357,8 +363,13 @@
     $$("#presets .tile").forEach((b) => {
       const p = PRESETS[+b.dataset.i].d;
       miniQR(p, $(".thumb", b));
-      b.addEventListener("click", () => { Object.assign(S.design, p); syncDesignUI(); update(); toast(t("toast.preset")); });
+      b.addEventListener("click", () => {
+        Object.assign(S.design, p);
+        if (PRESETS[+b.dataset.i].brand) { S.design.logoName = "icon:brand"; setIconLogo(); }
+        syncDesignUI(); update(); toast(t("toast.preset"));
+      });
     });
+    renderMyPresets();
     tileGroup("#dotTypes", DOTS, "dotType", (v, el) => miniQR({ dotType: v, dotColor: "#222222", useGradient: false, eyesSame: true, cornerSqType: "square", cornerDotType: "square" }, el, true));
     tileGroup("#cornerSqTypes", CSQ, "cornerSqType", (v, el) => { el.innerHTML = eyeThumb(v, "square", "outer"); });
     tileGroup("#cornerDotTypes", CDOT, "cornerDotType", (v, el) => { el.innerHTML = eyeThumb("square", v, "inner"); });
@@ -367,7 +378,8 @@
     // Loghi a icona
     const ic = $("#iconLogos");
     ic.innerHTML = `<button type="button" class="tile" data-ico=""><span class="thumb" style="font-size:20px;color:var(--ink-3)">∅</span><span data-i18n="logo.none">${esc(t("logo.none"))}</span></button>` +
-      LOGO_ICONS.map((k) => `<button type="button" class="tile" data-ico="${k}"><span class="thumb"><img alt="" src="${iconLogo(k, "#3b5bfd")}"></span><span data-i18n="type.${k}">${esc(t("type." + k))}</span></button>`).join("");
+      `<button type="button" class="tile" data-ico="brand"><span class="thumb"><img alt="" src="${BRAND_LOGO}"></span><span>Ultraspeaker</span></button>` +
+      LOGO_ICONS.map((k) => `<button type="button" class="tile" data-ico="${k}"><span class="thumb"><img alt="" src="${iconLogo(k, "#000000")}"></span><span data-i18n="type.${k}">${esc(t("type." + k))}</span></button>`).join("");
     $$("#iconLogos .tile").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.ico;
       if (!k) { S.design.logo = null; S.design.logoName = ""; }
@@ -384,7 +396,7 @@
       txt.addEventListener("change", () => { let c = txt.value.trim(); if (!c.startsWith("#")) c = "#" + c; if (/^#[0-9a-f]{6}$/i.test(c)) { S.design[k] = c.toLowerCase(); pick.value = S.design[k]; afterColor(k); } else txt.value = S.design[k]; });
     });
     function afterColor(k) {
-      if (S.design.logoName && S.design.logoName.startsWith("icon:") && (k === "dotColor" || k === "gradColor2")) { clearTimeout(iconT); iconT = setTimeout(setIconLogo, 120); }
+      if (S.design.logoName && S.design.logoName.startsWith("icon:") && S.design.logoName !== "icon:brand" && (k === "dotColor" || k === "gradColor2")) { clearTimeout(iconT); iconT = setTimeout(setIconLogo, 120); }
       update();
     }
     const bindCheck = (id, k, re) => $(id).addEventListener("change", (e) => { S.design[k] = e.target.checked; if (re) syncDesignUI(); update(); });
@@ -423,7 +435,8 @@
   // Le icone vengono convertite in PNG: PowerPoint non mostra SVG annidati dentro un altro SVG
   function setIconLogo() {
     const k = S.design.logoName.slice(5);
-    rasterize(iconLogo(k, S.design.useGradient ? S.design.gradColor2 : S.design.dotColor), 256).then((url) => {
+    const src = k === "brand" ? BRAND_LOGO : iconLogo(k, S.design.useGradient ? S.design.gradColor2 : S.design.dotColor);
+    rasterize(src, 256).then((url) => {
       if (S.design.logoName !== "icon:" + k) return;
       S.design.logo = url; syncDesignUI(); update();
     });
@@ -440,6 +453,85 @@
       img.onerror = () => res(src);
       img.src = src;
     });
+  }
+
+  /* ---------- I miei modelli: 2 personali (con nome) + 2 ultimi usati ---------- */
+  const ICO_SAVE = '<svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg>';
+  const ICO_EDIT = '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
+  const cleanDesign = (d) => {
+    const c = JSON.parse(JSON.stringify(d));
+    if (c.logo && c.logo.length > 150000) { c.logo = null; if (!(c.logoName || "").startsWith("icon:")) c.logoName = ""; }
+    return c;
+  };
+  const designKey = (d) => JSON.stringify(Object.assign({}, d, { logo: d.logo ? d.logo.length : 0 }));
+  function applyDesign(d) {
+    S.design = Object.assign({}, DEFAULT_DESIGN, { frameText: t("frame.default") }, JSON.parse(JSON.stringify(d)));
+    if (S.design.dotType === "classy-rounded") S.design.dotType = "classy";
+    if ((S.design.logoName || "").startsWith("icon:") && !S.design.logo) setIconLogo();
+    syncDesignUI(); update(); toast(t("toast.preset"));
+  }
+  // Ultimi 2 design usati (indipendenti dal contenuto del QR)
+  function lastDesigns() {
+    const saved = store.get("qrlab.lastDesigns", null);
+    if (saved) return saved;
+    const out = [], seen = new Set(); // prima volta: li ricavo dai QR recenti
+    for (const r of store.get("qrstudio.recent", [])) {
+      const k = designKey(r.design); if (seen.has(k)) continue;
+      seen.add(k); out.push(r.design); if (out.length === 2) break;
+    }
+    return out;
+  }
+  function rememberDesign(d) {
+    const c = cleanDesign(d), k = designKey(c);
+    const list = [c].concat(lastDesigns().filter((x) => designKey(x) !== k)).slice(0, 2);
+    store.set("qrlab.lastDesigns", list);
+  }
+  function renderMyPresets() {
+    const box = $("#myPresets"); if (!box) return;
+    const slots = store.get("qrlab.custom", [null, null]);
+    const last = lastDesigns();
+    let html = "";
+    [0, 1].forEach((i) => {
+      const sl = slots[i], name = sl ? (sl.name || t("custom.default", { n: i + 1 })) : t("custom.default", { n: i + 1 });
+      html += `<div class="tile my" data-slot="${i}">
+        <button type="button" class="my-main" title="${esc(sl ? name : t("custom.save"))}"><span class="thumb${sl ? "" : " empty"}">${sl ? "" : "+"}</span><span class="nm">${esc(sl ? name : t("custom.empty"))}</span></button>
+        ${sl ? `<div class="my-acts"><button type="button" data-act="save" title="${esc(t("custom.save"))}" aria-label="${esc(t("custom.save"))}">${ICO_SAVE}</button><button type="button" data-act="rename" title="${esc(t("custom.rename"))}" aria-label="${esc(t("custom.rename"))}">${ICO_EDIT}</button></div>` : ""}
+      </div>`;
+    });
+    [0, 1].forEach((i) => {
+      const d = last[i];
+      html += `<button type="button" class="tile" data-last="${i}" ${d ? "" : "disabled"} title="${esc(d ? t("last." + (i + 1)) : t("last.emptyHint"))}"><span class="thumb${d ? "" : " empty"}">${d ? "" : "–"}</span><span>${esc(t("last." + (i + 1)))}</span></button>`;
+    });
+    box.innerHTML = html;
+    [0, 1].forEach((i) => { if (slots[i]) miniQR(slots[i].design, $(`[data-slot="${i}"] .thumb`, box)); if (last[i]) miniQR(last[i], $(`[data-last="${i}"] .thumb`, box)); });
+    $$("[data-slot]", box).forEach((el) => {
+      const i = +el.dataset.slot;
+      const save = () => {
+        const cur = store.get("qrlab.custom", [null, null]);
+        cur[i] = { name: cur[i] ? cur[i].name : null, design: cleanDesign(S.design) };
+        store.set("qrlab.custom", cur); renderMyPresets();
+        toast(t("toast.customSaved", { name: cur[i].name || t("custom.default", { n: i + 1 }) }));
+      };
+      $(".my-main", el).addEventListener("click", () => { const cur = store.get("qrlab.custom", [null, null]); if (cur[i]) applyDesign(cur[i].design); else save(); });
+      const bs = $('[data-act="save"]', el), br = $('[data-act="rename"]', el);
+      if (bs) bs.addEventListener("click", save);
+      if (br) br.addEventListener("click", () => {
+        const nm = $(".nm", el), cur = store.get("qrlab.custom", [null, null]);
+        const inp = document.createElement("input"); inp.type = "text"; inp.maxLength = 18; inp.placeholder = t("custom.namePh");
+        inp.value = cur[i].name || ""; inp.setAttribute("aria-label", t("custom.rename"));
+        el.replaceChild(inp, $(".my-acts", el)); inp.focus(); inp.select();
+        nm.textContent = "…";
+        let done = false;
+        const commit = (ok) => {
+          if (done) return; done = true;
+          if (ok) { const c2 = store.get("qrlab.custom", [null, null]); c2[i].name = inp.value.trim() || null; store.set("qrlab.custom", c2); toast(t("toast.renamed")); }
+          renderMyPresets();
+        };
+        inp.addEventListener("keydown", (e) => { if (e.key === "Enter") commit(true); if (e.key === "Escape") commit(false); });
+        inp.addEventListener("blur", () => commit(true));
+      });
+    });
+    $$("[data-last]", box).forEach((b) => b.addEventListener("click", () => { const d = lastDesigns()[+b.dataset.last]; if (d) applyDesign(d); }));
   }
 
   function segBind(sel, fn) {
@@ -524,6 +616,33 @@
 
   function bodyPath(q, n, skip, type) {
     const dark = (r, c) => r >= 0 && c >= 0 && r < n && c < n && !skip(r, c) && q.isDark(r, c);
+    if (type === "classy-rounded") type = "classy"; // forma rimossa
+    // Capsule: punti che si fondono in capsule verticali
+    if (type === "vpills") {
+      let d = "";
+      for (let c = 0; c < n; c++) {
+        let r = 0;
+        while (r < n) {
+          if (!dark(r, c)) { r++; continue; }
+          let e = r; while (e + 1 < n && dark(e + 1, c)) e++;
+          d += rrect(c + 0.06, r + 0.06, 0.88, e - r + 1 - 0.12, [0.44, 0.44, 0.44, 0.44]);
+          r = e + 1;
+        }
+      }
+      return d;
+    }
+    // Linee: soprattutto tratti verticali sottili; orizzontali solo per i moduli rimasti; punti per gli isolati
+    if (type === "lines") {
+      let d = ""; const W = 0.5, o = (1 - W) / 2, R = W / 2;
+      const used = new Set();
+      for (let c = 0; c < n; c++) { let r = 0; while (r < n) { if (!dark(r, c)) { r++; continue; } let e = r; while (e + 1 < n && dark(e + 1, c)) e++;
+        if (e > r) { d += rrect(c + o, r + o, W, e - r + W, [R, R, R, R]); for (let k = r; k <= e; k++) used.add(k * n + c); } r = e + 1; } }
+      const free = (r, c) => dark(r, c) && !used.has(r * n + c);
+      for (let r = 0; r < n; r++) { let c = 0; while (c < n) { if (!free(r, c)) { c++; continue; } let e = c; while (e + 1 < n && free(r, e + 1)) e++;
+        if (e > c) { d += rrect(c + o, r + o, e - c + W, W, [R, R, R, R]); for (let k = c; k <= e; k++) used.add(r * n + k); } c = e + 1; } }
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (free(r, c)) d += circ(c + 0.5, r + 0.5, 0.33);
+      return d;
+    }
     const E = 0.04; // leggera sovrapposizione: niente righine bianche tra moduli vicini
     let d = "";
     if (type === "square") {
@@ -541,6 +660,13 @@
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
       if (!dark(r, c)) continue;
       if (type === "dots") { d += circ(c + 0.5, r + 0.5, 0.48); continue; }
+      // Connessi: quadratini staccati uniti da ponticelli (formano croci)
+      if (type === "connected") {
+        d += rrect(c + 0.1, r + 0.1, 0.8, 0.8, [0.08, 0.08, 0.08, 0.08]);
+        if (dark(r, c + 1)) d += `M${c + 0.5} ${r + 0.3}h1v0.4h-1Z`;
+        if (dark(r + 1, c)) d += `M${c + 0.3} ${r + 0.5}h0.4v1h-0.4Z`;
+        continue;
+      }
       const T = dark(r - 1, c), B = dark(r + 1, c), L = dark(r, c - 1), R = dark(r, c + 1);
       const k = DOT_R[type] || DOT_R.rounded;
       const rad = [!T && !L ? k[0] : 0, !T && !R ? k[1] : 0, !B && !R ? k[2] : 0, !B && !L ? k[3] : 0];
@@ -589,7 +715,9 @@
     let logo = "";
     if (logoBox) {
       const lx = f2(logoBox.x), ls = f2(logoBox.side);
-      logo = `<image x="${lx}" y="${lx}" width="${ls}" height="${ls}" preserveAspectRatio="xMidYMid meet" href="${d.logo}" xlink:href="${d.logo}"/>`;
+      // Base del colore dello sfondo sotto al logo: separa i loghi scuri dai moduli e aiuta la lettura
+      if (d.hideDots) { const pad = 0.15, px0 = f2(logoBox.h0 + pad), ps = f2(logoBox.hid - 2 * pad); logo += `<rect x="${px0}" y="${px0}" width="${ps}" height="${ps}" rx="${f2(Math.min(1.2, ps / 6))}" fill="${d.transparentBg ? "#ffffff" : d.bgColor}"/>`; }
+      logo += `<image x="${lx}" y="${lx}" width="${ls}" height="${ls}" preserveAspectRatio="xMidYMid meet" href="${d.logo}" xlink:href="${d.logo}"/>`;
     }
     const inner = `${defs ? `<defs>${defs}</defs>` : ""}<path d="${body}" fill="${fill}"/>${eyes}${logo}`;
 
@@ -697,6 +825,8 @@
     else if (hexLum(d.dotColor) > hexLum(bgC)) warns.push(t("warn.inverted"));
     if (d.transparentBg) warns.push(t("warn.transparent"));
     if (d.logo && d.logoSize > 0.38) warns.push(t("warn.bigLogo"));
+    // Moduli sottili + occhio molto decorativo: combinazione delicata per alcuni lettori
+    if (["lines", "dots"].includes(d.dotType) && ["star", "plus", "diamond", "dots9"].includes(d.cornerDotType)) warns.push(t("warn.fragile"));
     if (d.margin < 10 && d.frame === "none") warns.push(t("warn.margin"));
     const html = warns.map((w) => `<div class="warn">${esc(w)}</div>`).join("");
     $("#warnBox").innerHTML = html;
@@ -762,7 +892,8 @@
     list = list.filter((r) => r.data !== current.data);
     list.unshift({ data: current.data, type: S.type, values: JSON.parse(JSON.stringify(vals())), design, thumb });
     store.set("qrstudio.recent", list.slice(0, 8));
-    renderRecent();
+    rememberDesign(S.design);
+    renderRecent(); renderMyPresets();
   }
   function renderRecent() {
     const list = store.get("qrstudio.recent", []);
@@ -786,7 +917,7 @@
   function applyLang() {
     applyStatic(); labelButtons();
     $("#langSel").value = LANG;
-    renderTypes(); renderFields(); syncDesignUI(); renderRecent(); render();
+    renderTypes(); renderFields(); syncDesignUI(); renderRecent(); renderMyPresets(); render();
   }
   function setLang(l) {
     if (!LANGS.includes(l) || l === LANG) return;
