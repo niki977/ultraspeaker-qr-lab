@@ -714,6 +714,7 @@
     const wPt = Math.max(1, +S.sizeCm || 5) * CM_TO_PT;
     const hPt = (wPt * current.H) / current.W;
     if (window.QR_DEMO) { toast(t("toast.demo")); addRecent(); return; }
+    if (window.QR_WEB) { download("png"); toast(t("toast.downloaded")); return; }
     if (!inOffice) {
       toast(t("toast.browser"));
       download("png"); return;
@@ -743,7 +744,7 @@
     if (!current) return;
     let href;
     if (kind === "svg") href = URL.createObjectURL(new Blob([current.svg], { type: "image/svg+xml" }));
-    else href = await svgToPng(current.svg, current.W, current.H, 2000);
+    else href = await svgToPng(current.svg, current.W, current.H, window.QR_WEB ? Math.max(600, Math.min(3000, Math.round(((+S.sizeCm || 5) / 2.54) * 300))) : 2000);
     const a = document.createElement("a"); a.href = href; a.download = fileBase() + "." + kind;
     document.body.appendChild(a); a.click(); a.remove();
     if (kind === "svg") setTimeout(() => URL.revokeObjectURL(href), 2000);
@@ -777,6 +778,7 @@
 
   /* ---------- Avvio ---------- */
   function labelButtons() {
+    if (window.QR_WEB) { $("#insertLabel").textContent = t("btn.downloadPng"); $("#barInsert").textContent = t("btn.downloadPng"); $("#dlSvgLabel").textContent = t("btn.downloadSvg"); return; }
     if (window.QR_DEMO) { $("#insertLabel").textContent = t("btn.insertDemo"); $("#barInsert").textContent = t("btn.insert"); }
     else if (!inOffice) { $("#insertLabel").textContent = t("btn.insertBrowser"); $("#barInsert").textContent = t("btn.downloadPng"); }
     else { $("#insertLabel").textContent = t("btn.insert"); $("#barInsert").textContent = t("btn.insert"); }
@@ -809,6 +811,15 @@
     $("#dlPng").addEventListener("click", () => download("png"));
     $("#dlSvg").addEventListener("click", () => download("svg"));
     if (window.QR_DEMO) $("#dlPng").parentElement.hidden = true;
+    if (window.QR_WEB) { // versione web: download al posto dell'inserimento
+      $("#appSub").dataset.i18n = "app.subWeb";
+      $("#widthLbl").dataset.i18n = "lbl.printWidth";
+      $("#formatBox").hidden = true;
+      $("#dlPng").style.display = "none";
+      $("#insertBtn svg").innerHTML = '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>';
+      $(".btns").style.gridTemplateColumns = "1fr";
+      $("#webHint").hidden = false;
+    }
     if (S.design.logoName && S.design.logoName.startsWith("icon:") && /^data:image\/svg/.test(S.design.logo || "")) setIconLogo();
     applyLang();
   }

@@ -2,6 +2,7 @@
 window.QR_I18N = {
   langs: [["it", "Italiano"], ["en", "English"], ["es", "Español"], ["fr", "Français"], ["de", "Deutsch"]],
   it: {
+    "app.subWeb": "Crea il tuo QR code e scaricalo in PNG o SVG", "btn.downloadSvg": "Scarica SVG (vettoriale)", "lbl.printWidth": "Larghezza di stampa", "web.hint": "Per usarlo in PowerPoint o Keynote: Inserisci → Immagine → scegli il file scaricato.", "toast.downloaded": "File scaricato ✓",
     "app.sub": "Crea un QR code e inseriscilo nella slide",
     "app.subDemo": "Versione di prova nel browser · in PowerPoint il QR va direttamente nella slide",
     "lbl.lang": "Lingua",
@@ -69,6 +70,7 @@ window.QR_I18N = {
     "l.desc": "Descrizione", "ph.desc": "Dettagli dell'evento", "l.net": "Piattaforma", "l.handle": "Nome utente o link del profilo", "ph.handle": "@nomeutente",
   },
   en: {
+    "app.subWeb": "Create your QR code and download it as PNG or SVG", "btn.downloadSvg": "Download SVG (vector)", "lbl.printWidth": "Print width", "web.hint": "To use it in PowerPoint or Keynote: Insert → Picture → choose the downloaded file.", "toast.downloaded": "File downloaded ✓",
     "app.sub": "Create a QR code and insert it into your slide",
     "app.subDemo": "Browser preview · in PowerPoint the QR goes straight into the slide",
     "lbl.lang": "Language",
@@ -136,6 +138,7 @@ window.QR_I18N = {
     "l.desc": "Description", "ph.desc": "Event details", "l.net": "Platform", "l.handle": "Username or profile link", "ph.handle": "@username",
   },
   es: {
+    "app.subWeb": "Crea tu código QR y descárgalo en PNG o SVG", "btn.downloadSvg": "Descargar SVG (vectorial)", "lbl.printWidth": "Ancho de impresión", "web.hint": "Para usarlo en PowerPoint o Keynote: Insertar → Imagen → elige el archivo descargado.", "toast.downloaded": "Archivo descargado ✓",
     "app.sub": "Crea un código QR e insértalo en la diapositiva",
     "app.subDemo": "Versión de prueba en el navegador · en PowerPoint el QR va directamente a la diapositiva",
     "lbl.lang": "Idioma",
@@ -203,6 +206,7 @@ window.QR_I18N = {
     "l.desc": "Descripción", "ph.desc": "Detalles del evento", "l.net": "Plataforma", "l.handle": "Nombre de usuario o enlace del perfil", "ph.handle": "@usuario",
   },
   fr: {
+    "app.subWeb": "Créez votre QR code et téléchargez-le en PNG ou SVG", "btn.downloadSvg": "Télécharger SVG (vectoriel)", "lbl.printWidth": "Largeur d'impression", "web.hint": "Pour l'utiliser dans PowerPoint ou Keynote : Insertion → Image → choisissez le fichier téléchargé.", "toast.downloaded": "Fichier téléchargé ✓",
     "app.sub": "Créez un QR code et insérez-le dans la diapositive",
     "app.subDemo": "Version d'essai dans le navigateur · dans PowerPoint, le QR va directement dans la diapositive",
     "lbl.lang": "Langue",
@@ -270,6 +274,7 @@ window.QR_I18N = {
     "l.desc": "Description", "ph.desc": "Détails de l'événement", "l.net": "Plateforme", "l.handle": "Nom d'utilisateur ou lien du profil", "ph.handle": "@utilisateur",
   },
   de: {
+    "app.subWeb": "Erstellen Sie Ihren QR-Code und laden Sie ihn als PNG oder SVG herunter", "btn.downloadSvg": "SVG herunterladen (Vektor)", "lbl.printWidth": "Druckbreite", "web.hint": "Zur Verwendung in PowerPoint oder Keynote: Einfügen → Bild → heruntergeladene Datei wählen.", "toast.downloaded": "Datei heruntergeladen ✓",
     "app.sub": "QR-Code erstellen und in die Folie einfügen",
     "app.subDemo": "Testversion im Browser · in PowerPoint landet der QR direkt auf der Folie",
     "lbl.lang": "Sprache",
