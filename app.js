@@ -941,6 +941,13 @@
     $("#barImg").addEventListener("click", () => $("#previewCard").scrollIntoView({ behavior: "smooth" }));
     $("#dlPng").addEventListener("click", () => download("png"));
     $("#dlSvg").addEventListener("click", () => download("svg"));
+    // "Richiedi una consulenza": in PowerPoint il pannello non apre i link mailto da solo, quindi lo passo al sistema
+    $("#ctaMail").addEventListener("click", (e) => {
+      if (!inOffice) return; // nel browser il link mailto funziona normalmente
+      try {
+        if (Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { e.preventDefault(); Office.context.ui.openBrowserWindow("mailto:info@theultraspeaker.com"); }
+      } catch (err) { /* lascio agire il link normale */ }
+    });
     if (window.QR_DEMO) $("#dlPng").parentElement.hidden = true;
     if (window.QR_WEB) { // versione web: download al posto dell'inserimento
       $("#appSub").dataset.i18n = "app.subWeb";

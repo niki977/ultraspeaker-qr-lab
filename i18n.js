@@ -2,6 +2,7 @@
 window.QR_I18N = {
   langs: [["it", "Italiano"], ["en", "English"], ["es", "Español"], ["fr", "Français"], ["de", "Deutsch"]],
   it: {
+    "cta.consult": "Richiedi una consulenza",
     "warn.fragile": "Moduli sottili e occhio decorativo insieme: alcuni telefoni potrebbero faticare. Prova la scansione o scegli un punto interno pieno.",
     "dot.connected": "Connessi", "dot.vpills": "Capsule", "dot.lines": "Linee",
     "sub.myPresets": "I miei modelli", "hint.myPresets": "Salva il design attuale in uno dei due modelli personali e dagli un nome. «Ultimo» e «Penultimo» si aggiornano da soli con i QR che inserisci o scarichi.", "custom.default": "Personale {n}", "custom.empty": "Salva qui", "custom.save": "Salva qui il design attuale", "custom.rename": "Rinomina", "custom.namePh": "Nome", "toast.customSaved": "Design salvato in «{name}»", "toast.renamed": "Nome aggiornato", "last.1": "Ultimo", "last.2": "Penultimo", "last.emptyHint": "Si riempie quando inserisci o scarichi un QR",
@@ -74,6 +75,7 @@ window.QR_I18N = {
     "l.desc": "Descrizione", "ph.desc": "Dettagli dell'evento", "l.net": "Piattaforma", "l.handle": "Nome utente o link del profilo", "ph.handle": "@nomeutente",
   },
   en: {
+    "cta.consult": "Request a consultation",
     "warn.fragile": "Thin modules plus a decorative eye: some phones may struggle. Test the scan or pick a solid inner dot.",
     "dot.connected": "Connected", "dot.vpills": "Capsules", "dot.lines": "Lines",
     "sub.myPresets": "My templates", "hint.myPresets": "Save the current design into one of the two personal templates and give it a name. “Last” and “Previous” update automatically with the QR codes you insert or download.", "custom.default": "Custom {n}", "custom.empty": "Save here", "custom.save": "Save the current design here", "custom.rename": "Rename", "custom.namePh": "Name", "toast.customSaved": "Design saved to “{name}”", "toast.renamed": "Name updated", "last.1": "Last", "last.2": "Previous", "last.emptyHint": "Fills in when you insert or download a QR",
@@ -146,6 +148,7 @@ window.QR_I18N = {
     "l.desc": "Description", "ph.desc": "Event details", "l.net": "Platform", "l.handle": "Username or profile link", "ph.handle": "@username",
   },
   es: {
+    "cta.consult": "Solicita una consulta",
     "warn.fragile": "Módulos finos y ojo decorativo juntos: algunos teléfonos podrían tener dificultades. Prueba el escaneo o elige un punto interior lleno.",
     "dot.connected": "Conectados", "dot.vpills": "Cápsulas", "dot.lines": "Líneas",
     "sub.myPresets": "Mis plantillas", "hint.myPresets": "Guarda el diseño actual en una de las dos plantillas personales y ponle nombre. «Último» y «Penúltimo» se actualizan solos con los QR que insertas o descargas.", "custom.default": "Personal {n}", "custom.empty": "Guardar aquí", "custom.save": "Guardar aquí el diseño actual", "custom.rename": "Cambiar nombre", "custom.namePh": "Nombre", "toast.customSaved": "Diseño guardado en «{name}»", "toast.renamed": "Nombre actualizado", "last.1": "Último", "last.2": "Penúltimo", "last.emptyHint": "Se llena cuando insertas o descargas un QR",
@@ -218,6 +221,7 @@ window.QR_I18N = {
     "l.desc": "Descripción", "ph.desc": "Detalles del evento", "l.net": "Plataforma", "l.handle": "Nombre de usuario o enlace del perfil", "ph.handle": "@usuario",
   },
   fr: {
+    "cta.consult": "Demander une consultation",
     "warn.fragile": "Modules fins et œil décoratif ensemble : certains téléphones pourraient avoir du mal. Testez le scan ou choisissez un point intérieur plein.",
     "dot.connected": "Connectés", "dot.vpills": "Capsules", "dot.lines": "Lignes",
     "sub.myPresets": "Mes modèles", "hint.myPresets": "Enregistrez le design actuel dans l'un des deux modèles personnels et donnez-lui un nom. « Dernier » et « Avant-dernier » se mettent à jour avec les QR que vous insérez ou téléchargez.", "custom.default": "Perso {n}", "custom.empty": "Enregistrer ici", "custom.save": "Enregistrer ici le design actuel", "custom.rename": "Renommer", "custom.namePh": "Nom", "toast.customSaved": "Design enregistré dans « {name} »", "toast.renamed": "Nom mis à jour", "last.1": "Dernier", "last.2": "Avant-dernier", "last.emptyHint": "Se remplit quand vous insérez ou téléchargez un QR",
@@ -290,6 +294,7 @@ window.QR_I18N = {
     "l.desc": "Description", "ph.desc": "Détails de l'événement", "l.net": "Plateforme", "l.handle": "Nom d'utilisateur ou lien du profil", "ph.handle": "@utilisateur",
   },
   de: {
+    "cta.consult": "Beratung anfragen",
     "warn.fragile": "Dünne Module und dekoratives Auge zusammen: Manche Handys könnten Probleme haben. Scan testen oder einen vollen inneren Punkt wählen.",
     "dot.connected": "Verbunden", "dot.vpills": "Kapseln", "dot.lines": "Linien",
     "sub.myPresets": "Meine Vorlagen", "hint.myPresets": "Speichern Sie das aktuelle Design in einer der zwei eigenen Vorlagen und geben Sie ihm einen Namen. „Zuletzt“ und „Vorletzt“ aktualisieren sich mit den QR-Codes, die Sie einfügen oder herunterladen.", "custom.default": "Eigene {n}", "custom.empty": "Hier speichern", "custom.save": "Aktuelles Design hier speichern", "custom.rename": "Umbenennen", "custom.namePh": "Name", "toast.customSaved": "Design in „{name}“ gespeichert", "toast.renamed": "Name aktualisiert", "last.1": "Zuletzt", "last.2": "Vorletzt", "last.emptyHint": "Füllt sich, wenn Sie einen QR einfügen oder herunterladen",
