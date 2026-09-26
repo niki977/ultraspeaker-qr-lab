@@ -6,6 +6,7 @@
 <title>The Ultraspeaker QR Lab</title>
 <!--OFFICEJS--><script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script><!--/OFFICEJS-->
 <script src="qrcode.js"></script>
+<script src="i18n.js"></script>
 <style>
 :root{
   --bg:#f6f7fb; --surface:#ffffff; --surface-2:#f0f2f8; --ink:#171a26; --ink-2:#555b70; --ink-3:#8a90a3;
@@ -34,7 +35,8 @@ header.top{display:flex;align-items:center;gap:10px;padding:4px 2px 12px}
 .logo-mark svg{width:18px;height:18px}
 header.top h1{font-size:16px;margin:0;font-weight:700;letter-spacing:-.01em}
 header.top p{margin:0;font-size:12px;color:var(--ink-3)}
-.layout{display:grid;gap:12px}
+.layout{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.layout>main,.layout>aside{min-width:0}
 @media (min-width:760px){
   .layout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}
   .side{position:sticky;top:12px}
@@ -60,7 +62,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin:6px 0;cursor:pointer}
 .check input{accent-color:var(--accent);width:16px;height:16px}
 .tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:10px;margin-bottom:12px;overflow-x:auto}
-.tabs button{flex:1;border:0;background:none;padding:7px 8px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tabs button{flex:1;border:0;background:none;padding:7px 6px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
 .tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 .panel[hidden]{display:none}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin-bottom:12px}
@@ -106,20 +108,27 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:12.5px;opacity:0;pointer-events:none;transition:.2s;z-index:10;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .foot{font-size:11px;color:var(--ink-3);text-align:center;margin-top:4px}
+.tile>span:last-child{text-align:center;line-height:1.2;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere;max-width:100%}
+.tabs button{min-width:max-content}
+.lang{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none}
+.lang svg{width:16px;height:16px;stroke:var(--ink-3);fill:none;stroke-width:1.8}
+.lang select{width:auto;padding:5px 8px;font-size:12.5px;border-radius:7px}
+header.top>div:nth-child(2){min-width:0}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="top">
     <div class="logo-mark"><svg viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/><rect x="18" y="14" width="3" height="2"/><rect x="14" y="19" width="2" height="2"/></svg></div>
-    <div><h1>The Ultraspeaker QR Lab</h1><p>Crea un QR code e inseriscilo nella slide</p></div>
+    <div><h1>The Ultraspeaker QR Lab</h1><p id="appSub" data-i18n="app.sub">Crea un QR code e inseriscilo nella slide</p></div>
+    <label class="lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><select id="langSel" data-i18n-aria="lbl.lang" aria-label="Lingua"></select></label>
   </header>
 
   <div class="layout">
     <main>
       <section class="card">
-        <h2 class="step-h"><span class="n">1</span>Cosa deve aprire il QR?</h2>
-        <div class="types" id="types" role="group" aria-label="Tipo di QR"></div>
+        <h2 class="step-h"><span class="n">1</span><span data-i18n="step1">Cosa deve aprire il QR?</span></h2>
+        <div class="types" id="types" role="group" data-i18n-aria="types.aria" aria-label="Tipo di QR"></div>
       </section>
 
       <section class="card">
@@ -128,103 +137,103 @@ input[type=range]{width:100%;accent-color:var(--accent)}
       </section>
 
       <section class="card">
-        <h2 class="step-h"><span class="n">3</span>Design</h2>
+        <h2 class="step-h"><span class="n">3</span><span data-i18n="step3">Design</span></h2>
         <div class="tabs" role="tablist">
-          <button role="tab" data-tab="stile" aria-selected="true">Stile</button>
-          <button role="tab" data-tab="colori" aria-selected="false">Colori</button>
-          <button role="tab" data-tab="logo" aria-selected="false">Logo</button>
-          <button role="tab" data-tab="cornice" aria-selected="false">Cornice</button>
-          <button role="tab" data-tab="avanzate" aria-selected="false">Avanzate</button>
+          <button role="tab" data-tab="stile" aria-selected="true" data-i18n="tab.style">Stile</button>
+          <button role="tab" data-tab="colori" aria-selected="false" data-i18n="tab.colors">Colori</button>
+          <button role="tab" data-tab="logo" aria-selected="false" data-i18n="tab.logo">Logo</button>
+          <button role="tab" data-tab="cornice" aria-selected="false" data-i18n="tab.frame">Cornice</button>
+          <button role="tab" data-tab="avanzate" aria-selected="false" data-i18n="tab.adv">Avanzate</button>
         </div>
 
         <div class="panel" data-panel="stile">
-          <div class="sub">Modelli rapidi</div>
+          <div class="sub" data-i18n="sub.presets">Modelli rapidi</div>
           <div class="tiles" id="presets"></div>
-          <div class="sub">Forma dei moduli</div>
+          <div class="sub" data-i18n="sub.dots">Forma dei moduli</div>
           <div class="tiles" id="dotTypes"></div>
-          <div class="sub">Occhi – cornice esterna</div>
+          <div class="sub" data-i18n="sub.eyeOuter">Occhi – cornice esterna</div>
           <div class="tiles" id="cornerSqTypes"></div>
-          <div class="sub">Occhi – punto interno</div>
+          <div class="sub" data-i18n="sub.eyeInner">Occhi – punto interno</div>
           <div class="tiles" id="cornerDotTypes"></div>
         </div>
 
         <div class="panel" data-panel="colori" hidden>
-          <div class="sub">Moduli</div>
+          <div class="sub" data-i18n="sub.modules">Moduli</div>
           <div class="colors">
-            <div><span class="lbl">Colore</span><div class="color" data-color="dotColor"></div></div>
-            <div id="grad2Wrap" hidden><span class="lbl">Secondo colore</span><div class="color" data-color="gradColor2"></div></div>
+            <div><span class="lbl" data-i18n="lbl.color">Colore</span><div class="color" data-color="dotColor"></div></div>
+            <div id="grad2Wrap" hidden><span class="lbl" data-i18n="lbl.color2">Secondo colore</span><div class="color" data-color="gradColor2"></div></div>
           </div>
-          <label class="check"><input type="checkbox" id="useGradient"> Usa sfumatura</label>
+          <label class="check"><input type="checkbox" id="useGradient"> <span data-i18n="chk.gradient">Usa sfumatura</span></label>
           <div id="gradOpts" hidden>
-            <div class="seg" id="gradType" style="margin-bottom:8px"><button data-v="linear" aria-pressed="true">Lineare</button><button data-v="radial" aria-pressed="false">Radiale</button></div>
-            <div class="range-row"><span>Angolo</span><span id="gradRotVal">45°</span></div>
+            <div class="seg" id="gradType" style="margin-bottom:8px"><button data-v="linear" aria-pressed="true" data-i18n="grad.linear">Lineare</button><button data-v="radial" aria-pressed="false" data-i18n="grad.radial">Radiale</button></div>
+            <div class="range-row"><span data-i18n="lbl.angle">Angolo</span><span id="gradRotVal">45°</span></div>
             <input type="range" id="gradRot" min="0" max="360" step="15" value="45">
           </div>
-          <div class="sub">Occhi</div>
-          <label class="check"><input type="checkbox" id="eyesSame" checked> Stesso colore dei moduli</label>
+          <div class="sub" data-i18n="sub.eyes">Occhi</div>
+          <label class="check"><input type="checkbox" id="eyesSame" checked> <span data-i18n="chk.eyesSame">Stesso colore dei moduli</span></label>
           <div class="colors" id="eyeColors" hidden>
-            <div><span class="lbl">Cornice esterna</span><div class="color" data-color="cornerSqColor"></div></div>
-            <div><span class="lbl">Punto interno</span><div class="color" data-color="cornerDotColor"></div></div>
+            <div><span class="lbl" data-i18n="lbl.eyeOuter">Cornice esterna</span><div class="color" data-color="cornerSqColor"></div></div>
+            <div><span class="lbl" data-i18n="lbl.eyeInner">Punto interno</span><div class="color" data-color="cornerDotColor"></div></div>
           </div>
-          <div class="sub">Sfondo</div>
+          <div class="sub" data-i18n="sub.bg">Sfondo</div>
           <div class="colors">
-            <div><span class="lbl">Colore sfondo</span><div class="color" data-color="bgColor"></div></div>
-            <div style="display:flex;align-items:flex-end"><label class="check"><input type="checkbox" id="transparentBg"> Trasparente</label></div>
+            <div><span class="lbl" data-i18n="lbl.bgColor">Colore sfondo</span><div class="color" data-color="bgColor"></div></div>
+            <div style="display:flex;align-items:flex-end"><label class="check"><input type="checkbox" id="transparentBg"> <span data-i18n="chk.transparent">Trasparente</span></label></div>
           </div>
           <div id="contrastWarn"></div>
         </div>
 
         <div class="panel" data-panel="logo" hidden>
-          <div class="sub">Il tuo logo</div>
+          <div class="sub" data-i18n="sub.yourLogo">Il tuo logo</div>
           <label class="upload" id="uploadBox">
             <input type="file" id="logoFile" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
             <span id="uploadText">Clicca per caricare un logo (PNG, JPG, SVG)</span>
           </label>
-          <div class="sub">Oppure un'icona</div>
+          <div class="sub" data-i18n="sub.orIcon">Oppure un'icona</div>
           <div class="tiles" id="iconLogos"></div>
           <div id="logoOpts">
-            <div class="range-row"><span>Dimensione logo</span><span id="logoSizeVal">30%</span></div>
+            <div class="range-row"><span data-i18n="lbl.logoSize">Dimensione logo</span><span id="logoSizeVal">30%</span></div>
             <input type="range" id="logoSize" min="0.15" max="0.45" step="0.01" value="0.3">
-            <div class="range-row"><span>Spazio attorno al logo</span><span id="logoMarginVal">6</span></div>
+            <div class="range-row"><span data-i18n="lbl.logoMargin">Spazio attorno al logo</span><span id="logoMarginVal">6</span></div>
             <input type="range" id="logoMargin" min="0" max="30" step="1" value="6">
-            <label class="check"><input type="checkbox" id="hideDots" checked> Nascondi i moduli dietro al logo</label>
-            <div class="hint" style="font-size:11.5px;color:var(--ink-3)">Con un logo la correzione d'errore passa automaticamente ad “Alta”, così il QR resta leggibile.</div>
+            <label class="check"><input type="checkbox" id="hideDots" checked> <span data-i18n="chk.hideDots">Nascondi i moduli dietro al logo</span></label>
+            <div class="hint" style="font-size:11.5px;color:var(--ink-3)" data-i18n="hint.logoEc">Con un logo la correzione d'errore passa automaticamente a “Max”, così il QR resta leggibile.</div>
           </div>
         </div>
 
         <div class="panel" data-panel="cornice" hidden>
-          <div class="sub">Stile cornice</div>
+          <div class="sub" data-i18n="sub.frameStyle">Stile cornice</div>
           <div class="tiles" id="frames"></div>
           <div id="frameOpts">
-            <div class="field"><label for="frameText">Testo</label><input type="text" id="frameText" maxlength="28" value="SCANSIONAMI"></div>
+            <div class="field"><label for="frameText" data-i18n="lbl.text">Testo</label><input type="text" id="frameText" maxlength="28" value="SCANSIONAMI"></div>
             <div class="colors">
-              <div><span class="lbl">Colore cornice</span><div class="color" data-color="frameColor"></div></div>
-              <div><span class="lbl">Colore testo</span><div class="color" data-color="frameTextColor"></div></div>
+              <div><span class="lbl" data-i18n="lbl.frameColor">Colore cornice</span><div class="color" data-color="frameColor"></div></div>
+              <div><span class="lbl" data-i18n="lbl.textColor">Colore testo</span><div class="color" data-color="frameTextColor"></div></div>
             </div>
           </div>
         </div>
 
         <div class="panel" data-panel="avanzate" hidden>
-          <div class="sub">Correzione d'errore</div>
-          <div class="seg" id="ecLevel"><button data-v="L">Bassa</button><button data-v="M">Media</button><button data-v="Q">Alta</button><button data-v="H">Max</button></div>
-          <p class="hint" style="font-size:11.5px;color:var(--ink-3)">Più è alta, più il QR resiste a graffi, loghi e stampe imperfette, ma diventa più fitto.</p>
-          <div class="sub">Margine (zona di rispetto)</div>
-          <div class="range-row"><span>Margine</span><span id="marginVal">20</span></div>
+          <div class="sub" data-i18n="sub.ec">Correzione d'errore</div>
+          <div class="seg" id="ecLevel"><button data-v="L" data-i18n="ec.L">Bassa</button><button data-v="M" data-i18n="ec.M">Media</button><button data-v="Q" data-i18n="ec.Q">Alta</button><button data-v="H" data-i18n="ec.H">Max</button></div>
+          <p class="hint" style="font-size:11.5px;color:var(--ink-3)" data-i18n="hint.ec">Più è alta, più il QR resiste a graffi, loghi e stampe imperfette, ma diventa più fitto.</p>
+          <div class="sub" data-i18n="sub.margin">Margine (zona di rispetto)</div>
+          <div class="range-row"><span data-i18n="lbl.margin">Margine</span><span id="marginVal">20</span></div>
           <input type="range" id="qrMargin" min="0" max="80" step="5" value="20">
-          <div class="sub">Ripristina</div>
-          <button class="btn" id="resetDesign" type="button">Ripristina design predefinito</button>
+          <div class="sub" data-i18n="sub.reset">Ripristina</div>
+          <button class="btn" id="resetDesign" type="button" data-i18n="btn.reset">Ripristina design predefinito</button>
         </div>
       </section>
     </main>
 
     <aside class="side">
       <section class="card preview-card" id="previewCard">
-        <div class="preview dim" id="preview"><img id="previewImg" alt="Anteprima QR code"></div>
+        <div class="preview dim" id="preview"><img id="previewImg" alt="Anteprima QR code" data-i18n-alt="preview.alt"></div>
         <p class="status" id="status">Compila il contenuto per generare il QR</p>
         <div id="warnBox"></div>
         <div class="out">
-          <div><span class="lbl">Formato</span><div class="seg" id="format"><button data-v="png" aria-pressed="true">PNG</button><button data-v="svg" aria-pressed="false">Vettoriale</button></div></div>
-          <div><span class="lbl">Larghezza in slide</span><div style="display:flex;align-items:center;gap:6px"><input type="number" id="sizeCm" min="1" max="30" step="0.5" value="5"><span style="font-size:12px;color:var(--ink-3)">cm</span></div></div>
+          <div><span class="lbl" data-i18n="lbl.format">Formato</span><div class="seg" id="format"><button data-v="png" aria-pressed="true">PNG</button><button data-v="svg" aria-pressed="false" data-i18n="fmt.vector">Vettoriale</button></div></div>
+          <div><span class="lbl" data-i18n="lbl.width">Larghezza in slide</span><div style="display:flex;align-items:center;gap:6px"><input type="number" id="sizeCm" min="1" max="30" step="0.5" value="5"><span style="font-size:12px;color:var(--ink-3)">cm</span></div></div>
         </div>
         <button class="btn primary" id="insertBtn" type="button" disabled><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M12 8v6M9 11h6"/></svg><span id="insertLabel">Inserisci nella slide</span></button>
         <div class="btns">
@@ -233,16 +242,16 @@ input[type=range]{width:100%;accent-color:var(--accent)}
         </div>
       </section>
       <section class="card">
-        <div class="sub" style="margin-top:0">Recenti</div>
+        <div class="sub" style="margin-top:0" data-i18n="sub.recent">Recenti</div>
         <div class="recent" id="recent"></div>
       </section>
-      <p class="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</p>
+      <p class="foot" data-i18n="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</p>
     </aside>
   </div>
 </div>
 
 <div class="bar" id="bar">
-  <img id="barImg" alt="Anteprima" title="Vai all'anteprima">
+  <img id="barImg" alt="Anteprima" title="Vai all'anteprima" data-i18n-alt="bar.alt" data-i18n-title="bar.title">
   <button class="btn primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
 </div>
 <div class="toast" id="toast" role="status"></div>

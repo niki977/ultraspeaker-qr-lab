@@ -16,6 +16,35 @@
     const t = $("#toast"); t.textContent = msg; t.classList.add("show");
     clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600);
   }
+  /* ---------- Lingua ---------- */
+  const I18N = window.QR_I18N;
+  const LANGS = I18N.langs.map((l) => l[0]);
+  let LANG = "it";
+  function t(k, vars) {
+    let v = (I18N[LANG] && I18N[LANG][k]) || I18N.it[k] || k;
+    if (vars) for (const n in vars) v = v.replace("{" + n + "}", vars[n]);
+    return v;
+  }
+  function detectLang() {
+    const saved = store.get("qrlab.lang", null);
+    if (saved && LANGS.includes(saved)) return saved;
+    let l = "";
+    try { if (inOffice && Office.context && Office.context.displayLanguage) l = Office.context.displayLanguage; } catch (e) { /* ignora */ }
+    if (!l) l = (navigator.languages && navigator.languages[0]) || navigator.language || "it";
+    l = l.slice(0, 2).toLowerCase();
+    return LANGS.includes(l) ? l : "en";
+  }
+  // Applica le traduzioni a tutti gli elementi con data-i18n
+  function applyStatic() {
+    document.documentElement.lang = LANG;
+    $$("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    $$("[data-i18n-aria]").forEach((el) => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+    $$("[data-i18n-alt]").forEach((el) => el.setAttribute("alt", t(el.dataset.i18nAlt)));
+    $$("[data-i18n-title]").forEach((el) => el.setAttribute("title", t(el.dataset.i18nTitle)));
+    $$(".color[data-color]").forEach((box) => { const [p, x] = $$("input", box); if (p) { p.setAttribute("aria-label", t("color.pick")); x.setAttribute("aria-label", t("color.code")); } });
+  }
+  const FRAME_DEFAULTS = () => LANGS.map((l) => I18N[l]["frame.default"]);
+
   const ICON = {
     url: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
     text: '<path d="M5 6h14M12 6v13M9 19h6"/>',
@@ -32,48 +61,45 @@
 
   /* ---------- Tipi di contenuto ---------- */
   const TYPES = [
-    { id: "url", name: "Link", title: "Indirizzo web", fields: [
-      { k: "url", label: "Indirizzo web (URL)", ph: "www.tuosito.it", type: "url", req: true, sel: true } ] },
-    { id: "text", name: "Testo", title: "Testo libero", fields: [
-      { k: "text", label: "Testo", ph: "Scrivi il messaggio che apparirà dopo la scansione", area: true, req: true, sel: true } ] },
-    { id: "email", name: "Email", title: "Email precompilata", fields: [
-      { k: "to", label: "Destinatario", ph: "nome@esempio.it", type: "email", req: true },
-      { k: "subject", label: "Oggetto", ph: "Richiesta informazioni" },
-      { k: "body", label: "Messaggio", ph: "Testo della mail", area: true } ] },
-    { id: "phone", name: "Telefono", title: "Chiamata", fields: [
-      { k: "phone", label: "Numero di telefono", ph: "+39 333 1234567", type: "tel", req: true } ] },
-    { id: "sms", name: "SMS", title: "SMS precompilato", fields: [
-      { k: "phone", label: "Numero", ph: "+39 333 1234567", type: "tel", req: true },
-      { k: "msg", label: "Messaggio", ph: "Testo dell'SMS", area: true } ] },
-    { id: "whatsapp", name: "WhatsApp", title: "Chat WhatsApp", fields: [
-      { k: "phone", label: "Numero con prefisso internazionale", ph: "+39 333 1234567", type: "tel", req: true, hint: "Se manca il prefisso, per i cellulari italiani aggiungo +39 in automatico." },
-      { k: "msg", label: "Messaggio iniziale", ph: "Ciao! Vorrei informazioni sul corso", area: true } ] },
-    { id: "wifi", name: "Wi‑Fi", title: "Accesso Wi‑Fi", fields: [
-      { k: "ssid", label: "Nome della rete (SSID)", ph: "Congresso-Guest", req: true },
-      { k: "pass", label: "Password", ph: "••••••••" },
-      { k: "enc", label: "Sicurezza", select: [["WPA", "WPA / WPA2 / WPA3"], ["WEP", "WEP"], ["nopass", "Nessuna"]] },
-      { k: "hidden", label: "Rete nascosta", check: true } ] },
-    { id: "vcard", name: "Contatto", title: "Biglietto da visita (vCard)", fields: [
-      { row: [{ k: "first", label: "Nome", ph: "Mario", req: true }, { k: "last", label: "Cognome", ph: "Rossi" }] },
-      { row: [{ k: "org", label: "Azienda / Studio", ph: "Studio Rossi" }, { k: "title", label: "Ruolo", ph: "Odontoiatra" }] },
-      { row: [{ k: "mobile", label: "Cellulare", ph: "+39 333 1234567", type: "tel" }, { k: "work", label: "Telefono ufficio", ph: "+39 02 1234567", type: "tel" }] },
-      { k: "email", label: "Email", ph: "mario@studio.it", type: "email" },
-      { k: "web", label: "Sito web", ph: "www.studio.it", type: "url" },
-      { k: "street", label: "Indirizzo", ph: "Via Roma 1" },
-      { row: [{ k: "city", label: "Città", ph: "Milano" }, { k: "zip", label: "CAP", ph: "20100" }] },
-      { k: "country", label: "Paese", ph: "Italia" } ] },
-    { id: "location", name: "Posizione", title: "Posizione su mappa", fields: [
-      { k: "mode", label: "Tipo", select: [["addr", "Indirizzo"], ["coords", "Coordinate GPS"]] },
-      { k: "addr", label: "Indirizzo o luogo", ph: "Fiera Milano, Rho", req: true, when: (v) => v.mode !== "coords" },
-      { row: [{ k: "lat", label: "Latitudine", ph: "45.5210", req: true }, { k: "lng", label: "Longitudine", ph: "9.0880", req: true }], when: (v) => v.mode === "coords" } ] },
-    { id: "event", name: "Evento", title: "Evento in calendario", fields: [
-      { k: "title", label: "Titolo", ph: "Corso di public speaking", req: true },
-      { row: [{ k: "start", label: "Inizio", type: "datetime-local", req: true }, { k: "end", label: "Fine", type: "datetime-local" }] },
-      { k: "loc", label: "Luogo", ph: "Sala Congressi, Bologna" },
-      { k: "desc", label: "Descrizione", ph: "Dettagli dell'evento", area: true } ] },
-    { id: "social", name: "Social", title: "Profilo social", fields: [
-      { k: "net", label: "Piattaforma", select: [["instagram", "Instagram"], ["linkedin", "LinkedIn"], ["facebook", "Facebook"], ["youtube", "YouTube"], ["tiktok", "TikTok"], ["x", "X (Twitter)"]] },
-      { k: "handle", label: "Nome utente o link del profilo", ph: "@nomeutente", req: true } ] },
+    { id: "url", fields: [{ k: "url", label: "l.url", ph: "ph.url", type: "url", req: true, sel: true }] },
+    { id: "text", fields: [{ k: "text", label: "l.text", ph: "ph.text", area: true, req: true, sel: true }] },
+    { id: "email", fields: [
+      { k: "to", label: "l.to", ph: "ph.to", type: "email", req: true },
+      { k: "subject", label: "l.subject", ph: "ph.subject" },
+      { k: "body", label: "l.body", ph: "ph.body", area: true }] },
+    { id: "phone", fields: [{ k: "phone", label: "l.phone", ph: "ph.phone", type: "tel", req: true }] },
+    { id: "sms", fields: [
+      { k: "phone", label: "l.number", ph: "ph.phone", type: "tel", req: true },
+      { k: "msg", label: "l.msg", ph: "ph.sms", area: true }] },
+    { id: "whatsapp", fields: [
+      { k: "phone", label: "l.waPhone", ph: "ph.phone", type: "tel", req: true, hint: "hint.wa" },
+      { k: "msg", label: "l.waMsg", ph: "ph.wa", area: true }] },
+    { id: "wifi", fields: [
+      { k: "ssid", label: "l.ssid", ph: "ph.ssid", req: true },
+      { k: "pass", label: "l.pass", ph: "••••••••" },
+      { k: "enc", label: "l.enc", select: [["WPA", "opt.wpa"], ["WEP", "opt.wep"], ["nopass", "opt.nopass"]] },
+      { k: "hidden", label: "l.hidden", check: true }] },
+    { id: "vcard", fields: [
+      { row: [{ k: "first", label: "l.first", ph: "ph.first", req: true }, { k: "last", label: "l.last", ph: "ph.last" }] },
+      { row: [{ k: "org", label: "l.org", ph: "ph.org" }, { k: "title", label: "l.title", ph: "ph.title" }] },
+      { row: [{ k: "mobile", label: "l.mobile", ph: "ph.phone", type: "tel" }, { k: "work", label: "l.work", ph: "ph.work", type: "tel" }] },
+      { k: "email", label: "l.email", ph: "ph.email", type: "email" },
+      { k: "web", label: "l.web", ph: "ph.web", type: "url" },
+      { k: "street", label: "l.street", ph: "ph.street" },
+      { row: [{ k: "city", label: "l.city", ph: "ph.city" }, { k: "zip", label: "l.zip", ph: "ph.zip" }] },
+      { k: "country", label: "l.country", ph: "ph.country" }] },
+    { id: "location", fields: [
+      { k: "mode", label: "l.mode", select: [["addr", "opt.addr"], ["coords", "opt.coords"]] },
+      { k: "addr", label: "l.addr", ph: "ph.addr", req: true, when: (v) => v.mode !== "coords" },
+      { row: [{ k: "lat", label: "l.lat", ph: "45.5210", req: true }, { k: "lng", label: "l.lng", ph: "9.0880", req: true }], when: (v) => v.mode === "coords" }] },
+    { id: "event", fields: [
+      { k: "title", label: "l.evTitle", ph: "ph.evTitle", req: true },
+      { row: [{ k: "start", label: "l.start", type: "datetime-local", req: true }, { k: "end", label: "l.end", type: "datetime-local" }] },
+      { k: "loc", label: "l.loc", ph: "ph.loc" },
+      { k: "desc", label: "l.desc", ph: "ph.desc", area: true }] },
+    { id: "social", fields: [
+      { k: "net", label: "l.net", select: [["instagram", "Instagram"], ["linkedin", "LinkedIn"], ["facebook", "Facebook"], ["youtube", "YouTube"], ["tiktok", "TikTok"], ["x", "X (Twitter)"]] },
+      { k: "handle", label: "l.handle", ph: "ph.handle", req: true }] },
   ];
 
   /* ---------- Codifica del contenuto ---------- */
@@ -101,7 +127,7 @@
         let n = trim(v.phone).replace(/[^\d+]/g, "");
         if (!n) return "";
         if (n.startsWith("+")) n = n.slice(1); else if (n.startsWith("00")) n = n.slice(2);
-        else if (n.length === 10 && n.startsWith("3")) n = "39" + n;
+        else if (LANG === "it" && n.length === 10 && n.startsWith("3")) n = "39" + n; // cellulari italiani senza prefisso
         n = n.replace(/\D/g, "");
         return "https://wa.me/" + n + (trim(v.msg) ? "?text=" + encodeURIComponent(trim(v.msg)) : "");
       }
@@ -183,8 +209,8 @@
 
   /* ---------- UI: tipi e campi ---------- */
   function renderTypes() {
-    $("#types").innerHTML = TYPES.map((t) =>
-      `<button type="button" class="type" data-type="${t.id}" aria-pressed="${t.id === S.type}"><svg viewBox="0 0 24 24">${ICON[t.id]}</svg>${t.name}</button>`).join("");
+    $("#types").innerHTML = TYPES.map((ty) =>
+      `<button type="button" class="type" data-type="${ty.id}" aria-pressed="${ty.id === S.type}"><svg viewBox="0 0 24 24">${ICON[ty.id]}</svg>${esc(t("type." + ty.id))}</button>`).join("");
     $$("#types .type").forEach((b) => b.addEventListener("click", () => {
       S.type = b.dataset.type; renderTypes(); renderFields(); update();
     }));
@@ -194,26 +220,27 @@
     const id = "f_" + f.k;
     const val = v[f.k] != null ? v[f.k] : "";
     let inp;
-    if (f.select) inp = `<select id="${id}" data-k="${f.k}">${f.select.map(([o, l]) => `<option value="${o}" ${val === o ? "selected" : ""}>${l}</option>`).join("")}</select>`;
-    else if (f.check) return `<label class="check"><input type="checkbox" id="${id}" data-k="${f.k}" ${val ? "checked" : ""}> ${f.label}</label>`;
-    else if (f.area) inp = `<textarea id="${id}" data-k="${f.k}" placeholder="${esc(f.ph || "")}">${esc(val)}</textarea>`;
-    else inp = `<input type="${f.type || "text"}" id="${id}" data-k="${f.k}" placeholder="${esc(f.ph || "")}" value="${esc(val)}" autocomplete="off">`;
-    const sel = f.sel && inOffice ? `<button type="button" class="inline-btn" data-sel="${f.k}">Usa il testo selezionato nella slide</button>` : "";
-    return `<div class="field"><label for="${id}">${f.label}${f.req ? "" : ' <span style="font-weight:400;color:var(--ink-3)">(facoltativo)</span>'}</label>${inp}${f.hint ? `<div class="hint">${f.hint}</div>` : ""}${sel}</div>`;
+    const ph = esc(f.ph ? t(f.ph) : "");
+    if (f.select) inp = `<select id="${id}" data-k="${f.k}">${f.select.map(([o, l]) => `<option value="${o}" ${val === o ? "selected" : ""}>${esc(t(l))}</option>`).join("")}</select>`;
+    else if (f.check) return `<label class="check"><input type="checkbox" id="${id}" data-k="${f.k}" ${val ? "checked" : ""}> ${esc(t(f.label))}</label>`;
+    else if (f.area) inp = `<textarea id="${id}" data-k="${f.k}" placeholder="${ph}">${esc(val)}</textarea>`;
+    else inp = `<input type="${f.type || "text"}" id="${id}" data-k="${f.k}" placeholder="${ph}" value="${esc(val)}" autocomplete="off">`;
+    const sel = f.sel && inOffice ? `<button type="button" class="inline-btn" data-sel="${f.k}">${esc(t("useSelection"))}</button>` : "";
+    return `<div class="field"><label for="${id}">${esc(t(f.label))}${f.req ? "" : ` <span style="font-weight:400;color:var(--ink-3)">${esc(t("optional"))}</span>`}</label>${inp}${f.hint ? `<div class="hint">${esc(t(f.hint))}</div>` : ""}${sel}</div>`;
   }
 
   function renderFields() {
-    const t = TYPES.find((x) => x.id === S.type);
+    const ty = TYPES.find((x) => x.id === S.type);
     const v = vals();
-    t.fields.forEach((f) => { if (f.select && v[f.k] == null) v[f.k] = f.select[0][0]; });
-    $("#contentTitle").textContent = t.title;
-    $("#fields").innerHTML = t.fields.filter((f) => !f.when || f.when(v)).map((f) =>
+    ty.fields.forEach((f) => { if (f.select && v[f.k] == null) v[f.k] = f.select[0][0]; });
+    $("#contentTitle").textContent = t("type." + ty.id + ".t");
+    $("#fields").innerHTML = ty.fields.filter((f) => !f.when || f.when(v)).map((f) =>
       f.row ? `<div class="row">${f.row.map((g) => fieldHtml(g, v)).join("")}</div>` : fieldHtml(f, v)).join("");
     $$("#fields [data-k]").forEach((el) => {
       const ev = el.tagName === "SELECT" || el.type === "checkbox" ? "change" : "input";
       el.addEventListener(ev, () => {
         v[el.dataset.k] = el.type === "checkbox" ? el.checked : el.value;
-        if (el.tagName === "SELECT" && t.fields.some((f) => f.when)) renderFields();
+        if (el.tagName === "SELECT" && ty.fields.some((f) => f.when)) renderFields();
         update();
       });
     });
@@ -224,7 +251,7 @@
     Office.context.document.getSelectedDataAsync(Office.CoercionType.Text, (r) => {
       if (r.status === Office.AsyncResultStatus.Succeeded && trim(r.value)) {
         vals()[k] = trim(r.value); renderFields(); update();
-      } else toast("Seleziona prima del testo in una casella della slide");
+      } else toast(t("toast.selectFirst"));
     });
   }
 
@@ -238,11 +265,11 @@
       el.innerHTML = out.svg;
     } catch (e) { /* miniatura non essenziale */ }
   }
-  const DOTS = [["square", "Quadrati"], ["rounded", "Arrotondati"], ["extra-rounded", "Morbidi"], ["dots", "Punti"], ["classy", "Classy"], ["classy-rounded", "Elegante"]];
-  const CSQ = [["square", "Quadrato"], ["rounded", "Smussato"], ["extra-rounded", "Arrotondato"], ["circle", "Cerchio"],
-    ["leaf", "Foglia"], ["leaf-inv", "Foglia inv."], ["drop-in", "Goccia"], ["drop-out", "Goccia inv."], ["corner-in", "Angolo vivo"], ["octagon", "Ottagono"], ["dots", "Puntini"]];
-  const CDOT = [["square", "Quadrato"], ["rounded", "Smussato"], ["circle", "Cerchio"], ["leaf", "Foglia"], ["leaf-inv", "Foglia inv."],
-    ["drop-in", "Goccia"], ["drop-out", "Goccia inv."], ["corner-in", "Angolo vivo"], ["diamond", "Rombo"], ["octagon", "Ottagono"], ["plus", "Croce"], ["star", "Stella"], ["dots9", "9 punti"]];
+  const DOTS = [["square", "dot.square"], ["rounded", "dot.rounded"], ["extra-rounded", "dot.extra"], ["dots", "dot.dots"], ["classy", "dot.classy"], ["classy-rounded", "dot.classyR"]];
+  const CSQ = [["square", "eye.square"], ["rounded", "eye.rounded"], ["extra-rounded", "eye.extra"], ["circle", "eye.circle"],
+    ["leaf", "eye.leaf"], ["leaf-inv", "eye.leafInv"], ["drop-in", "eye.dropIn"], ["drop-out", "eye.dropOut"], ["corner-in", "eye.corner"], ["octagon", "eye.octagon"], ["dots", "eye.dots"]];
+  const CDOT = [["square", "eye.square"], ["rounded", "eye.rounded"], ["circle", "eye.circle"], ["leaf", "eye.leaf"], ["leaf-inv", "eye.leafInv"],
+    ["drop-in", "eye.dropIn"], ["drop-out", "eye.dropOut"], ["corner-in", "eye.corner"], ["diamond", "eye.diamond"], ["octagon", "eye.octagon"], ["plus", "eye.plus"], ["star", "eye.star"], ["dots9", "eye.dots9"]];
 
   /* ---------- Occhi (marcatori d'angolo) disegnati in proprio ----------
      Le forme sono definite per l'occhio in alto a sinistra; gli altri due vengono ruotati
@@ -300,14 +327,14 @@
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.6 -0.6 8.2 8.2">${eyeFrame(outer, 0, 0, 1, active === "outer" ? on : off)}${eyeBall(inner, 2, 2, 1, active === "inner" ? on : off)}</svg>`;
   }
   const PRESETS = [
-    { name: "Classico", d: { dotType: "square", cornerSqType: "square", cornerDotType: "square", dotColor: "#000000", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
-    { name: "Morbido", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#171a26", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
-    { name: "Clinico", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#0a5cad", useGradient: false, eyesSame: false, cornerSqColor: "#062f5c", cornerDotColor: "#16a3c9", bgColor: "#ffffff" } },
-    { name: "Elegante", d: { dotType: "classy-rounded", cornerSqType: "extra-rounded", cornerDotType: "square", dotColor: "#1d2b64", useGradient: true, gradColor2: "#6b4fd8", gradType: "linear", gradRot: 45, eyesSame: true, bgColor: "#ffffff" } },
-    { name: "Punti", d: { dotType: "dots", cornerSqType: "circle", cornerDotType: "circle", dotColor: "#0f766e", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
-    { name: "Tramonto", d: { dotType: "extra-rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#c2185b", useGradient: true, gradColor2: "#ef6c00", gradType: "linear", gradRot: 135, eyesSame: true, bgColor: "#ffffff" } },
+    { name: "preset.classic", d: { dotType: "square", cornerSqType: "square", cornerDotType: "square", dotColor: "#000000", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
+    { name: "preset.soft", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#171a26", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
+    { name: "preset.clinic", d: { dotType: "rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#0a5cad", useGradient: false, eyesSame: false, cornerSqColor: "#062f5c", cornerDotColor: "#16a3c9", bgColor: "#ffffff" } },
+    { name: "preset.elegant", d: { dotType: "classy-rounded", cornerSqType: "extra-rounded", cornerDotType: "square", dotColor: "#1d2b64", useGradient: true, gradColor2: "#6b4fd8", gradType: "linear", gradRot: 45, eyesSame: true, bgColor: "#ffffff" } },
+    { name: "preset.dots", d: { dotType: "dots", cornerSqType: "circle", cornerDotType: "circle", dotColor: "#0f766e", useGradient: false, eyesSame: true, bgColor: "#ffffff" } },
+    { name: "preset.sunset", d: { dotType: "extra-rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#c2185b", useGradient: true, gradColor2: "#ef6c00", gradType: "linear", gradRot: 135, eyesSame: true, bgColor: "#ffffff" } },
   ];
-  const FRAMES = [["none", "Nessuna"], ["bottom", "Etichetta"], ["top", "In alto"], ["border", "Bordo"], ["bubble", "Fumetto"], ["corners", "Mirino"]];
+  const FRAMES = [["none", "frame.none"], ["bottom", "frame.bottom"], ["top", "frame.top"], ["border", "frame.border"], ["bubble", "frame.bubble"], ["corners", "frame.corners"]];
   const LOGO_ICONS = ["url", "email", "phone", "wifi", "location", "event", "vcard", "social"];
 
   function iconLogo(key, color) {
@@ -317,7 +344,7 @@
 
   function tileGroup(sel, items, key, thumbFn) {
     const box = $(sel);
-    box.innerHTML = items.map(([v, l]) => `<button type="button" class="tile" data-v="${v}" aria-pressed="${S.design[key] === v}"><span class="thumb"></span>${l}</button>`).join("");
+    box.innerHTML = items.map(([v, l]) => `<button type="button" class="tile" data-v="${v}" aria-pressed="${S.design[key] === v}"><span class="thumb"></span><span data-i18n="${l}">${esc(t(l))}</span></button>`).join("");
     $$(".tile", box).forEach((b, i) => {
       thumbFn && thumbFn(items[i][0], $(".thumb", b));
       b.addEventListener("click", () => { S.design[key] = b.dataset.v; syncDesignUI(); update(); });
@@ -326,11 +353,11 @@
 
   function buildDesignUI() {
     // Modelli
-    $("#presets").innerHTML = PRESETS.map((p, i) => `<button type="button" class="tile" data-i="${i}"><span class="thumb"></span>${p.name}</button>`).join("");
+    $("#presets").innerHTML = PRESETS.map((p, i) => `<button type="button" class="tile" data-i="${i}"><span class="thumb"></span><span data-i18n="${p.name}">${esc(t(p.name))}</span></button>`).join("");
     $$("#presets .tile").forEach((b) => {
       const p = PRESETS[+b.dataset.i].d;
       miniQR(p, $(".thumb", b));
-      b.addEventListener("click", () => { Object.assign(S.design, p); syncDesignUI(); update(); toast("Modello applicato"); });
+      b.addEventListener("click", () => { Object.assign(S.design, p); syncDesignUI(); update(); toast(t("toast.preset")); });
     });
     tileGroup("#dotTypes", DOTS, "dotType", (v, el) => miniQR({ dotType: v, dotColor: "#222222", useGradient: false, eyesSame: true, cornerSqType: "square", cornerDotType: "square" }, el, true));
     tileGroup("#cornerSqTypes", CSQ, "cornerSqType", (v, el) => { el.innerHTML = eyeThumb(v, "square", "outer"); });
@@ -339,8 +366,8 @@
 
     // Loghi a icona
     const ic = $("#iconLogos");
-    ic.innerHTML = `<button type="button" class="tile" data-ico=""><span class="thumb" style="font-size:20px;color:var(--ink-3)">∅</span>Nessuno</button>` +
-      LOGO_ICONS.map((k) => `<button type="button" class="tile" data-ico="${k}"><span class="thumb"><img alt="" src="${iconLogo(k, "#3b5bfd")}"></span>${TYPES.find((t) => t.id === k).name}</button>`).join("");
+    ic.innerHTML = `<button type="button" class="tile" data-ico=""><span class="thumb" style="font-size:20px;color:var(--ink-3)">∅</span><span data-i18n="logo.none">${esc(t("logo.none"))}</span></button>` +
+      LOGO_ICONS.map((k) => `<button type="button" class="tile" data-ico="${k}"><span class="thumb"><img alt="" src="${iconLogo(k, "#3b5bfd")}"></span><span data-i18n="type.${k}">${esc(t("type." + k))}</span></button>`).join("");
     $$("#iconLogos .tile").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.ico;
       if (!k) { S.design.logo = null; S.design.logoName = ""; }
@@ -372,12 +399,12 @@
     bindRange("#qrMargin", "margin");
     $("#frameText").addEventListener("input", (e) => { S.design.frameText = e.target.value; update(); });
     segBind("#gradType", (v) => { S.design.gradType = v; });
-    segBind("#ecLevel", (v) => { S.design.ec = v; if (S.design.logo && v !== "H") toast("Con il logo attivo uso comunque il livello Max"); });
+    segBind("#ecLevel", (v) => { S.design.ec = v; if (S.design.logo && v !== "H") toast(t("toast.ecLogo")); });
 
     // Upload logo
     $("#logoFile").addEventListener("change", (e) => {
       const f = e.target.files[0]; if (!f) return;
-      if (f.size > 4 * 1024 * 1024) { toast("Immagine troppo pesante (max 4 MB)"); return; }
+      if (f.size > 4 * 1024 * 1024) { toast(t("toast.tooBig")); return; }
       const r = new FileReader();
       r.onload = () => shrinkImage(r.result, f.type).then((url) => { S.design.logo = url; S.design.logoName = f.name; syncDesignUI(); update(); });
       r.readAsDataURL(f);
@@ -389,7 +416,7 @@
       $$(".tabs [role=tab]").forEach((x) => x.setAttribute("aria-selected", x === b));
       $$(".panel").forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.tab));
     }));
-    $("#resetDesign").addEventListener("click", () => { S.design = Object.assign({}, DEFAULT_DESIGN); syncDesignUI(); update(); toast("Design ripristinato"); });
+    $("#resetDesign").addEventListener("click", () => { S.design = Object.assign({}, DEFAULT_DESIGN, { frameText: t("frame.default") }); syncDesignUI(); update(); toast(t("toast.reset")); });
   }
 
   let iconT;
@@ -465,7 +492,7 @@
     $("#logoMargin").value = d.logoMargin; $("#logoMarginVal").textContent = d.logoMargin;
     $("#hideDots").checked = d.hideDots;
     $("#logoOpts").style.opacity = d.logo ? 1 : 0.45;
-    $("#uploadText").textContent = d.logo && !d.logoName.startsWith("icon:") ? "✓ " + (d.logoName || "Logo caricato") + " — clicca per cambiarlo" : "Clicca per caricare un logo (PNG, JPG, SVG)";
+    $("#uploadText").textContent = d.logo && !d.logoName.startsWith("icon:") ? t("upload.done", { name: d.logoName || t("upload.defaultName") }) : t("upload.idle");
     $("#frameOpts").style.display = d.frame === "none" ? "none" : "";
     setV($("#frameText"), d.frameText);
     const ec = effectiveEC();
@@ -648,7 +675,7 @@
     } catch (e) {
       current = null; setReady(false);
       const msg = String(e && (e.message || e));
-      $("#status").textContent = /overflow|length/i.test(msg) ? "Contenuto troppo lungo per un QR: accorcialo" : "Impossibile generare il QR con questi dati";
+      $("#status").textContent = /overflow|length/i.test(msg) ? t("status.tooLong") : t("status.error");
       return;
     }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -657,23 +684,23 @@
     $("#preview").classList.toggle("dim", empty);
     current = empty ? null : Object.assign({ data }, out);
     setReady(!empty);
-    if (empty) { $("#status").textContent = "Compila il contenuto per generare il QR"; }
+    if (empty) { $("#status").textContent = t("status.empty"); }
     else {
       const bytes = new Blob([data]).size;
-      $("#status").textContent = "Pronto · " + bytes + " caratteri codificati";
-      if (bytes > 300) warns.push("Contenuto lungo: il QR diventa fitto. Stampalo ad almeno 3–4 cm.");
+      $("#status").textContent = t("status.ready", { n: bytes });
+      if (bytes > 300) warns.push(t("warn.long"));
     }
     const bgC = d.transparentBg ? "#ffffff" : d.bgColor;
     const cols = [d.dotColor].concat(d.useGradient ? [d.gradColor2] : []).concat(d.eyesSame ? [] : [d.cornerSqColor, d.cornerDotColor]);
     const minC = Math.min.apply(null, cols.map((c) => contrast(c, bgC)));
-    if (minC < 3) warns.push("Contrasto basso tra QR e sfondo: alcuni telefoni potrebbero non leggerlo.");
-    else if (hexLum(d.dotColor) > hexLum(bgC)) warns.push("QR chiaro su sfondo scuro: alcune app non leggono i QR invertiti.");
-    if (d.transparentBg) warns.push("Sfondo trasparente: assicurati che la slide dietro sia chiara.");
-    if (d.logo && d.logoSize > 0.38) warns.push("Logo molto grande: prova a scansionarlo prima di usarlo.");
-    if (d.margin < 10 && d.frame === "none") warns.push("Margine molto stretto: lascia spazio vuoto attorno al QR.");
+    if (minC < 3) warns.push(t("warn.contrast"));
+    else if (hexLum(d.dotColor) > hexLum(bgC)) warns.push(t("warn.inverted"));
+    if (d.transparentBg) warns.push(t("warn.transparent"));
+    if (d.logo && d.logoSize > 0.38) warns.push(t("warn.bigLogo"));
+    if (d.margin < 10 && d.frame === "none") warns.push(t("warn.margin"));
     const html = warns.map((w) => `<div class="warn">${esc(w)}</div>`).join("");
     $("#warnBox").innerHTML = html;
-    $("#contrastWarn").innerHTML = minC < 3 ? '<div class="warn">Contrasto basso: scurisci i moduli o schiarisci lo sfondo.</div>' : "";
+    $("#contrastWarn").innerHTML = minC < 3 ? '<div class="warn">' + esc(t("warn.contrastShort")) + '</div>' : "";
   }
 
   function setReady(ok) {
@@ -686,9 +713,9 @@
     if (!current) return;
     const wPt = Math.max(1, +S.sizeCm || 5) * CM_TO_PT;
     const hPt = (wPt * current.H) / current.W;
-    if (window.QR_DEMO) { toast("Questa è la versione di prova: in PowerPoint questo pulsante mette il QR nella slide."); addRecent(); return; }
+    if (window.QR_DEMO) { toast(t("toast.demo")); addRecent(); return; }
     if (!inOffice) {
-      toast("Anteprima nel browser: installa l'add-in in PowerPoint per inserirlo. Intanto scarico il PNG.");
+      toast(t("toast.browser"));
       download("png"); return;
     }
     const btns = ["#insertBtn", "#barInsert"].map((s) => $(s));
@@ -697,15 +724,15 @@
       if (S.format === "svg" && Office.context.requirements.isSetSupported("ImageCoercion", "1.2")) {
         await setData(current.svg, { coercionType: Office.CoercionType.XmlSvg, imageWidth: wPt, imageHeight: hPt });
       } else {
-        if (S.format === "svg") toast("Questa versione di PowerPoint non accetta SVG: inserisco un PNG ad alta risoluzione");
+        if (S.format === "svg") toast(t("toast.noSvg"));
         const px = Math.max(600, Math.min(1800, Math.round(((+S.sizeCm || 5) / 2.54) * 300))); // 300 dpi
         const png = await svgToPng(current.svg, current.W, current.H, px);
         await setData(png.split(",")[1], { coercionType: Office.CoercionType.Image, imageWidth: wPt, imageHeight: hPt });
       }
-      toast("QR inserito nella slide ✓");
+      toast(t("toast.inserted"));
       addRecent();
     } catch (e) {
-      toast("Inserimento non riuscito: clicca su una slide e riprova");
+      toast(t("toast.insertFail"));
     } finally { btns.forEach((b) => (b.disabled = !current)); }
   }
   function setData(val, opts) {
@@ -739,18 +766,41 @@
   function renderRecent() {
     const list = store.get("qrstudio.recent", []);
     const box = $("#recent");
-    if (!list.length) { box.innerHTML = '<span class="recent-empty">I QR che inserisci o scarichi compariranno qui.</span>'; return; }
-    box.innerHTML = list.map((r, i) => `<button type="button" data-i="${i}" title="${esc(r.data.slice(0, 80))}"><img alt="QR recente" src="${r.thumb}"></button>`).join("");
+    if (!list.length) { box.innerHTML = '<span class="recent-empty">' + esc(t("recent.empty")) + '</span>'; return; }
+    box.innerHTML = list.map((r, i) => `<button type="button" data-i="${i}" title="${esc(r.data.slice(0, 80))}"><img alt="${esc(t("recent.alt"))}" src="${r.thumb}"></button>`).join("");
     $$("#recent button").forEach((b) => b.addEventListener("click", () => {
       const r = list[+b.dataset.i];
       S.type = r.type; S.values[r.type] = r.values; S.design = Object.assign({}, DEFAULT_DESIGN, r.design); ["cornerSqType", "cornerDotType"].forEach((k) => { if (S.design[k] === "dot") S.design[k] = "circle"; });
-      renderTypes(); renderFields(); update(); toast("QR ripristinato");
+      renderTypes(); renderFields(); update(); toast(t("toast.restored"));
     }));
   }
 
   /* ---------- Avvio ---------- */
+  function labelButtons() {
+    if (window.QR_DEMO) { $("#insertLabel").textContent = t("btn.insertDemo"); $("#barInsert").textContent = t("btn.insert"); }
+    else if (!inOffice) { $("#insertLabel").textContent = t("btn.insertBrowser"); $("#barInsert").textContent = t("btn.downloadPng"); }
+    else { $("#insertLabel").textContent = t("btn.insert"); $("#barInsert").textContent = t("btn.insert"); }
+  }
+  function applyLang() {
+    applyStatic(); labelButtons();
+    $("#langSel").value = LANG;
+    renderTypes(); renderFields(); syncDesignUI(); renderRecent(); render();
+  }
+  function setLang(l) {
+    if (!LANGS.includes(l) || l === LANG) return;
+    // Se il testo della cornice è quello predefinito, lo traduco; se l'hai scritto tu, resta com'è
+    if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = I18N[l]["frame.default"];
+    LANG = l; store.set("qrlab.lang", l); saveState();
+    applyLang();
+  }
+
   function init() {
-    renderTypes(); renderFields(); buildDesignUI(); syncDesignUI(); renderRecent();
+    LANG = detectLang();
+    if (window.QR_DEMO) $("#appSub").dataset.i18n = "app.subDemo";
+    if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = t("frame.default");
+    $("#langSel").innerHTML = I18N.langs.map(([c, n]) => `<option value="${c}">${n}</option>`).join("");
+    $("#langSel").addEventListener("change", (e) => setLang(e.target.value));
+    buildDesignUI();
     $$("#format button").forEach((b) => b.addEventListener("click", () => { S.format = b.dataset.v; update(); }));
     $("#sizeCm").addEventListener("input", (e) => { S.sizeCm = +e.target.value || 5; saveState(); });
     $("#insertBtn").addEventListener("click", insert);
@@ -758,10 +808,9 @@
     $("#barImg").addEventListener("click", () => $("#previewCard").scrollIntoView({ behavior: "smooth" }));
     $("#dlPng").addEventListener("click", () => download("png"));
     $("#dlSvg").addEventListener("click", () => download("svg"));
-    if (window.QR_DEMO) { $("#dlPng").parentElement.hidden = true; $("#insertLabel").textContent = "Inserisci nella slide (prova)"; }
-    else if (!inOffice) { $("#insertLabel").textContent = "Inserisci (scarica PNG)"; $("#barInsert").textContent = "Scarica PNG"; }
+    if (window.QR_DEMO) $("#dlPng").parentElement.hidden = true;
     if (S.design.logoName && S.design.logoName.startsWith("icon:") && /^data:image\/svg/.test(S.design.logo || "")) setIconLogo();
-    render();
+    applyLang();
   }
 
   window.__qrLab = { svg: () => (current ? current.svg : null) }; // per diagnostica
