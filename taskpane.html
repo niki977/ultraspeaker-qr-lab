@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Ultraspeaker QR Lab</title>
 <!--OFFICEJS--><script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script><!--/OFFICEJS-->
-<script src="qrcode.js?v=20260926c"></script>
-<script src="i18n.js?v=20260926c"></script>
+<script src="qrcode.js?v=20260926h"></script>
+<script src="i18n.js?v=20260926h"></script>
 <style>
 @font-face{font-family:"Quicksand";font-weight:400;font-display:swap;src:url(fonts/quicksand-latin-400-normal.woff2) format("woff2")}
 @font-face{font-family:"Quicksand";font-weight:500;font-display:swap;src:url(fonts/quicksand-latin-500-normal.woff2) format("woff2")}
@@ -139,7 +139,10 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media (prefers-reduced-motion:reduce){.toast,.type{transition:none}}
 .foot{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--ink-3);text-align:center;margin-top:6px}
-.mark{width:26px;height:19px;background:var(--ink);-webkit-mask:url(assets/ultraspeaker-symbol-black.png) center/contain no-repeat;mask:url(assets/ultraspeaker-symbol-black.png) center/contain no-repeat}
+/* Arena sopra la call to action: 30% della larghezza del testo (70% più stretta) */
+.cta-wrap{display:inline-block;margin:4px 0 2px;text-align:center}
+.arena{display:block;width:30%;margin:0 auto 10px;aspect-ratio:2503/1747;background:var(--ink);-webkit-mask:url(assets/arena.svg) center/contain no-repeat;mask:url(assets/arena.svg) center/contain no-repeat}
+.cta-wrap .cta{display:inline-block}
 .cta{font-size:10px;font-weight:700;letter-spacing:.42em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding:2px 0 3px .42em}
 .cta:hover{opacity:.7}
 .cta:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
@@ -148,7 +151,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 <body>
   <header class="brand"><div class="brand-in">
     <div class="brand-row">
-      <img class="lockup" src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab" width="3951" height="1462">
+      <img class="lockup" src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab" width="3951" height="1504">
       <label class="lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><select id="langSel" data-i18n-aria="lbl.lang" aria-label="Lingua"></select></label>
     </div>
     <div class="brand-tool"><h1 class="sr-only">The Ultraspeaker QR Lab</h1><p id="appSub" data-i18n="app.sub">Crea un QR code e inseriscilo nella slide</p></div>
@@ -281,7 +284,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
         <div class="sub" style="margin-top:0" data-i18n="sub.recent">Recenti</div>
         <div class="recent" id="recent"></div>
       </section>
-      <div class="foot"><span class="mark" aria-hidden="true"></span><a class="cta" id="ctaMail" href="mailto:info@theultraspeaker.com" title="info@theultraspeaker.com" data-i18n="cta.consult">Richiedi una consulenza</a><span data-i18n="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</span></div>
+      <div class="foot"><span class="cta-wrap"><span class="arena" aria-hidden="true"></span><a class="cta" id="ctaMail" href="mailto:info@theultraspeaker.com" title="info@theultraspeaker.com" data-i18n="cta.consult">Richiedi una consulenza</a></span><span data-i18n="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</span></div>
     </aside>
   </div>
 </div>
@@ -291,6 +294,6 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   <button class="btn primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<script src="app.js?v=20260926c"></script>
+<script src="app.js?v=20260926h"></script>
 </body>
 </html>

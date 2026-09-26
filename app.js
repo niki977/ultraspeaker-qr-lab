@@ -104,7 +104,12 @@
 
   /* ---------- Codifica del contenuto ---------- */
   const trim = (s) => (s || "").trim();
-  const normUrl = (u) => { u = trim(u); if (!u) return ""; return /^[a-z][a-z0-9+.-]*:/i.test(u) ? u : "https://" + u; };
+  // Aggiunge https:// se manca. "sito.it:8080" non è uno schema; gli spazi diventano %20 (alcuni lettori troncano il link allo spazio)
+  const normUrl = (u) => {
+    u = trim(u); if (!u) return "";
+    u = u.replace(/\s/g, "%20");
+    return /^[a-z][a-z0-9+.-]*:\/\//i.test(u) || /^(mailto|tel|sms|smsto|geo|facetime|whatsapp|skype|maps):/i.test(u) ? u : "https://" + u;
+  };
   const cleanPhone = (p) => trim(p).replace(/[^\d+]/g, "");
   const vEsc = (s) => trim(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
   const wEsc = (s) => (s || "").replace(/([\\;,:"])/g, "\\$1");
@@ -152,7 +157,7 @@
       case "location": {
         if (v.mode === "coords") {
           const la = parseFloat(String(v.lat || "").replace(",", ".")), lo = parseFloat(String(v.lng || "").replace(",", "."));
-          if (isNaN(la) || isNaN(lo)) return "";
+          if (isNaN(la) || isNaN(lo) || Math.abs(la) > 90 || Math.abs(lo) > 180) return "";
           return "https://www.google.com/maps/search/?api=1&query=" + la + "," + lo;
         }
         return trim(v.addr) ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(trim(v.addr)) : "";
@@ -160,7 +165,8 @@
       case "event": {
         if (!trim(v.title) || !v.start) return "";
         let end = v.end;
-        if (!end) { const d = new Date(v.start); d.setHours(d.getHours() + 1); end = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
+        // fine mancante o precedente all'inizio: durata di 1 ora
+        if (!end || end <= v.start) { const d = new Date(v.start); d.setHours(d.getHours() + 1); end = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
         const L = ["BEGIN:VEVENT", "SUMMARY:" + vEsc(v.title), "DTSTART:" + icsDate(v.start), "DTEND:" + icsDate(end)];
         if (trim(v.loc)) L.push("LOCATION:" + vEsc(v.loc));
         if (trim(v.desc)) L.push("DESCRIPTION:" + vEsc(v.desc));
@@ -171,7 +177,7 @@
         const h = trim(v.handle);
         if (!h) return "";
         if (/^https?:\/\//i.test(h) || /^www\./i.test(h)) return normUrl(h);
-        const u = h.replace(/^@/, "");
+        const u = h.replace(/^@/, "").replace(/\s+/g, "");
         const base = { instagram: "https://www.instagram.com/", linkedin: "https://www.linkedin.com/in/", facebook: "https://www.facebook.com/", youtube: "https://www.youtube.com/@", tiktok: "https://www.tiktok.com/@", x: "https://x.com/" }[v.net || "instagram"];
         return base + u;
       }
@@ -191,7 +197,7 @@
   const state = store.get("qrstudio.state", null) || {};
   const S = {
     type: state.type || "url",
-    values: state.values || (window.QR_DEMO ? { url: { url: "it.wikipedia.org/wiki/Codice_QR" } } : {}),
+    values: state.values || (window.QR_DEMO || window.QR_WEB ? { url: { url: "www.theultraspeaker.com" } } : {}),
     design: Object.assign({}, DEFAULT_DESIGN, state.design || {}),
     format: state.format || "png",
     sizeCm: state.sizeCm || 5,
@@ -204,10 +210,23 @@
   if (S.design.cornerSqType === "dot") S.design.cornerSqType = "circle";
   if (S.design.cornerDotType === "dot") S.design.cornerDotType = "circle";
   if (S.design.logo && /^data:image\/svg/.test(S.design.logo) && !(S.design.logoName || "").startsWith("icon:")) { /* verrà convertito all'avvio */ }
+  /* La password Wi-Fi non viene mai salvata: resta solo in memoria finché il pannello è aperto */
+  const noPass = (v) => { const c = JSON.parse(JSON.stringify(v || {})); delete c.pass; return c; };
+  const safeValues = (all) => { const c = JSON.parse(JSON.stringify(all || {})); if (c.wifi) delete c.wifi.pass; return c; };
+  // Pulizia dei dati salvati dalle versioni precedenti, che potevano contenere la password
+  (function purgeSavedPasswords() {
+    if (S.values.wifi && S.values.wifi.pass) delete S.values.wifi.pass;
+    const st = store.get("qrstudio.state", null);
+    if (st && st.values && st.values.wifi && "pass" in st.values.wifi) { delete st.values.wifi.pass; store.set("qrstudio.state", st); }
+    const rec = store.get("qrstudio.recent", []);
+    // i QR Wi-Fi recenti salvati prima contengono la password anche nella miniatura: li elimino
+    const clean = rec.filter((r) => !(r.type === "wifi" && /;P:/.test(r.data || "")));
+    if (clean.length !== rec.length) store.set("qrstudio.recent", clean);
+  })();
   const saveState = () => {
     const d = Object.assign({}, S.design);
     if (d.logo && d.logo.length > 300000) { d.logo = null; d.logoName = ""; }
-    store.set("qrstudio.state", { type: S.type, values: S.values, design: d, format: S.format, sizeCm: S.sizeCm });
+    store.set("qrstudio.state", { type: S.type, values: safeValues(S.values), design: d, format: S.format, sizeCm: S.sizeCm });
   };
   const vals = () => (S.values[S.type] = S.values[S.type] || {});
 
@@ -340,7 +359,7 @@
     { name: "preset.sunset", d: { dotType: "extra-rounded", cornerSqType: "extra-rounded", cornerDotType: "circle", dotColor: "#c2185b", useGradient: true, gradColor2: "#ef6c00", gradType: "linear", gradRot: 135, eyesSame: true, bgColor: "#ffffff" } },
   ];
   const FRAMES = [["none", "frame.none"], ["bottom", "frame.bottom"], ["top", "frame.top"], ["border", "frame.border"], ["bubble", "frame.bubble"], ["corners", "frame.corners"]];
-  const BRAND_LOGO = "assets/ultraspeaker-logo.png"; // simbolo The Ultraspeaker su cerchio bianco
+  const BRAND_LOGO = "assets/ultraspeaker-logo.svg"; // simbolo The Ultraspeaker su cerchio bianco
   const LOGO_ICONS = ["url", "email", "phone", "wifi", "location", "event", "vcard", "social"];
 
   function iconLogo(key, color) {
@@ -436,7 +455,7 @@
   function setIconLogo() {
     const k = S.design.logoName.slice(5);
     const src = k === "brand" ? BRAND_LOGO : iconLogo(k, S.design.useGradient ? S.design.gradColor2 : S.design.dotColor);
-    rasterize(src, 256).then((url) => {
+    rasterize(src, k === "brand" ? 400 : 256).then((url) => {
       if (S.design.logoName !== "icon:" + k) return;
       S.design.logo = url; syncDesignUI(); update();
     });
@@ -464,10 +483,16 @@
     return c;
   };
   const designKey = (d) => JSON.stringify(Object.assign({}, d, { logo: d.logo ? d.logo.length : 0 }));
-  function applyDesign(d) {
-    S.design = Object.assign({}, DEFAULT_DESIGN, { frameText: t("frame.default") }, JSON.parse(JSON.stringify(d)));
+  // Porta un design salvato (anche da versioni precedenti) nel formato attuale
+  function loadDesign(d) {
+    S.design = Object.assign({}, DEFAULT_DESIGN, { frameText: t("frame.default") }, JSON.parse(JSON.stringify(d || {})));
     if (S.design.dotType === "classy-rounded") S.design.dotType = "classy";
-    if ((S.design.logoName || "").startsWith("icon:") && !S.design.logo) setIconLogo();
+    ["cornerSqType", "cornerDotType"].forEach((k) => { if (S.design[k] === "dot") S.design[k] = "circle"; });
+    ["dotColor", "cornerSqColor", "cornerDotColor", "frameColor"].forEach((k) => { if (S.design[k] === "#171a26") S.design[k] = "#000000"; });
+    if ((S.design.logoName || "").startsWith("icon:") && (!S.design.logo || S.design.logoName === "icon:brand")) setIconLogo();
+  }
+  function applyDesign(d) {
+    loadDesign(d);
     syncDesignUI(); update(); toast(t("toast.preset"));
   }
   // Ultimi 2 design usati (indipendenti dal contenuto del QR)
@@ -686,8 +711,9 @@
       let hid = Math.ceil(side + (2 * d.logoMargin * n) / 1000);
       if (hid % 2 !== n % 2) hid++;
       hid = Math.min(hid, n - 16);
+      const sideFit = Math.min(side, hid - 0.4); // sui QR piccoli il logo resta dentro la zona libera
       const h0 = (n - hid) / 2;
-      logoBox = { h0, hid, x: (n - side) / 2, side };
+      logoBox = { h0, hid, x: (n - sideFit) / 2, side: sideFit };
     }
     const inFinder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
     const inLogo = (r, c) => logoBox && d.hideDots && r >= logoBox.h0 && r < logoBox.h0 + logoBox.hid && c >= logoBox.h0 && c < logoBox.h0 + logoBox.hid;
@@ -772,12 +798,16 @@
       const img = new Image();
       const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
       img.onload = () => {
-        const s = targetW / W, c = document.createElement("canvas");
-        c.width = Math.round(W * s); c.height = Math.round(H * s);
-        const ctx = c.getContext("2d"); ctx.imageSmoothingQuality = "high";
-        ctx.drawImage(img, 0, 0, c.width, c.height);
-        URL.revokeObjectURL(url);
-        res(c.toDataURL("image/png"));
+        const draw = () => {
+          const s = targetW / W, c = document.createElement("canvas");
+          c.width = Math.round(W * s); c.height = Math.round(H * s);
+          const ctx = c.getContext("2d"); ctx.imageSmoothingQuality = "high";
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+          URL.revokeObjectURL(url);
+          res(c.toDataURL("image/png"));
+        };
+        // Safari (PowerPoint per Mac) a volte non ha ancora decodificato il logo annidato nell'SVG
+        if (svg.includes("<image")) setTimeout(draw, 80); else draw();
       };
       img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("render")); };
       img.src = url;
@@ -802,6 +832,7 @@
       out = buildSVG(empty ? "https://example.com" : data);
     } catch (e) {
       current = null; setReady(false);
+      $("#warnBox").innerHTML = ""; $("#contrastWarn").innerHTML = ""; $("#preview").classList.add("dim");
       const msg = String(e && (e.message || e));
       $("#status").textContent = /overflow|length/i.test(msg) ? t("status.tooLong") : t("status.error");
       return;
@@ -841,7 +872,7 @@
   const CM_TO_PT = 28.3465;
   async function insert() {
     if (!current) return;
-    const wPt = Math.max(1, +S.sizeCm || 5) * CM_TO_PT;
+    const wPt = Math.min(30, Math.max(1, +S.sizeCm || 5)) * CM_TO_PT;
     const hPt = (wPt * current.H) / current.W;
     if (window.QR_DEMO) { toast(t("toast.demo")); addRecent(); return; }
     if (window.QR_WEB) { download("png"); toast(t("toast.downloaded")); return; }
@@ -884,13 +915,20 @@
   /* ---------- Recenti ---------- */
   async function addRecent() {
     if (!current) return;
+    // Per il Wi-Fi salvo una versione senza password: dati, campi e anche la miniatura (che è un QR leggibile)
+    const isWifi = S.type === "wifi";
+    const values = isWifi ? noPass(vals()) : JSON.parse(JSON.stringify(vals()));
+    const data = isWifi ? encode("wifi", values) : current.data;
     let thumb;
-    try { thumb = await svgToPng(current.svg, current.W, current.H, 96); } catch (e) { return; }
+    try {
+      const src = isWifi ? buildSVG(data) : current;
+      thumb = await svgToPng(src.svg, src.W, src.H, 96);
+    } catch (e) { return; }
     const design = Object.assign({}, S.design);
     if (design.logo && design.logo.length > 150000) { design.logo = null; design.logoName = ""; }
     let list = store.get("qrstudio.recent", []);
-    list = list.filter((r) => r.data !== current.data);
-    list.unshift({ data: current.data, type: S.type, values: JSON.parse(JSON.stringify(vals())), design, thumb });
+    list = list.filter((r) => r.data !== data);
+    list.unshift({ data, type: S.type, values, design, thumb });
     store.set("qrstudio.recent", list.slice(0, 8));
     rememberDesign(S.design);
     renderRecent(); renderMyPresets();
@@ -899,10 +937,10 @@
     const list = store.get("qrstudio.recent", []);
     const box = $("#recent");
     if (!list.length) { box.innerHTML = '<span class="recent-empty">' + esc(t("recent.empty")) + '</span>'; return; }
-    box.innerHTML = list.map((r, i) => `<button type="button" data-i="${i}" title="${esc(r.data.slice(0, 80))}"><img alt="${esc(t("recent.alt"))}" src="${r.thumb}"></button>`).join("");
+    box.innerHTML = list.map((r, i) => `<button type="button" data-i="${i}" title="${esc(r.data.slice(0, 80))}"><img alt="${esc(t("recent.alt"))}" src="${esc(r.thumb)}"></button>`).join("");
     $$("#recent button").forEach((b) => b.addEventListener("click", () => {
       const r = list[+b.dataset.i];
-      S.type = r.type; S.values[r.type] = r.values; S.design = Object.assign({}, DEFAULT_DESIGN, r.design); ["cornerSqType", "cornerDotType"].forEach((k) => { if (S.design[k] === "dot") S.design[k] = "circle"; });
+      S.type = r.type; S.values[r.type] = r.values; loadDesign(r.design);
       renderTypes(); renderFields(); update(); toast(t("toast.restored"));
     }));
   }
@@ -958,7 +996,8 @@
       $(".btns").style.gridTemplateColumns = "1fr";
       $("#webHint").hidden = false;
     }
-    if (S.design.logoName && S.design.logoName.startsWith("icon:") && /^data:image\/svg/.test(S.design.logo || "")) setIconLogo();
+    // Le icone salvate come SVG e il logo Ultraspeaker vengono rigenerati (il logo del marchio ora è vettoriale)
+    if (S.design.logoName && S.design.logoName.startsWith("icon:") && (/^data:image\/svg/.test(S.design.logo || "") || S.design.logoName === "icon:brand")) setIconLogo();
     applyLang();
   }
 
@@ -966,8 +1005,20 @@
 
   let started = false;
   const start = () => { if (!started) { started = true; init(); } };
+  // PowerPoint ha risposto dopo che il pannello era già partito (computer lento)
+  function officeArrivedLate() {
+    if (!store.get("qrlab.lang", null)) {
+      const l = detectLang();
+      if (l !== LANG) { if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = I18N[l]["frame.default"]; LANG = l; }
+    }
+    applyLang();
+  }
   if (window.Office && Office.onReady) {
-    Office.onReady((info) => { inOffice = !!(info && info.host); start(); });
+    Office.onReady((info) => {
+      const host = !!(info && info.host);
+      if (!started) { inOffice = host; start(); }
+      else if (host && !inOffice) { inOffice = true; officeArrivedLate(); }
+    });
     setTimeout(start, 2500); // fallback se Office.js non risponde (es. aperto nel browser)
   } else {
     document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start) : start();
