@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="TaskPaneApp">
+  <Id>9b87d7b7-3a31-4cd3-9102-120b315eb797</Id>
+  <Version>1.1.0.1</Version>
+  <ProviderName>The Ultraspeaker</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="The Ultraspeaker QR Lab"/>
+  <Description DefaultValue="Create custom QR codes (links, Wi-Fi, contacts, events, WhatsApp and more) with colors, logo and frames, and insert them into your slide in one click."><Override Locale="it-IT" Value="Crea QR code personalizzati (link, Wi-Fi, contatti, eventi, WhatsApp e altro) con colori, logo e cornici, e inseriscili nella slide con un clic."/><Override Locale="es-ES" Value="Crea códigos QR personalizados (enlaces, Wi-Fi, contactos, eventos, WhatsApp y más) con colores, logo y marcos, e insértalos en la diapositiva con un clic."/><Override Locale="fr-FR" Value="Créez des QR codes personnalisés (liens, Wi-Fi, contacts, événements, WhatsApp et plus) avec couleurs, logo et cadres, et insérez-les dans la diapositive en un clic."/><Override Locale="de-DE" Value="Erstellen Sie individuelle QR-Codes (Links, WLAN, Kontakte, Termine, WhatsApp und mehr) mit Farben, Logo und Rahmen und fügen Sie sie mit einem Klick in die Folie ein."/></Description>
+  <IconUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-32.png?v=2"/>
+  <HighResolutionIconUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-64.png?v=2"/>
+  <SupportUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/support.html"/>
+  <AppDomains>
+    <AppDomain>https://niki977.github.io</AppDomain>
+  </AppDomains>
+  <Hosts>
+    <Host Name="Presentation"/>
+  </Hosts>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html"/>
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Presentation">
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title"/>
+            <Description resid="GetStarted.Description"/>
+            <LearnMoreUrl resid="Support.Url"/>
+          </GetStarted>
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabInsert">
+              <Group id="QRStudio.Group">
+                <Label resid="Group.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16"/>
+                  <bt:Image size="32" resid="Icon.32"/>
+                  <bt:Image size="80" resid="Icon.80"/>
+                </Icon>
+                <Control xsi:type="Button" id="QRStudio.Open">
+                  <Label resid="Button.Label"/>
+                  <Supertip>
+                    <Title resid="Button.Label"/>
+                    <Description resid="Button.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>QRStudioPane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-16.png?v=2"/>
+        <bt:Image id="Icon.32" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-32.png?v=2"/>
+        <bt:Image id="Icon.80" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-80.png?v=2"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html"/>
+        <bt:Url id="Support.Url" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/support.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GetStarted.Title" DefaultValue="The Ultraspeaker QR Lab is ready"><bt:Override Locale="it-IT" Value="The Ultraspeaker QR Lab è pronto"/><bt:Override Locale="es-ES" Value="The Ultraspeaker QR Lab está listo"/><bt:Override Locale="fr-FR" Value="The Ultraspeaker QR Lab est prêt"/><bt:Override Locale="de-DE" Value="The Ultraspeaker QR Lab ist bereit"/></bt:String>
+        <bt:String id="Group.Label" DefaultValue="The Ultraspeaker QR Lab"/>
+        <bt:String id="Button.Label" DefaultValue="QR Code"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="GetStarted.Description" DefaultValue="Go to Insert &gt; QR Code to create a custom QR code."><bt:Override Locale="it-IT" Value="Vai su Inserisci &gt; QR Code per creare un QR personalizzato."/><bt:Override Locale="es-ES" Value="Ve a Insertar &gt; QR Code para crear un QR personalizado."/><bt:Override Locale="fr-FR" Value="Allez dans Insertion &gt; QR Code pour créer un QR personnalisé."/><bt:Override Locale="de-DE" Value="Gehen Sie zu Einfügen &gt; QR Code, um einen individuellen QR-Code zu erstellen."/></bt:String>
+        <bt:String id="Button.Tooltip" DefaultValue="Create a custom QR code and insert it into the slide."><bt:Override Locale="it-IT" Value="Crea un QR code personalizzato e inseriscilo nella slide."/><bt:Override Locale="es-ES" Value="Crea un código QR personalizado e insértalo en la diapositiva."/><bt:Override Locale="fr-FR" Value="Créez un QR code personnalisé et insérez-le dans la diapositive."/><bt:Override Locale="de-DE" Value="Erstellen Sie einen individuellen QR-Code und fügen Sie ihn in die Folie ein."/></bt:String>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

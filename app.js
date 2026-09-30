@@ -843,6 +843,7 @@
     $("#preview").classList.toggle("dim", empty);
     current = empty ? null : Object.assign({ data }, out);
     setReady(!empty);
+    prepShare();
     if (empty) { $("#status").textContent = t("status.empty"); }
     else {
       const bytes = new Blob([data]).size;
@@ -875,7 +876,7 @@
     const wPt = Math.min(30, Math.max(1, +S.sizeCm || 5)) * CM_TO_PT;
     const hPt = (wPt * current.H) / current.W;
     if (window.QR_DEMO) { toast(t("toast.demo")); addRecent(); return; }
-    if (window.QR_WEB) { download("png"); toast(t("toast.downloaded")); return; }
+    if (window.QR_WEB) { if (shareMode) { share(); return; } download("png"); toast(t("toast.downloaded")); return; }
     if (!inOffice) {
       toast(t("toast.browser"));
       download("png"); return;
@@ -901,11 +902,53 @@
     return new Promise((res, rej) => Office.context.document.setSelectedDataAsync(val, opts, (r) => (r.status === Office.AsyncResultStatus.Succeeded ? res() : rej(r.error))));
   }
   function fileBase() { return "qr-" + S.type + "-" + new Date().toISOString().slice(0, 10); }
+  /* ---------- Condivisione da cellulare (versione web) ----------
+     Sul telefono il pulsante principale apre il menu Condividi del sistema:
+     da lì si salva nelle Foto (iPhone: "Salva immagine") o si invia con WhatsApp, Messaggi, Telegram…
+     Il PNG viene preparato in anticipo, perché Safari apre il menu solo se la chiamata parte subito dal tocco. */
+  const MOBILE = window.QR_WEB && (matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+  let shareMode = false, shareFile = null, shareFor = null, shareT;
+  function pngPx() { return Math.max(600, Math.min(3000, Math.round(((+S.sizeCm || 5) / 2.54) * 300))); }
+  function detectShare() {
+    try {
+      if (!MOBILE || !navigator.share || !navigator.canShare) return false;
+      return navigator.canShare({ files: [new File([new Uint8Array([137, 80, 78, 71])], "t.png", { type: "image/png" })] });
+    } catch (e) { return false; }
+  }
+  function prepShare() {
+    if (!shareMode) return;
+    clearTimeout(shareT); shareFile = null; shareFor = null;
+    if (!current) return;
+    const cur = current, px = pngPx();
+    shareT = setTimeout(async () => {
+      try {
+        const url = await svgToPng(cur.svg, cur.W, cur.H, px);
+        const blob = await (await fetch(url)).blob();
+        if (current === cur) { shareFile = new File([blob], fileBase() + ".png", { type: "image/png" }); shareFor = cur.svg + "|" + px; }
+      } catch (e) { /* al tocco lo rigenero */ }
+    }, 350);
+  }
+  async function share() {
+    if (!current) return;
+    let file = shareFile;
+    if (!file || shareFor !== current.svg + "|" + pngPx()) {
+      const url = await svgToPng(current.svg, current.W, current.H, pngPx());
+      file = new File([await (await fetch(url)).blob()], fileBase() + ".png", { type: "image/png" });
+    }
+    try {
+      await navigator.share({ files: [file] });
+      addRecent();
+    } catch (e) {
+      if (e && e.name === "AbortError") return; // menu chiuso dall'utente
+      download("png"); toast(t("toast.downloaded"));
+    }
+  }
+
   async function download(kind) {
     if (!current) return;
     let href;
     if (kind === "svg") href = URL.createObjectURL(new Blob([current.svg], { type: "image/svg+xml" }));
-    else href = await svgToPng(current.svg, current.W, current.H, window.QR_WEB ? Math.max(600, Math.min(3000, Math.round(((+S.sizeCm || 5) / 2.54) * 300))) : 2000);
+    else href = await svgToPng(current.svg, current.W, current.H, window.QR_WEB ? pngPx() : 2000);
     const a = document.createElement("a"); a.href = href; a.download = fileBase() + "." + kind;
     document.body.appendChild(a); a.click(); a.remove();
     if (kind === "svg") setTimeout(() => URL.revokeObjectURL(href), 2000);
@@ -947,10 +990,13 @@
 
   /* ---------- Avvio ---------- */
   function labelButtons() {
+    if (window.QR_WEB && shareMode) { $("#insertLabel").textContent = t("btn.share"); $("#barInsert").textContent = t("btn.shareShort"); $("#dlPngLabel").textContent = "PNG"; $("#dlSvgLabel").textContent = "SVG"; return; }
     if (window.QR_WEB) { $("#insertLabel").textContent = t("btn.downloadPng"); $("#barInsert").textContent = t("btn.downloadPng"); $("#dlSvgLabel").textContent = t("btn.downloadSvg"); return; }
     if (window.QR_DEMO) { $("#insertLabel").textContent = t("btn.insertDemo"); $("#barInsert").textContent = t("btn.insert"); }
     else if (!inOffice) { $("#insertLabel").textContent = t("btn.insertBrowser"); $("#barInsert").textContent = t("btn.downloadPng"); }
     else { $("#insertLabel").textContent = t("btn.insert"); $("#barInsert").textContent = t("btn.insert"); }
+    // In PowerPoint i pulsanti di download non funzionano su tutte le piattaforme (es. Mac): li nascondo, resta l'inserimento
+    if (inOffice) $(".btns").hidden = true;
   }
   function applyLang() {
     applyStatic(); labelButtons();
@@ -979,11 +1025,20 @@
     $("#barImg").addEventListener("click", () => $("#previewCard").scrollIntoView({ behavior: "smooth" }));
     $("#dlPng").addEventListener("click", () => download("png"));
     $("#dlSvg").addEventListener("click", () => download("svg"));
-    // "Richiedi una consulenza": in PowerPoint il pannello non apre i link mailto da solo, quindi lo passo al sistema
-    $("#ctaMail").addEventListener("click", (e) => {
-      if (!inOffice) return; // nel browser il link mailto funziona normalmente
+    // Link in fondo al pannello.
+    // Versione web: "Richiedi una consulenza" (email). Add-in: "Aiuto e supporto", perché le regole di
+    // Microsoft Marketplace non consentono di indirizzare gli utenti verso servizi esterni dall'add-in.
+    const cta = $("#ctaMail");
+    if (!window.QR_WEB && !window.QR_DEMO) {
+      cta.dataset.i18n = "cta.help";
+      cta.href = new URL("support.html", location.href).href;
+      cta.target = "_blank"; cta.rel = "noopener"; cta.removeAttribute("title");
+    }
+    cta.addEventListener("click", (e) => {
+      if (!inOffice) return; // nel browser il link funziona normalmente
       try {
-        if (Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { e.preventDefault(); Office.context.ui.openBrowserWindow("mailto:info@theultraspeaker.com"); }
+        // nel pannello di PowerPoint i link vanno aperti dal sistema
+        if (Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { e.preventDefault(); Office.context.ui.openBrowserWindow(cta.href); }
       } catch (err) { /* lascio agire il link normale */ }
     });
     if (window.QR_DEMO) $("#dlPng").parentElement.hidden = true;
@@ -991,9 +1046,15 @@
       $("#appSub").dataset.i18n = "app.subWeb";
       $("#widthLbl").dataset.i18n = "lbl.printWidth";
       $("#formatBox").hidden = true;
-      $("#dlPng").style.display = "none";
-      $("#insertBtn svg").innerHTML = '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>';
-      $(".btns").style.gridTemplateColumns = "1fr";
+      shareMode = detectShare();
+      if (shareMode) { // telefono: Condividi / Salva nelle Foto, con PNG e SVG come alternative
+        $("#insertBtn svg").innerHTML = '<path d="M12 15V4M8 8l4-4 4 4"/><path d="M6 11H5v9h14v-9h-1"/>';
+        $("#webHint").dataset.i18n = "web.hintMobile";
+      } else {
+        $("#dlPng").style.display = "none";
+        $("#insertBtn svg").innerHTML = '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>';
+        $(".btns").style.gridTemplateColumns = "1fr";
+      }
       $("#webHint").hidden = false;
     }
     // Le icone salvate come SVG e il logo Ultraspeaker vengono rigenerati (il logo del marchio ora è vettoriale)
