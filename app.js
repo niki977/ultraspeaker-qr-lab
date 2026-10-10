@@ -1034,13 +1034,14 @@
       cta.href = new URL("support.html", location.href).href;
       cta.target = "_blank"; cta.rel = "noopener"; cta.removeAttribute("title");
     }
-    cta.addEventListener("click", (e) => {
+    // Link del pannello (CTA e logo -> www.theultraspeaker.com)
+    [cta, $("#logoLink")].forEach((a) => a.addEventListener("click", (e) => {
       if (!inOffice) return; // nel browser il link funziona normalmente
       try {
         // nel pannello di PowerPoint i link vanno aperti dal sistema
-        if (Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { e.preventDefault(); Office.context.ui.openBrowserWindow(cta.href); }
+        if (Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { e.preventDefault(); Office.context.ui.openBrowserWindow(a.href); }
       } catch (err) { /* lascio agire il link normale */ }
-    });
+    }));
     if (window.QR_DEMO) $("#dlPng").parentElement.hidden = true;
     if (window.QR_WEB) { // versione web: download al posto dell'inserimento
       $("#appSub").dataset.i18n = "app.subWeb";
