@@ -9,13 +9,13 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
 <meta name="theme-color" content="#000000">
 <script>window.QR_WEB=true;</script>
-<script src="qrcode.js?v=20261010a"></script>
-<script src="i18n.js?v=20261010a"></script>
+<script src="qrcode.js?v=20261011a"></script>
+<script src="i18n.js?v=20261011a"></script>
 <style>
-@font-face{font-family:"Quicksand";font-weight:400;font-display:swap;src:url(fonts/quicksand-latin-400-normal.woff2) format("woff2")}
-@font-face{font-family:"Quicksand";font-weight:500;font-display:swap;src:url(fonts/quicksand-latin-500-normal.woff2) format("woff2")}
-@font-face{font-family:"Quicksand";font-weight:600;font-display:swap;src:url(fonts/quicksand-latin-600-normal.woff2) format("woff2")}
-@font-face{font-family:"Quicksand";font-weight:700;font-display:swap;src:url(fonts/quicksand-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-regular.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-italic.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-bold.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-bolditalic.woff2) format("woff2")}
 /* Immagine coordinata The Ultraspeaker: bianco e nero, tipografia geometrica, maiuscolo spaziato */
 :root{
   --bg:#f3f3f3; --surface:#ffffff; --surface-2:#efefef; --ink:#000000; --ink-2:#333333; --ink-3:#767676;
@@ -36,7 +36,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:500 14px/1.5 "Quicksand","Avenir Next","Segoe UI",-apple-system,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);font:500 14px/1.5 "Champagne & Limousines","Avenir Next","Segoe UI",-apple-system,Arial,sans-serif;font-size-adjust:0.47;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
 .app{max-width:1080px;margin:0 auto;padding:0 12px 96px}
 /* Intestazione: fascia nera con il logo */
@@ -300,6 +300,6 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   <button class="btn primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<script src="app.js?v=20261010a"></script>
+<script src="app.js?v=20261011a"></script>
 </body>
 </html>
