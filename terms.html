@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms of use – The Ultraspeaker QR Lab</title>
+<link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
+<style>
+@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-regular.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-italic.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-bold.woff2) format("woff2")}
+@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-bolditalic.woff2) format("woff2")}
+:root{--bg:#f3f3f3;--surface:#fff;--ink:#000;--ink-2:#444;--line:#ddd;--soft:#ececec;--code:#efefef}
+@media (prefers-color-scheme: dark){:root{--bg:#000;--surface:#111;--ink:#fff;--ink-2:#c8c8c8;--line:#2a2a2a;--soft:#222;--code:#1c1c1c;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 15.5px/1.7 "Champagne & Limousines","Avenir Next","Segoe UI",Arial,sans-serif;font-size-adjust:0.47}
+header{background:#000;color:#fff;padding:26px 16px 18px}
+header .in,main{max-width:760px;margin:0 auto}
+.logo{display:block;width:min(240px,62%);border:0}
+.logo img{display:block;width:100%;height:auto}
+nav{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+nav a{color:#fff;text-decoration:none;border-bottom:1px solid #666}
+nav a[aria-current="page"]{border-bottom-color:#fff}
+.langs{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.langs a{font-size:12px;color:#bbb;text-decoration:none;border:1px solid #333;border-radius:6px;padding:3px 9px}
+.langs a[aria-current="true"]{color:#000;background:#fff;border-color:#fff}
+main{padding:28px 16px 64px}
+section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:22px}
+h1{font-size:24px;margin:0 0 8px;text-wrap:balance}
+h2{font-size:15.5px;margin:24px 0 6px;letter-spacing:.02em}
+h2 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:11px;margin-right:8px;vertical-align:1px}
+p,li,dd{color:var(--ink-2)}
+p{margin:6px 0}
+ol,ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+b{font-weight:700;color:var(--ink)}
+dt{font-weight:700;margin-top:14px}
+dd{margin:2px 0 0}
+code{background:var(--code);padding:1px 6px;border-radius:5px;font-size:13px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
+.upd{font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.note{background:var(--soft);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:14.5px}
+a{color:var(--ink)}
+footer{text-align:center;font-size:12px;color:var(--ink-2);margin-top:8px}
+footer a{margin:0 6px}
+.js section[data-lang]{display:none}
+.js section[data-lang].on{display:block}
+</style>
+<script>
+(function(){
+  document.documentElement.classList.add("js");
+  var L=["it","en","es","fr","de"], pick=function(){
+    var h=(location.hash||"").slice(1); if(L.indexOf(h)>=0) return h;
+    try{var s=JSON.parse(localStorage.getItem("qrlab.lang")||"null"); if(L.indexOf(s)>=0) return s;}catch(e){}
+    var n=((navigator.languages&&navigator.languages[0])||navigator.language||"en").slice(0,2).toLowerCase();
+    return L.indexOf(n)>=0?n:"en";
+  };
+  function show(l){
+    document.querySelectorAll("section[data-lang]").forEach(function(s){s.classList.toggle("on",s.getAttribute("data-lang")===l);});
+    document.querySelectorAll(".langs a").forEach(function(a){a.setAttribute("aria-current",a.getAttribute("data-l")===l?"true":"false");});
+    document.querySelectorAll("nav a[data-p]").forEach(function(a){a.textContent=a.getAttribute("data-"+l)||a.textContent; a.href=a.getAttribute("data-href")+"#"+l;});
+    document.querySelectorAll("footer a[data-p]").forEach(function(a){a.textContent=a.getAttribute("data-"+l)||a.textContent; a.href=a.getAttribute("data-href")+"#"+l;});
+    document.documentElement.lang=l;
+    var t=document.querySelector("section.on h1"); if(t) document.title=t.textContent;
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    show(pick());
+    document.querySelectorAll(".langs a").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();var l=a.getAttribute("data-l");history.replaceState(null,"","#"+l);show(l);});});
+    window.addEventListener("hashchange",function(){var h=location.hash.slice(1); if(L.indexOf(h)>=0) show(h);});
+  });
+})();
+</script>
+</head>
+<body>
+<header><div class="in"><a class="logo" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab – www.theultraspeaker.com"></a>
+<nav><a data-p="support" data-href="support.html" href="support.html" data-it="Supporto" data-en="Support" data-es="Soporte" data-fr="Assistance" data-de="Support">Support</a><a data-p="privacy" data-href="privacy.html" href="privacy.html" data-it="Privacy" data-en="Privacy" data-es="Privacidad" data-fr="Confidentialité" data-de="Datenschutz">Privacy</a><a data-p="terms" data-href="terms.html" href="terms.html" data-it="Condizioni d'uso" data-en="Terms of use" data-es="Condiciones de uso" data-fr="Conditions d'utilisation" data-de="Nutzungsbedingungen" aria-current="page">Terms of use</a><a data-p="guide" data-href="GUIDA-INSTALLAZIONE.html" href="GUIDA-INSTALLAZIONE.html" data-it="Guida" data-en="Guide" data-es="Guía" data-fr="Guide" data-de="Anleitung">Guide</a></nav>
+<div class="langs"><a href="#it" data-l="it" lang="it">Italiano</a><a href="#en" data-l="en" lang="en">English</a><a href="#es" data-l="es" lang="es">Español</a><a href="#fr" data-l="fr" lang="fr">Français</a><a href="#de" data-l="de" lang="de">Deutsch</a></div></div></header>
+<main>
+<section id="it" data-lang="it" lang="it">
+<h1>Condizioni d'uso – The Ultraspeaker QR Lab</h1>
+<p class="upd">Ultimo aggiornamento: 27 ottobre 2026</p>
+
+<h2>1. Chi fornisce l'app</h2>
+<p>The Ultraspeaker QR Lab (l'add-in per PowerPoint e la versione web, “l'app”) è fornito da <b>Nicholas D. Charles</b> (The Ultraspeaker). Contatto: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Usando l'app accetti queste condizioni.</p>
+
+<h2>2. Cosa fa l'app</h2>
+<p>L'app crea QR code personalizzati e, nella sezione Reference, recupera i dati bibliografici di articoli scientifici, li formatta come citazioni (Vancouver, APA 7, AMA, Harvard), li inserisce nelle slide con un QR che rimanda al paper e genera la bibliografia della presentazione.</p>
+
+<h2>3. Uso gratuito</h2>
+<p>L'app è gratuita. Puoi usarla per scopi personali e professionali, comprese le presentazioni a congressi e corsi. Non puoi copiarla, rivenderla o presentarla come opera tua; il nome e il logo The Ultraspeaker restano di proprietà del titolare.</p>
+
+<h2>4. Le tue responsabilità</h2>
+<ul>
+<li><b>Verifica le citazioni.</b> I dati arrivano da fonti esterne e possono contenere errori o essere incompleti. Prima di presentare o pubblicare, controlla autori, titolo, rivista, anno e pagine alla fonte.</li>
+<li><b>Ritrattazioni e correzioni.</b> Gli avvisi sono indicativi e dipendono dai dati disponibili su Crossref e PubMed: l'assenza di un avviso non garantisce che l'articolo non sia stato ritrattato o corretto.</li>
+<li><b>Diritti sui contenuti.</b> Gli abstract e i testi degli articoli appartengono ai rispettivi autori ed editori: usali per la tua preparazione (per esempio nelle note del relatore) nel rispetto dei loro diritti.</li>
+<li><b>Prova i QR</b> con il telefono prima di stampare o proiettare. Sei responsabile dei contenuti che inserisci nei QR e nelle slide.</li>
+<li>Non usare l'app in modo da sovraccaricare i servizi esterni (per esempio con importazioni massive automatizzate) né per scopi illeciti.</li>
+</ul>
+
+<h2>5. Servizi di terze parti</h2>
+<p>La sezione Reference interroga servizi pubblici gratuiti forniti da terzi: <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>, <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI</a>, <a href="https://unpaywall.org/">Unpaywall</a>. Questi servizi hanno condizioni e limiti di utilizzo propri, possono cambiare o essere temporaneamente non disponibili, e non sono sotto il nostro controllo. Il trattamento dei dati è descritto nell'<a href="privacy.html#it">informativa sulla privacy</a>.</p>
+
+<h2>6. Nessuna garanzia</h2>
+<p>L'app è fornita “così com'è”, senza garanzie di funzionamento ininterrotto, di assenza di errori o di idoneità a uno scopo particolare, nei limiti consentiti dalla legge.</p>
+
+<h2>7. Limitazione di responsabilità</h2>
+<p>Nei limiti consentiti dalla legge applicabile, il titolare non risponde di danni indiretti o consequenziali derivanti dall'uso dell'app, da errori nei dati bibliografici o dall'indisponibilità dei servizi esterni. Restano salvi i diritti che la legge riconosce in modo inderogabile, in particolare ai consumatori.</p>
+
+<h2>8. Software open source</h2>
+<p>L'app usa la libreria qrcode-generator di Kazuhiko Arase (licenza MIT).</p>
+
+<h2>9. Modifiche</h2>
+<p>Queste condizioni possono essere aggiornate: la versione in vigore è sempre quella pubblicata in questa pagina, con la data in alto.</p>
+
+<h2>10. Legge applicabile</h2>
+<p>Si applica la legge italiana, salvo le norme inderogabili a tutela del consumatore del Paese in cui risiedi.</p>
+
+<h2>11. Contatti</h2>
+<p>Per qualsiasi domanda scrivi a <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+</section>
+<section id="en" data-lang="en" lang="en">
+<h1>Terms of use – The Ultraspeaker QR Lab</h1>
+<p class="upd">Last updated: 27 October 2026</p>
+
+<h2>1. Who provides the app</h2>
+<p>The Ultraspeaker QR Lab (the PowerPoint add-in and the web version, “the app”) is provided by <b>Nicholas D. Charles</b> (The Ultraspeaker). Contact: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. By using the app you accept these terms.</p>
+
+<h2>2. What the app does</h2>
+<p>The app creates custom QR codes and, in the Reference section, retrieves bibliographic data for scientific articles, formats them as citations (Vancouver, APA 7, AMA, Harvard), inserts them into slides with a QR code that links to the paper, and generates the presentation's bibliography.</p>
+
+<h2>3. Free use</h2>
+<p>The app is free. You may use it for personal and professional purposes, including presentations at congresses and courses. You may not copy it, resell it or present it as your own work; the name and logo The Ultraspeaker remain the property of the provider.</p>
+
+<h2>4. Your responsibilities</h2>
+<ul>
+<li><b>Check your citations.</b> The data come from external sources and may contain errors or be incomplete. Before presenting or publishing, check authors, title, journal, year and pages at the source.</li>
+<li><b>Retractions and corrections.</b> The warnings are indicative and depend on the data available from Crossref and PubMed: the absence of a warning does not guarantee that an article has not been retracted or corrected.</li>
+<li><b>Rights in content.</b> Abstracts and article texts belong to their authors and publishers: use them for your own preparation (for example in the speaker notes) while respecting their rights.</li>
+<li><b>Test QR codes</b> with your phone before printing or presenting. You are responsible for the content you put into QR codes and slides.</li>
+<li>Do not use the app in ways that overload the external services (for example with automated bulk imports) or for unlawful purposes.</li>
+</ul>
+
+<h2>5. Third-party services</h2>
+<p>The Reference section queries free public services provided by third parties: <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>, <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI</a>, <a href="https://unpaywall.org/">Unpaywall</a>. These services have their own terms and usage limits, may change or be temporarily unavailable, and are not under our control. Data handling is described in the <a href="privacy.html#en">Privacy Policy</a>.</p>
+
+<h2>6. No warranty</h2>
+<p>The app is provided “as is”, without any warranty of uninterrupted operation, freedom from errors or fitness for a particular purpose, to the extent permitted by law.</p>
+
+<h2>7. Limitation of liability</h2>
+<p>To the extent permitted by applicable law, the provider is not liable for indirect or consequential damages arising from the use of the app, from errors in bibliographic data or from the unavailability of external services. This does not affect any rights that the law grants on a mandatory basis, in particular to consumers.</p>
+
+<h2>8. Open source software</h2>
+<p>The app uses the qrcode-generator library by Kazuhiko Arase (MIT licence).</p>
+
+<h2>9. Changes</h2>
+<p>These terms may be updated: the version in force is always the one published on this page, with the date at the top.</p>
+
+<h2>10. Governing law</h2>
+<p>Italian law applies, without prejudice to the mandatory consumer protection rules of your country of residence.</p>
+
+<h2>11. Contact</h2>
+<p>For any question, write to <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+</section>
+<section id="es" data-lang="es" lang="es">
+<h1>Condiciones de uso – The Ultraspeaker QR Lab</h1>
+<p class="upd">Última actualización: 27 de octubre de 2026</p>
+
+<h2>1. Quién ofrece la app</h2>
+<p>The Ultraspeaker QR Lab (el complemento para PowerPoint y la versión web, “la app”) lo ofrece <b>Nicholas D. Charles</b> (The Ultraspeaker). Contacto: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Al usar la app aceptas estas condiciones.</p>
+
+<h2>2. Qué hace la app</h2>
+<p>La app crea códigos QR personalizados y, en la sección Referencias, obtiene los datos bibliográficos de artículos científicos, los formatea como citas (Vancouver, APA 7, AMA, Harvard), los inserta en las diapositivas con un QR que lleva al artículo y genera la bibliografía de la presentación.</p>
+
+<h2>3. Uso gratuito</h2>
+<p>La app es gratuita. Puedes usarla con fines personales y profesionales, incluidas presentaciones en congresos y cursos. No puedes copiarla, revenderla ni presentarla como obra propia; el nombre y el logo The Ultraspeaker siguen siendo propiedad del titular.</p>
+
+<h2>4. Tus responsabilidades</h2>
+<ul>
+<li><b>Verifica las citas.</b> Los datos proceden de fuentes externas y pueden contener errores o estar incompletos. Antes de presentar o publicar, comprueba autores, título, revista, año y páginas en la fuente.</li>
+<li><b>Retractaciones y correcciones.</b> Los avisos son orientativos y dependen de los datos disponibles en Crossref y PubMed: la ausencia de un aviso no garantiza que un artículo no haya sido retractado o corregido.</li>
+<li><b>Derechos sobre los contenidos.</b> Los resúmenes y textos de los artículos pertenecen a sus autores y editoriales: úsalos para tu preparación (por ejemplo, en las notas del orador) respetando sus derechos.</li>
+<li><b>Prueba los QR</b> con el teléfono antes de imprimir o proyectar. Eres responsable de los contenidos que pones en los QR y en las diapositivas.</li>
+<li>No uses la app de forma que sobrecargue los servicios externos (por ejemplo, con importaciones masivas automatizadas) ni con fines ilícitos.</li>
+</ul>
+
+<h2>5. Servicios de terceros</h2>
+<p>La sección Referencias consulta servicios públicos gratuitos ofrecidos por terceros: <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>, <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI</a>, <a href="https://unpaywall.org/">Unpaywall</a>. Estos servicios tienen sus propias condiciones y límites de uso, pueden cambiar o no estar disponibles temporalmente y no están bajo nuestro control. El tratamiento de datos se describe en la <a href="privacy.html#es">política de privacidad</a>.</p>
+
+<h2>6. Sin garantía</h2>
+<p>La app se ofrece “tal cual”, sin garantía de funcionamiento ininterrumpido, de ausencia de errores ni de idoneidad para un fin concreto, en la medida permitida por la ley.</p>
+
+<h2>7. Limitación de responsabilidad</h2>
+<p>En la medida permitida por la ley aplicable, el titular no responde de daños indirectos o consecuentes derivados del uso de la app, de errores en los datos bibliográficos o de la falta de disponibilidad de los servicios externos. Quedan a salvo los derechos que la ley reconoce de forma imperativa, en particular a los consumidores.</p>
+
+<h2>8. Software de código abierto</h2>
+<p>La app utiliza la biblioteca qrcode-generator de Kazuhiko Arase (licencia MIT).</p>
+
+<h2>9. Cambios</h2>
+<p>Estas condiciones pueden actualizarse: la versión vigente es siempre la publicada en esta página, con la fecha arriba.</p>
+
+<h2>10. Ley aplicable</h2>
+<p>Se aplica la ley italiana, sin perjuicio de las normas imperativas de protección del consumidor de tu país de residencia.</p>
+
+<h2>11. Contacto</h2>
+<p>Para cualquier pregunta, escribe a <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+</section>
+<section id="fr" data-lang="fr" lang="fr">
+<h1>Conditions d'utilisation – The Ultraspeaker QR Lab</h1>
+<p class="upd">Dernière mise à jour : 27 octobre 2026</p>
+
+<h2>1. Qui fournit l'application</h2>
+<p>The Ultraspeaker QR Lab (le complément PowerPoint et la version web, « l'application ») est fourni par <b>Nicholas D. Charles</b> (The Ultraspeaker). Contact : <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. En utilisant l'application, vous acceptez ces conditions.</p>
+
+<h2>2. Ce que fait l'application</h2>
+<p>L'application crée des QR codes personnalisés et, dans la section Références, récupère les données bibliographiques d'articles scientifiques, les met en forme comme citations (Vancouver, APA 7, AMA, Harvard), les insère dans les diapositives avec un QR qui renvoie à l'article et génère la bibliographie de la présentation.</p>
+
+<h2>3. Utilisation gratuite</h2>
+<p>L'application est gratuite. Vous pouvez l'utiliser à des fins personnelles et professionnelles, y compris pour des présentations lors de congrès et de formations. Vous ne pouvez pas la copier, la revendre ni la présenter comme votre œuvre ; le nom et le logo The Ultraspeaker restent la propriété du fournisseur.</p>
+
+<h2>4. Vos responsabilités</h2>
+<ul>
+<li><b>Vérifiez les citations.</b> Les données proviennent de sources externes et peuvent contenir des erreurs ou être incomplètes. Avant de présenter ou de publier, vérifiez auteurs, titre, revue, année et pages à la source.</li>
+<li><b>Rétractations et corrections.</b> Les alertes sont indicatives et dépendent des données disponibles sur Crossref et PubMed : l'absence d'alerte ne garantit pas qu'un article n'a pas été rétracté ou corrigé.</li>
+<li><b>Droits sur les contenus.</b> Les résumés et textes des articles appartiennent à leurs auteurs et éditeurs : utilisez-les pour votre préparation (par exemple dans les notes de l'orateur) en respectant leurs droits.</li>
+<li><b>Testez les QR</b> avec votre téléphone avant d'imprimer ou de projeter. Vous êtes responsable des contenus que vous placez dans les QR et les diapositives.</li>
+<li>N'utilisez pas l'application de manière à surcharger les services externes (par exemple par des importations massives automatisées) ni à des fins illicites.</li>
+</ul>
+
+<h2>5. Services tiers</h2>
+<p>La section Références interroge des services publics gratuits fournis par des tiers : <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>, <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI</a>, <a href="https://unpaywall.org/">Unpaywall</a>. Ces services ont leurs propres conditions et limites d'utilisation, peuvent changer ou être temporairement indisponibles et ne sont pas sous notre contrôle. Le traitement des données est décrit dans la <a href="privacy.html#fr">politique de confidentialité</a>.</p>
+
+<h2>6. Absence de garantie</h2>
+<p>L'application est fournie « en l'état », sans garantie de fonctionnement ininterrompu, d'absence d'erreurs ou d'adéquation à un usage particulier, dans les limites permises par la loi.</p>
+
+<h2>7. Limitation de responsabilité</h2>
+<p>Dans les limites permises par la loi applicable, le fournisseur n'est pas responsable des dommages indirects ou consécutifs résultant de l'utilisation de l'application, d'erreurs dans les données bibliographiques ou de l'indisponibilité des services externes. Les droits que la loi accorde de manière impérative, notamment aux consommateurs, restent intacts.</p>
+
+<h2>8. Logiciels open source</h2>
+<p>L'application utilise la bibliothèque qrcode-generator de Kazuhiko Arase (licence MIT).</p>
+
+<h2>9. Modifications</h2>
+<p>Ces conditions peuvent être mises à jour : la version en vigueur est toujours celle publiée sur cette page, avec la date en haut.</p>
+
+<h2>10. Droit applicable</h2>
+<p>Le droit italien s'applique, sans préjudice des règles impératives de protection des consommateurs de votre pays de résidence.</p>
+
+<h2>11. Contact</h2>
+<p>Pour toute question, écrivez à <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+</section>
+<section id="de" data-lang="de" lang="de">
+<h1>Nutzungsbedingungen – The Ultraspeaker QR Lab</h1>
+<p class="upd">Zuletzt aktualisiert: 27. Oktober 2026</p>
+
+<h2>1. Anbieter</h2>
+<p>The Ultraspeaker QR Lab (das PowerPoint-Add-in und die Webversion, „die App“) wird von <b>Nicholas D. Charles</b> (The Ultraspeaker) bereitgestellt. Kontakt: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Mit der Nutzung der App akzeptieren Sie diese Bedingungen.</p>
+
+<h2>2. Was die App tut</h2>
+<p>Die App erstellt individuelle QR-Codes und ruft im Bereich Literatur bibliografische Daten wissenschaftlicher Artikel ab, formatiert sie als Zitate (Vancouver, APA 7, AMA, Harvard), fügt sie mit einem QR-Code, der zum Paper führt, in Folien ein und erstellt das Literaturverzeichnis der Präsentation.</p>
+
+<h2>3. Kostenlose Nutzung</h2>
+<p>Die App ist kostenlos. Sie dürfen sie privat und beruflich nutzen, auch für Vorträge auf Kongressen und in Kursen. Sie dürfen sie nicht kopieren, weiterverkaufen oder als eigenes Werk ausgeben; Name und Logo The Ultraspeaker bleiben Eigentum des Anbieters.</p>
+
+<h2>4. Ihre Verantwortung</h2>
+<ul>
+<li><b>Prüfen Sie die Zitate.</b> Die Daten stammen aus externen Quellen und können Fehler enthalten oder unvollständig sein. Prüfen Sie vor dem Präsentieren oder Veröffentlichen Autoren, Titel, Zeitschrift, Jahr und Seiten an der Quelle.</li>
+<li><b>Rücknahmen und Korrekturen.</b> Die Warnungen sind Hinweise und hängen von den bei Crossref und PubMed verfügbaren Daten ab: Fehlt eine Warnung, ist nicht garantiert, dass ein Artikel nicht zurückgezogen oder korrigiert wurde.</li>
+<li><b>Rechte an Inhalten.</b> Abstracts und Artikeltexte gehören ihren Autoren und Verlagen: Nutzen Sie sie für Ihre eigene Vorbereitung (zum Beispiel in den Notizen) unter Wahrung dieser Rechte.</li>
+<li><b>Testen Sie QR-Codes</b> mit dem Telefon, bevor Sie drucken oder präsentieren. Sie sind für die Inhalte verantwortlich, die Sie in QR-Codes und Folien einfügen.</li>
+<li>Nutzen Sie die App nicht so, dass die externen Dienste überlastet werden (zum Beispiel durch automatisierte Massenimporte), und nicht für rechtswidrige Zwecke.</li>
+</ul>
+
+<h2>5. Dienste Dritter</h2>
+<p>Der Bereich Literatur fragt kostenlose öffentliche Dienste Dritter ab: <a href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>, <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI</a>, <a href="https://unpaywall.org/">Unpaywall</a>. Diese Dienste haben eigene Bedingungen und Nutzungsgrenzen, können sich ändern oder vorübergehend nicht verfügbar sein und liegen nicht in unserer Kontrolle. Die Datenverarbeitung ist in der <a href="privacy.html#de">Datenschutzerklärung</a> beschrieben.</p>
+
+<h2>6. Keine Gewährleistung</h2>
+<p>Die App wird „wie besehen“ bereitgestellt, ohne Gewähr für unterbrechungsfreien Betrieb, Fehlerfreiheit oder Eignung für einen bestimmten Zweck, soweit gesetzlich zulässig.</p>
+
+<h2>7. Haftungsbeschränkung</h2>
+<p>Soweit nach geltendem Recht zulässig, haftet der Anbieter nicht für indirekte oder Folgeschäden aus der Nutzung der App, aus Fehlern in bibliografischen Daten oder aus der Nichtverfügbarkeit externer Dienste. Zwingende gesetzliche Rechte, insbesondere von Verbrauchern, bleiben unberührt.</p>
+
+<h2>8. Open-Source-Software</h2>
+<p>Die App verwendet die Bibliothek qrcode-generator von Kazuhiko Arase (MIT-Lizenz).</p>
+
+<h2>9. Änderungen</h2>
+<p>Diese Bedingungen können aktualisiert werden: Es gilt stets die auf dieser Seite veröffentlichte Fassung mit dem Datum oben.</p>
+
+<h2>10. Anwendbares Recht</h2>
+<p>Es gilt italienisches Recht, unbeschadet zwingender Verbraucherschutzvorschriften Ihres Wohnsitzlandes.</p>
+
+<h2>11. Kontakt</h2>
+<p>Bei Fragen schreiben Sie an <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+</section>
+<footer>© The Ultraspeaker · Nicholas D. Charles · <a data-p="support" data-href="support.html" href="support.html" data-it="Supporto" data-en="Support" data-es="Soporte" data-fr="Assistance" data-de="Support">Support</a> · <a data-p="privacy" data-href="privacy.html" href="privacy.html" data-it="Privacy" data-en="Privacy" data-es="Privacidad" data-fr="Confidentialité" data-de="Datenschutz">Privacy</a> · <a data-p="guide" data-href="GUIDA-INSTALLAZIONE.html" href="GUIDA-INSTALLAZIONE.html" data-it="Guida" data-en="Guide" data-es="Guía" data-fr="Guide" data-de="Anleitung">Guide</a></footer>
+</main>
+</body>
+</html>
