@@ -166,6 +166,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .ref-search .btn{flex:none}
 .ref-err{color:var(--warn)!important}
 #refStatus:empty,#refBulkStatus:empty,#refListStatus:empty,#refTargetNote:empty{display:none}
+#refQrOpts .range-row{margin-top:10px}
 .ref-res{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px;margin-top:6px;cursor:pointer;font-size:12px;color:var(--ink-2)}
 .ref-res:hover{border-color:var(--ink)}
 .ref-res b{display:block;color:var(--ink);font-size:12.5px;line-height:1.3;margin-bottom:2px}
@@ -427,8 +428,11 @@ details.ref-abs{margin-top:10px}
         <div class="sub" data-i18n="ref.presetsLbl">Layout pronti</div>
         <div class="tiles" id="refPresets"></div>
         <div id="refSlidePv" class="ref-slide" aria-hidden="true"></div>
+        <span class="lbl" data-i18n="ref.whatLbl">Cosa inserire</span>
+        <div class="seg" id="refWhat" style="margin-bottom:10px"><button type="button" data-v="both" data-i18n="ref.what.both">Citazione + QR</button><button type="button" data-v="text" data-i18n="ref.what.text">Solo citazione</button><button type="button" data-v="qr" data-i18n="ref.what.qr">Solo QR</button></div>
         <span class="lbl" data-i18n="ref.posLbl">Posizione in basso</span>
         <div class="seg" id="refPos" style="margin-bottom:10px"><button type="button" data-v="left" data-i18n="ref.pos.left">Sinistra</button><button type="button" data-v="center" data-i18n="ref.pos.center">Centro</button><button type="button" data-v="right" data-i18n="ref.pos.right">Destra</button></div>
+        <div id="refTextOpts">
         <div class="ref-grid">
           <div class="field"><label for="refFont" data-i18n="ref.fontLbl">Font</label>
             <select id="refFont"><option value="" data-i18n="ref.fontTheme">Font del tema</option><option>Champagne &amp; Limousines</option><option>Arial</option><option>Calibri</option><option>Helvetica Neue</option><option>Segoe UI</option><option>Georgia</option></select></div>
@@ -436,8 +440,10 @@ details.ref-abs{margin-top:10px}
         </div>
         <span class="lbl" style="margin-top:10px" data-i18n="ref.colorLbl">Colore del testo</span>
         <div class="color" style="margin-bottom:10px"><input type="color" id="refColor" value="#7f7f7f" data-i18n-aria="color.pick"><input type="text" id="refColorHex" value="#7f7f7f" maxlength="7" data-i18n-aria="color.code"></div>
-        <label class="check"><input type="checkbox" id="refQrOn" checked> <span data-i18n="ref.qrOn">QR code accanto alla citazione</span></label>
+        </div>
         <div id="refQrOpts">
+          <span class="lbl" data-i18n="ref.qrFmtLbl">Formato del QR</span>
+          <div class="seg" id="refQrFmt" style="margin-bottom:10px"><button type="button" data-v="svg" data-i18n="ref.fmt.svg">Vettoriale (SVG)</button><button type="button" data-v="png">PNG</button></div>
           <span class="lbl" data-i18n="ref.targetLbl">Il QR apre</span>
           <div class="seg" id="refTarget"><button type="button" data-v="doi" data-i18n="ref.target.doi">Il DOI (pagina dell'editore)</button><button type="button" data-v="oa" data-i18n="ref.target.oa">La versione open access</button></div>
           <p class="status" id="refTargetNote"></p>
@@ -447,7 +453,7 @@ details.ref-abs{margin-top:10px}
         </div>
         <label class="check" id="refNotesWrap" hidden><input type="checkbox" id="refNotes"> <span data-i18n="ref.notesChk">Copia l'abstract PubMed per le note del relatore</span></label>
         <button class="btn primary" id="refInsertBtn" type="button" style="margin-top:10px" disabled><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 14h6M16 12h2v2h-2z"/></svg><span id="refInsertLabel">Inserisci nella slide</span></button>
-        <button class="btn" id="refDlQr" type="button" style="width:100%;margin-top:8px" hidden><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="ref.dlQr">Scarica il QR (PNG)</span></button>
+        <button class="btn" id="refDlQr" type="button" style="width:100%;margin-top:8px" hidden><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="refDlQrLabel">Scarica il QR (PNG)</span></button>
       </section>
 
       <section class="card">

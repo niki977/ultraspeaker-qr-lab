@@ -347,7 +347,8 @@
     return { ref: c, dup: false };
   }
 
-  const defaultPrefs = { preset: "discreet", pos: "left", font: "", size: 16, color: "#7f7f7f", qr: true, qrCm: 1.9, target: "doi", notes: false, bibQr: false };
+  const defaultPrefs = { preset: "discreet", pos: "left", font: "", size: 16, color: "#7f7f7f", what: "both", qrFmt: "svg", qrCm: 1.9, target: "doi", notes: false, bibQr: false };
+  const WHATS = ["both", "text", "qr"];
   const PRESETS = {
     discreet: { pos: "left", size: 16, color: "#7f7f7f", qrCm: 1.9 },
     centered: { pos: "center", size: 16, color: "#595959", qrCm: 1.9 },
@@ -397,6 +398,7 @@
     const out = { q, boxH, align: "Left" };
     const bottom = H - MARGIN;
     out.ty = bottom - boxH; out.qy = bottom - q;
+    if (!text) { out.qx = P.pos === "left" ? MARGIN : P.pos === "right" ? W - MARGIN - q : (W - q) / 2; return out; } // solo QR
     if (P.pos === "left") { out.qx = MARGIN; out.tx = MARGIN + q + gap; out.tw = Math.min(W * 0.62, W - out.tx - MARGIN); }
     else if (P.pos === "right") { out.qx = W - MARGIN - q; out.tw = Math.min(W * 0.62, W - 2 * MARGIN - q - gap); out.tx = W - MARGIN - q - gap - out.tw; out.align = "Right"; }
     else {
@@ -415,10 +417,13 @@
     if (opts.bold != null) tr.font.bold = opts.bold;
     try { tr.paragraphFormat.horizontalAlignment = opts.align || "Left"; } catch (e) { /* ignora */ }
   }
+  // Formato scelto dall'utente: vettoriale (SVG) se PowerPoint lo accetta, altrimenti PNG ad alta risoluzione
+  let svgFallback = false;
+  const svgOk = () => { try { return Office.context.requirements.isSetSupported("ImageCoercion", "1.2"); } catch (e) { return false; } };
   async function qrImagePayload(ref, sidePt) {
     const out = refQR(ref);
     if (!out) return null;
-    if (ppt("1.4") && Office.context.requirements.isSetSupported("ImageCoercion", "1.2")) return { data: out.svg, type: Office.CoercionType.XmlSvg };
+    if (P.qrFmt === "svg") { if (svgOk()) return { data: out.svg, type: Office.CoercionType.XmlSvg }; svgFallback = true; }
     const png = await L().svgToPng(out.svg, out.W, out.H, Math.max(300, Math.min(900, Math.round((sidePt / 72) * 300))));
     return { data: png.split(",")[1], type: Office.CoercionType.Image };
   }
@@ -452,10 +457,11 @@
   }
 
   async function insertOnSlide(ref, text) {
-    const withQr = P.qr && !!refUrl(ref);
+    const withQr = P.what !== "text" && !!refUrl(ref);
+    if (P.what === "qr") { if (!withQr) throw new RefError("nolink"); text = ""; } // solo QR
     if (!fullApi()) {
       // PowerPoint meno recente: testo e QR vengono inseriti, ma la posizione va sistemata a mano
-      await setData(text, { coercionType: Office.CoercionType.Text });
+      if (text) await setData(text, { coercionType: Office.CoercionType.Text });
       if (withQr) { const pl = await qrImagePayload(ref, P.qrCm * CM_TO_PT); if (pl) await setData(pl.data, { coercionType: pl.type, imageWidth: P.qrCm * CM_TO_PT, imageHeight: P.qrCm * CM_TO_PT }); }
       return "basic";
     }
@@ -466,6 +472,7 @@
       const slide = sl.items[0]; slideId = slide.id;
       const { W, H } = await slideSize(ctx);
       g = layout(W, H, text, withQr);
+      if (!text) return;
       const tb = slide.shapes.addTextBox(text, { left: g.tx, top: g.ty, width: g.tw, height: g.boxH });
       tb.name = NAME_PREFIX + ref.id + ":txt:" + DOC.shortFmt;
       styleText(tb, { size: P.size, color: P.color, font: P.font, align: g.align });
@@ -610,7 +617,7 @@
   async function qrImagePayloadSmall(ref, sidePt) {
     const out = refQR(ref, true);
     if (!out) return null;
-    if (Office.context.requirements.isSetSupported("ImageCoercion", "1.2")) return { data: out.svg, type: Office.CoercionType.XmlSvg };
+    if (P.qrFmt === "svg") { if (svgOk()) return { data: out.svg, type: Office.CoercionType.XmlSvg }; svgFallback = true; }
     const png = await L().svgToPng(out.svg, out.W, out.H, 300);
     return { data: png.split(",")[1], type: Office.CoercionType.Image };
   }
@@ -787,7 +794,10 @@
     if (oaBtn) oaBtn.disabled = !(cur && cur.oaUrl);
     const setV = (el, v) => { if (el && el !== document.activeElement && el.value !== String(v)) el.value = v; };
     setV($("#refFont"), P.font); setV($("#refSize"), P.size); setV($("#refColor"), P.color); setV($("#refColorHex"), P.color);
-    $("#refQrOn").checked = P.qr; $("#refQrOpts").hidden = !P.qr;
+    $$("#refWhat button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === P.what));
+    $$("#refQrFmt button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === P.qrFmt));
+    $("#refQrOpts").hidden = P.what === "text";
+    $("#refTextOpts").hidden = P.what === "qr";
     setV($("#refQrCm"), P.qrCm); $("#refQrCmVal").textContent = (+P.qrCm).toFixed(1).replace(".", t("ref.decimal")) + " cm";
     $("#refNotes").checked = P.notes;
     $("#refTargetNote").textContent = cur && P.target === "oa" && !cur.oaUrl ? t("ref.noOa") : "";
@@ -795,17 +805,18 @@
     const pv = $("#refSlidePv");
     if (pv && cur) {
       const text = formatShort(cur, DOC.shortFmt, currentNum(cur));
-      const qr = P.qr ? refQR(cur) : null;
+      const qr = P.what !== "text" ? refQR(cur) : null;
       const img = qr ? `<img alt="" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(L().withFont(qr.svg))}" style="height:${Math.round(P.qrCm * 9)}px">` : "";
       const txt = `<span style="font-size:${Math.max(7, P.size * 0.5)}px;color:${esc(P.color)};${P.font ? "font-family:'" + esc(P.font) + "'," + "sans-serif;" : ""}">${esc(text)}</span>`;
       pv.className = "ref-slide pos-" + P.pos + (P.preset === "dark" || hexLum(P.color) > 0.6 ? " dark" : "");
-      pv.innerHTML = `<div class="ref-slide-in">${P.pos === "right" ? txt + img : img + txt}</div>`;
-      if (P.pos === "center") pv.querySelector(".ref-slide-in").innerHTML = txt + img;
+      const t2 = P.what === "qr" ? "" : txt;
+      pv.innerHTML = `<div class="ref-slide-in">${P.pos === "right" || P.pos === "center" ? t2 + img : img + t2}</div>`;
     }
     const ins = $("#refInsertBtn");
     ins.disabled = !cur;
-    $("#refInsertLabel").textContent = L().isOffice() ? t("ref.insert") : t("ref.copyShort");
-    $("#refDlQr").hidden = L().isOffice();
+    $("#refInsertLabel").textContent = L().isOffice() ? t("ref.insert") : P.what === "qr" ? t("ref.dlQr" + (P.qrFmt === "svg" ? "Svg" : "")) : t("ref.copyShort");
+    $("#refDlQrLabel").textContent = t("ref.dlQr" + (P.qrFmt === "svg" ? "Svg" : ""));
+    $("#refDlQr").hidden = L().isOffice() || P.what !== "both";
     $("#refDlQr").disabled = !cur || !refUrl(cur || {});
   }
   function hexLum(h) {
@@ -820,31 +831,35 @@
     let absCopied = false;
     if (P.notes && cur.abstract) absCopied = copyText(cur.abstract);
     const { ref, dup } = addToDoc(cur);
-    if (!L().isOffice()) { // versione web: copia della citazione
+    if (!L().isOffice()) { // versione web: copia della citazione (o scarica il QR se è richiesto solo il QR)
+      if (P.what === "qr") { downloadQr(); renderList(); renderCite(); return; }
       const ok = copyText(formatShort(ref, DOC.shortFmt, numOf(ref)));
       L().toast(ok ? t("ref.toast.copied") : t("ref.toast.copyFail"));
       renderList(); renderCite();
       return;
     }
-    busy = true; btn.disabled = true; setStatus(t("ref.inserting"));
+    busy = true; btn.disabled = true; setStatus(t("ref.inserting")); svgFallback = false;
     try {
       const mode = await insertOnSlide(ref, formatShort(ref, DOC.shortFmt, numOf(ref)));
       ref.onSlides = true; saveDoc();
-      let msg = t(mode === "basic" ? "ref.toast.insertedBasic" : "ref.toast.inserted");
+      let msg = t(mode === "basic" ? "ref.toast.insertedBasic" : P.what === "qr" ? "ref.toast.insertedQr" : "ref.toast.inserted");
+      if (svgFallback) msg += " " + t("ref.toast.svgPng");
       if (dup) msg += " " + t("ref.toast.reused", { n: numOf(ref) });
       if (P.notes && cur.abstract) msg += " " + t(absCopied ? "ref.toast.absNotes" : "ref.toast.copyFail");
       setStatus(""); L().toast(msg);
     } catch (e) {
-      setStatus(e && e.code === "noslide" ? t("ref.err.noslide") : t("ref.err.insert"), "err");
+      setStatus(e && (e.code === "noslide" || e.code === "nolink") ? t("ref.err." + e.code) : t("ref.err.insert"), "err");
     } finally { busy = false; btn.disabled = !cur; renderList(); renderCite(); }
   }
   async function downloadQr() {
     if (!cur) return;
     const out = refQR(cur);
     if (!out) return;
-    const png = await L().svgToPng(out.svg, out.W, out.H, 1200);
-    const a = document.createElement("a"); a.href = png; a.download = "qr-reference-" + (cur.doi || cur.pmid || "ref").replace(/[^\w.-]+/g, "_") + ".png";
+    const svg = P.qrFmt === "svg";
+    const href = svg ? URL.createObjectURL(new Blob([out.svg], { type: "image/svg+xml" })) : await L().svgToPng(out.svg, out.W, out.H, 1200);
+    const a = document.createElement("a"); a.href = href; a.download = "qr-reference-" + (cur.doi || cur.pmid || "ref").replace(/[^\w.-]+/g, "_") + (svg ? ".svg" : ".png");
     document.body.appendChild(a); a.click(); a.remove();
+    if (svg) setTimeout(() => URL.revokeObjectURL(href), 2000);
   }
 
   /* --- elenco dei riferimenti della presentazione --- */
@@ -932,11 +947,11 @@
       return;
     }
     if (!fullApi()) { L().toast(t("ref.err.oldPpt")); return; }
-    const b = $("#refBibBtn"); b.disabled = true; setListStatus(t("ref.bibWorking"));
+    const b = $("#refBibBtn"); b.disabled = true; setListStatus(t("ref.bibWorking")); svgFallback = false;
     try {
       const r = await generateBibliography(withQr);
       setListStatus("");
-      L().toast(t("ref.toast.bib", { n: r.entries, p: r.pages }) + (r.qrFail ? " " + t("ref.toast.bibQrFail") : ""));
+      L().toast(t("ref.toast.bib", { n: r.entries, p: r.pages }) + (r.qrFail ? " " + t("ref.toast.bibQrFail") : "") + (svgFallback && withQr ? " " + t("ref.toast.svgPng") : ""));
     } catch (e) { setListStatus(t("ref.err.bib"), "err"); }
     finally { b.disabled = false; renderList(); }
   }
@@ -973,7 +988,8 @@
     $("#refSize").addEventListener("input", (e) => { const v = +e.target.value; if (v >= 8 && v <= 60) { P.size = v; custom(); } });
     $("#refColor").addEventListener("input", (e) => { P.color = e.target.value; custom(); });
     $("#refColorHex").addEventListener("change", (e) => { let v = e.target.value.trim(); if (!v.startsWith("#")) v = "#" + v; if (/^#[0-9a-f]{6}$/i.test(v)) { P.color = v.toLowerCase(); custom(); } else renderInsertUI(); });
-    $("#refQrOn").addEventListener("change", (e) => { P.qr = e.target.checked; savePrefs(); renderInsertUI(); });
+    $$("#refWhat button").forEach((b) => b.addEventListener("click", () => { P.what = b.dataset.v; savePrefs(); renderInsertUI(); }));
+    $$("#refQrFmt button").forEach((b) => b.addEventListener("click", () => { P.qrFmt = b.dataset.v; savePrefs(); renderInsertUI(); }));
     $("#refQrCm").addEventListener("input", (e) => { P.qrCm = +e.target.value; custom(); });
     $("#refNotes").addEventListener("change", (e) => { P.notes = e.target.checked; savePrefs(); });
     $("#refInsertBtn").addEventListener("click", doInsert);
@@ -995,7 +1011,12 @@
   function init() {
     if (inited) return;
     inited = true;
-    P = Object.assign({}, defaultPrefs, L().store.get(PREF_KEY, {}) || {});
+    const stored = L().store.get(PREF_KEY, {}) || {};
+    P = Object.assign({}, defaultPrefs, stored);
+    if (stored.qr === false && !stored.what) P.what = "text"; // preferenza della prima versione
+    delete P.qr;
+    if (!WHATS.includes(P.what)) P.what = "both";
+    if (P.qrFmt !== "png") P.qrFmt = "svg";
     loadDoc();
     bind();
     applyLang();

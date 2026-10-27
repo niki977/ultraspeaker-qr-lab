@@ -375,6 +375,7 @@ window.QR_I18N = {
 
 /* ---------- Sezione Reference (citazioni scientifiche) ---------- */
 Object.assign(window.QR_I18N.it, {
+  "ref.whatLbl": "Cosa inserire", "ref.what.both": "Citazione + QR", "ref.what.text": "Solo citazione", "ref.what.qr": "Solo QR", "ref.qrFmtLbl": "Formato del QR", "ref.fmt.svg": "Vettoriale (SVG)", "ref.dlQrSvg": "Scarica il QR (SVG)", "ref.toast.insertedQr": "QR del riferimento inserito nella slide ✓", "ref.toast.svgPng": "Questa versione di PowerPoint non accetta il vettoriale: inserito in PNG ad alta risoluzione.", "ref.err.nolink": "Questo riferimento non ha DOI né PMID: il QR non può essere creato.",
   "mode.aria": "Sezioni del QR Lab", "mode.qr": "QR", "mode.ref": "Reference",
   "ref.sub": "Cita la letteratura e collegala al paper con un QR",
   "ref.step1": "Trova il riferimento", "ref.step2": "Anteprima", "ref.step3": "Citazione", "ref.step4": "Inserimento nella slide",
@@ -428,6 +429,7 @@ Object.assign(window.QR_I18N.it, {
   "ref.err.scan": "Non sono riuscito a leggere le slide. Riprova.", "ref.err.bib": "Non sono riuscito a creare la bibliografia. Riprova.",
 });
 Object.assign(window.QR_I18N.en, {
+  "ref.whatLbl": "What to insert", "ref.what.both": "Citation + QR", "ref.what.text": "Citation only", "ref.what.qr": "QR only", "ref.qrFmtLbl": "QR format", "ref.fmt.svg": "Vector (SVG)", "ref.dlQrSvg": "Download the QR (SVG)", "ref.toast.insertedQr": "Reference QR inserted into the slide ✓", "ref.toast.svgPng": "This version of PowerPoint doesn't accept vector images: inserted as a high-resolution PNG.", "ref.err.nolink": "This reference has no DOI or PMID, so no QR code can be created.",
   "mode.aria": "QR Lab sections", "mode.qr": "QR", "mode.ref": "Reference",
   "ref.sub": "Cite the literature and link it to the paper with a QR code",
   "ref.step1": "Find the reference", "ref.step2": "Preview", "ref.step3": "Citation", "ref.step4": "Insert into the slide",
@@ -481,6 +483,7 @@ Object.assign(window.QR_I18N.en, {
   "ref.err.scan": "I couldn't read the slides. Please try again.", "ref.err.bib": "I couldn't create the bibliography. Please try again.",
 });
 Object.assign(window.QR_I18N.es, {
+  "ref.whatLbl": "Qué insertar", "ref.what.both": "Cita + QR", "ref.what.text": "Solo cita", "ref.what.qr": "Solo QR", "ref.qrFmtLbl": "Formato del QR", "ref.fmt.svg": "Vectorial (SVG)", "ref.dlQrSvg": "Descargar el QR (SVG)", "ref.toast.insertedQr": "QR de la referencia insertado en la diapositiva ✓", "ref.toast.svgPng": "Esta versión de PowerPoint no acepta vectoriales: se ha insertado un PNG de alta resolución.", "ref.err.nolink": "Esta referencia no tiene DOI ni PMID: no se puede crear el QR.",
   "mode.aria": "Secciones de QR Lab", "mode.qr": "QR", "mode.ref": "Referencias",
   "ref.sub": "Cita la literatura y enlázala al artículo con un QR",
   "ref.step1": "Encuentra la referencia", "ref.step2": "Vista previa", "ref.step3": "Cita", "ref.step4": "Insertar en la diapositiva",
@@ -534,6 +537,7 @@ Object.assign(window.QR_I18N.es, {
   "ref.err.scan": "No pude leer las diapositivas. Inténtalo de nuevo.", "ref.err.bib": "No pude crear la bibliografía. Inténtalo de nuevo.",
 });
 Object.assign(window.QR_I18N.fr, {
+  "ref.whatLbl": "Que insérer", "ref.what.both": "Citation + QR", "ref.what.text": "Citation seule", "ref.what.qr": "QR seul", "ref.qrFmtLbl": "Format du QR", "ref.fmt.svg": "Vectoriel (SVG)", "ref.dlQrSvg": "Télécharger le QR (SVG)", "ref.toast.insertedQr": "QR de la référence inséré dans la diapositive ✓", "ref.toast.svgPng": "Cette version de PowerPoint n'accepte pas le vectoriel : inséré en PNG haute résolution.", "ref.err.nolink": "Cette référence n'a ni DOI ni PMID : impossible de créer le QR.",
   "mode.aria": "Sections de QR Lab", "mode.qr": "QR", "mode.ref": "Références",
   "ref.sub": "Citez la littérature et reliez-la à l'article avec un QR",
   "ref.step1": "Trouver la référence", "ref.step2": "Aperçu", "ref.step3": "Citation", "ref.step4": "Insérer dans la diapositive",
@@ -587,6 +591,7 @@ Object.assign(window.QR_I18N.fr, {
   "ref.err.scan": "Impossible de lire les diapositives. Réessayez.", "ref.err.bib": "Impossible de créer la bibliographie. Réessayez.",
 });
 Object.assign(window.QR_I18N.de, {
+  "ref.whatLbl": "Was einfügen", "ref.what.both": "Zitat + QR", "ref.what.text": "Nur Zitat", "ref.what.qr": "Nur QR", "ref.qrFmtLbl": "QR-Format", "ref.fmt.svg": "Vektor (SVG)", "ref.dlQrSvg": "QR herunterladen (SVG)", "ref.toast.insertedQr": "QR-Code der Quelle in die Folie eingefügt ✓", "ref.toast.svgPng": "Diese PowerPoint-Version akzeptiert keine Vektorgrafiken: als hochaufgelöstes PNG eingefügt.", "ref.err.nolink": "Diese Quelle hat weder DOI noch PMID: Es kann kein QR-Code erstellt werden.",
   "mode.aria": "Bereiche von QR Lab", "mode.qr": "QR", "mode.ref": "Literatur",
   "ref.sub": "Literatur zitieren und per QR-Code mit dem Paper verknüpfen",
   "ref.step1": "Quelle finden", "ref.step2": "Vorschau", "ref.step3": "Zitat", "ref.step4": "In die Folie einfügen",
