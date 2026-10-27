@@ -41,6 +41,7 @@
     $$("[data-i18n-aria]").forEach((el) => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
     $$("[data-i18n-alt]").forEach((el) => el.setAttribute("alt", t(el.dataset.i18nAlt)));
     $$("[data-i18n-title]").forEach((el) => el.setAttribute("title", t(el.dataset.i18nTitle)));
+    $$("[data-i18n-ph]").forEach((el) => el.setAttribute("placeholder", t(el.dataset.i18nPh)));
     $$(".color[data-color]").forEach((box) => { const [p, x] = $$("input", box); if (p) { p.setAttribute("aria-label", t("color.pick")); x.setAttribute("aria-label", t("color.code")); } });
   }
   const FRAME_DEFAULTS = () => LANGS.map((l) => I18N[l]["frame.default"]);
@@ -1011,7 +1012,38 @@
     applyStatic(); labelButtons();
     $("#langSel").value = LANG;
     renderTypes(); renderFields(); syncDesignUI(); renderRecent(); renderMyPresets(); render();
+    if (window.QRRef) window.QRRef.applyLang(); // sezione Reference
   }
+
+  /* ---------- Sezioni del pannello: QR | Reference ---------- */
+  let MODE = "qr";
+  function setMode(m, focus) {
+    MODE = m === "ref" ? "ref" : "qr";
+    $$(".modes [role=tab]").forEach((b) => { const on = b.dataset.mode === MODE; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+    $("#modeQr").hidden = MODE !== "qr";
+    $("#modeRef").hidden = MODE !== "ref";
+    $("#bar").hidden = MODE !== "qr";
+    $("#appSub").hidden = MODE !== "qr";
+    $("#refSub").hidden = MODE !== "ref";
+    // il piè di pagina (Arena e link) segue la sezione attiva
+    const foot = $(".foot"), host = MODE === "ref" ? $("#refFootHost") : $("#qrFootHost");
+    if (foot && host && foot.parentNode !== host) host.appendChild(foot);
+    store.set("qrlab.mode", MODE);
+    if (MODE === "ref" && window.QRRef) window.QRRef.refresh();
+    if (focus) { const b = $(`.modes [data-mode="${MODE}"]`); if (b) b.focus(); }
+  }
+  function openUrl(href) {
+    try {
+      if (inOffice && Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { Office.context.ui.openBrowserWindow(href); return; }
+    } catch (e) { /* uso il browser */ }
+    window.open(href, "_blank", "noopener");
+  }
+  // Strumenti del QR Lab messi a disposizione della sezione Reference (reference.js)
+  window.QRLab = {
+    t: (k, v) => t(k, v), toast, store, getLang: () => LANG, isOffice: () => inOffice,
+    design: () => S.design, buildSVG: (data, d, ec) => buildSVG(data, d, ec), svgToPng, withFont, openUrl,
+    showQrDesign: () => { setMode("qr"); const c = $("[data-tab=stile]"); if (c) c.closest(".card").scrollIntoView({ behavior: "smooth", block: "start" }); },
+  };
   function setLang(l) {
     if (!LANGS.includes(l) || l === LANG) return;
     // Se il testo della cornice è quello predefinito, lo traduco; se l'hai scritto tu, resta com'è
@@ -1069,7 +1101,15 @@
     }
     // Le icone salvate come SVG e il logo Ultraspeaker vengono rigenerati (il logo del marchio ora è vettoriale)
     if (S.design.logoName && S.design.logoName.startsWith("icon:") && (/^data:image\/svg/.test(S.design.logo || "") || S.design.logoName === "icon:brand")) setIconLogo();
+    // Sezioni QR | Reference (frecce sinistra/destra come nelle schede standard)
+    const modeBtns = $$(".modes [role=tab]");
+    modeBtns.forEach((b) => {
+      b.addEventListener("click", () => setMode(b.dataset.mode));
+      b.addEventListener("keydown", (e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); setMode(MODE === "qr" ? "ref" : "qr", true); } });
+    });
+    if (window.QRRef) window.QRRef.init();
     applyLang();
+    setMode(store.get("qrlab.mode", "qr"));
   }
 
   window.__qrLab = { svg: () => (current ? current.svg : null), svgPreview: () => (current ? withFont(current.svg) : null) }; // per diagnostica
@@ -1082,6 +1122,7 @@
       const l = detectLang();
       if (l !== LANG) { if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = I18N[l]["frame.default"]; LANG = l; }
     }
+    if (window.QRRef) window.QRRef.officeReady(); // i riferimenti stanno nel documento: li rileggo
     applyLang();
   }
   if (window.Office && Office.onReady) {

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Installare The Ultraspeaker QR Lab</title>
+<title>Installing The Ultraspeaker QR Lab</title>
 <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png?v=2" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
@@ -14,109 +14,359 @@
 @font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-bolditalic.woff2) format("woff2")}
 :root{--bg:#f3f3f3;--surface:#fff;--ink:#000;--ink-2:#444;--line:#ddd;--soft:#ececec;--code:#efefef}
 @media (prefers-color-scheme: dark){:root{--bg:#000;--surface:#111;--ink:#fff;--ink-2:#c8c8c8;--line:#2a2a2a;--soft:#222;--code:#1c1c1c;color-scheme:dark}}
-body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.65 "Champagne & Limousines","Avenir Next","Segoe UI",Arial,sans-serif;font-size-adjust:0.47}
-header{background:#000;color:#fff;padding:28px 16px 22px}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 15.5px/1.7 "Champagne & Limousines","Avenir Next","Segoe UI",Arial,sans-serif;font-size-adjust:0.47}
+header{background:#000;color:#fff;padding:26px 16px 18px}
 header .in,main{max-width:760px;margin:0 auto}
-header img{display:block;width:min(280px,70%);height:auto}
-header .tool{margin-top:14px;font-weight:700;font-size:13px;letter-spacing:.55em;text-transform:uppercase}
+.logo{display:block;width:min(240px,62%);border:0}
+.logo img{display:block;width:100%;height:auto}
+nav{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+nav a{color:#fff;text-decoration:none;border-bottom:1px solid #666}
+nav a[aria-current="page"]{border-bottom-color:#fff}
+.langs{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.langs a{font-size:12px;color:#bbb;text-decoration:none;border:1px solid #333;border-radius:6px;padding:3px 9px}
+.langs a[aria-current="true"]{color:#000;background:#fff;border-color:#fff}
 main{padding:28px 16px 64px}
-h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
-.lead{color:var(--ink-2);margin:0 0 28px}
-section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px}
-h2{font-size:16px;margin:0 0 10px;display:flex;gap:10px;align-items:center}
-h2 .n{background:var(--ink);color:var(--bg);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;font-size:12px;flex:none}
-p b,li b{font-weight:700}
-ol{padding-left:20px;margin:0}li{margin:6px 0}
-code{background:var(--code);padding:2px 6px;border-radius:5px;font-size:13px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
-.note{background:var(--soft);border-radius:8px;padding:10px 14px;font-size:14px;margin-top:12px}
-.muted{color:var(--ink-2);font-size:14px}
-.tag{text-align:center;font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--ink-2);margin-top:28px}
+section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:22px}
+h1{font-size:24px;margin:0 0 8px;text-wrap:balance}
+h2{font-size:15.5px;margin:24px 0 6px;letter-spacing:.02em}
+h2 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:11px;margin-right:8px;vertical-align:1px}
+p,li,dd{color:var(--ink-2)}
+p{margin:6px 0}
+ol,ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+b{font-weight:700;color:var(--ink)}
+dt{font-weight:700;margin-top:14px}
+dd{margin:2px 0 0}
+code{background:var(--code);padding:1px 6px;border-radius:5px;font-size:13px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
+.upd{font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.note{background:var(--soft);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:14.5px}
+a{color:var(--ink)}
+footer{text-align:center;font-size:12px;color:var(--ink-2);margin-top:8px}
+footer a{margin:0 6px}
+.js section[data-lang]{display:none}
+.js section[data-lang].on{display:block}
 </style>
+<script>
+(function(){
+  document.documentElement.classList.add("js");
+  var L=["it","en","es","fr","de"], pick=function(){
+    var h=(location.hash||"").slice(1); if(L.indexOf(h)>=0) return h;
+    try{var s=JSON.parse(localStorage.getItem("qrlab.lang")||"null"); if(L.indexOf(s)>=0) return s;}catch(e){}
+    var n=((navigator.languages&&navigator.languages[0])||navigator.language||"en").slice(0,2).toLowerCase();
+    return L.indexOf(n)>=0?n:"en";
+  };
+  function show(l){
+    document.querySelectorAll("section[data-lang]").forEach(function(s){s.classList.toggle("on",s.getAttribute("data-lang")===l);});
+    document.querySelectorAll(".langs a").forEach(function(a){a.setAttribute("aria-current",a.getAttribute("data-l")===l?"true":"false");});
+    document.querySelectorAll("nav a[data-p]").forEach(function(a){a.textContent=a.getAttribute("data-"+l)||a.textContent; a.href=a.getAttribute("data-href")+"#"+l;});
+    document.querySelectorAll("footer a[data-p]").forEach(function(a){a.textContent=a.getAttribute("data-"+l)||a.textContent; a.href=a.getAttribute("data-href")+"#"+l;});
+    document.documentElement.lang=l;
+    var t=document.querySelector("section.on h1"); if(t) document.title=t.textContent;
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    show(pick());
+    document.querySelectorAll(".langs a").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();var l=a.getAttribute("data-l");history.replaceState(null,"","#"+l);show(l);});});
+    window.addEventListener("hashchange",function(){var h=location.hash.slice(1); if(L.indexOf(h)>=0) show(h);});
+  });
+})();
+</script>
 </head>
 <body>
-<header><div class="in"><a href="https://www.theultraspeaker.com" target="_blank" rel="noopener" style="display:block;width:min(240px,62%);border:0"><img src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab – www.theultraspeaker.com" style="width:100%"></a></div></header>
+<header><div class="in"><a class="logo" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab – www.theultraspeaker.com"></a>
+<nav><a data-p="support" data-href="support.html" href="support.html" data-it="Supporto" data-en="Support" data-es="Soporte" data-fr="Assistance" data-de="Support">Support</a><a data-p="privacy" data-href="privacy.html" href="privacy.html" data-it="Privacy" data-en="Privacy" data-es="Privacidad" data-fr="Confidentialité" data-de="Datenschutz">Privacy</a><a data-p="terms" data-href="terms.html" href="terms.html" data-it="Condizioni d'uso" data-en="Terms of use" data-es="Condiciones de uso" data-fr="Conditions d'utilisation" data-de="Nutzungsbedingungen">Terms of use</a><a data-p="guide" data-href="GUIDA-INSTALLAZIONE.html" href="GUIDA-INSTALLAZIONE.html" data-it="Guida" data-en="Guide" data-es="Guía" data-fr="Guide" data-de="Anleitung" aria-current="page">Guide</a></nav>
+<div class="langs"><a href="#it" data-l="it" lang="it">Italiano</a><a href="#en" data-l="en" lang="en">English</a><a href="#es" data-l="es" lang="es">Español</a><a href="#fr" data-l="fr" lang="fr">Français</a><a href="#de" data-l="de" lang="de">Deutsch</a></div></div></header>
 <main>
+<section id="it" data-lang="it" lang="it">
 <h1>Installare The Ultraspeaker QR Lab in PowerPoint</h1>
-<p class="lead">Tre passaggi, circa 10 minuti, da fare una volta sola per ogni computer (Mac o Windows). Poi il pulsante <b>QR Code</b> resta nella scheda <b>Inserisci</b> di PowerPoint.</p>
+<p>Tre passaggi, circa 10 minuti, da fare una volta sola per ogni computer (Mac o Windows). Poi il pulsante <b>QR Code</b> resta nella scheda <b>Inserisci</b> di PowerPoint, con le due sezioni <b>QR</b> e <b>Reference</b>.</p>
 
-<section>
 <h2><span class="n">1</span>Metti online i file (GitHub Pages, gratuito)</h2>
-<p class="muted">Gli add-in di Office si caricano sempre da un indirizzo web sicuro (https). GitHub Pages lo fornisce gratis e per sempre.</p>
+<p>Gli add-in di Office si caricano sempre da un indirizzo web sicuro (https). GitHub Pages lo fornisce gratis.</p>
 <ol>
-<li>Crea un account gratuito su <b>github.com</b> (se non ce l'hai). Il nome utente che scegli sarà parte dell'indirizzo.</li>
-<li>In alto a destra: <b>+ → New repository</b>. Nome: <code>ultraspeaker-qr-lab</code>, visibilità <b>Public</b>, poi <b>Create repository</b>.</li>
-<li>Nella pagina del repository clicca <b>uploading an existing file</b> e trascina dentro: <code>index.html</code>, <code>taskpane.html</code>, <code>app.js</code>, <code>i18n.js</code>, <code>qrcode.js</code> e la cartella <code>assets</code>. Poi <b>Commit changes</b>.</li>
-<li>Vai su <b>Settings → Pages</b>. In “Branch” scegli <b>main</b> e <b>/ (root)</b>, poi <b>Save</b>.</li>
+<li>Crea un account gratuito su <b>github.com</b> (se non ce l'hai).</li>
+<li><b>+ → New repository</b>. Nome: <code>ultraspeaker-qr-lab</code>, visibilità <b>Public</b>, poi <b>Create repository</b>.</li>
+<li>Carica nel repository: <code>index.html</code>, <code>taskpane.html</code>, <code>app.js</code>, <code>reference.js</code>, <code>i18n.js</code>, <code>qrcode.js</code>, <code>support.html</code>, <code>privacy.html</code>, <code>terms.html</code>, <code>GUIDA-INSTALLAZIONE.html</code>, <code>manifest.xml</code> e le cartelle <code>assets</code> e <code>fonts</code>. Con GitHub Desktop: copia i file nella cartella del repository, poi <b>Commit to main</b> e <b>Push origin</b>.</li>
+<li><b>Settings → Pages</b>: in “Branch” scegli <b>main</b> e <b>/ (root)</b>, poi <b>Save</b>.</li>
 <li>Dopo 1–2 minuti apri <code>https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html</code>: se vedi The Ultraspeaker QR Lab, è online.</li>
 </ol>
-</section>
 
-<section>
 <h2><span class="n">2</span>Il manifest è già pronto</h2>
-<p class="muted"><code>manifest.xml</code> è già compilato per l'account GitHub <b>niki977</b> e punta a <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Non devi modificarlo: basta che il repository si chiami esattamente <code>ultraspeaker-qr-lab</code>.</p>
-</section>
+<p><code>manifest.xml</code> è già compilato per l'account GitHub <b>niki977</b> e punta a <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Non devi modificarlo: basta che il repository si chiami esattamente <code>ultraspeaker-qr-lab</code>.</p>
 
-<section>
 <h2><span class="n">3</span>Installa in PowerPoint per Mac</h2>
-<p class="muted">Se usi Windows, salta alla sezione successiva.</p>
 <ol>
 <li>Chiudi PowerPoint.</li>
-<li>Nel Finder premi <b>⌘ + Maiusc + G</b> e incolla:<br><code>~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/</code></li>
-<li>Se non c'è, crea una cartella chiamata <code>wef</code>. Copia dentro <code>manifest.xml</code>.</li>
-<li>Apri PowerPoint e una presentazione. Vai su <b>Home → Componenti aggiuntivi</b> (a destra nella barra; nelle versioni meno recenti è in <b>Inserisci → Componenti aggiuntivi → I miei componenti aggiuntivi</b>) e scegli <b>The Ultraspeaker QR Lab</b>.</li>
+<li>Nel Finder premi <b>⌘ + Maiusc + G</b> e incolla: <code>~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/</code></li>
+<li>Se non c'è, crea una cartella chiamata <code>wef</code> e copia dentro <code>manifest.xml</code>.</li>
+<li>Apri PowerPoint e una presentazione, vai su <b>Home → Componenti aggiuntivi</b> e scegli <b>The Ultraspeaker QR Lab</b>.</li>
 <li>Da quel momento trovi il pulsante <b>QR Code</b> nella scheda <b>Inserisci</b>.</li>
 </ol>
-<div class="note">Se il comando non compare: chiudi PowerPoint del tutto (⌘Q) e riaprilo. In alcune versioni la voce si chiama <b>Add-ins</b>.</div>
-</section>
+<p class="note">Se il comando non compare: chiudi PowerPoint del tutto (⌘Q) e riaprilo.</p>
 
-<section>
 <h2><span class="n">3</span>Installa in PowerPoint per Windows</h2>
-<p class="muted">Su Windows PowerPoint legge il manifest da una cartella condivisa. I file online su GitHub sono gli stessi del Mac.</p>
-<p><b>Prepara la cartella</b></p>
 <ol>
 <li>Crea una cartella, per esempio <code>C:\QRLab</code>, e copia dentro <code>manifest.xml</code>.</li>
-<li>Tasto destro sulla cartella → <b>Proprietà</b> → scheda <b>Condivisione</b> → <b>Condividi…</b></li>
-<li>Scegli il tuo utente, clicca <b>Condividi</b> e poi <b>Fine</b>.</li>
-<li>Annota il <b>percorso di rete</b> che compare, simile a <code>\\NOME-PC\QRLab</code>.</li>
+<li>Tasto destro sulla cartella → <b>Proprietà → Condivisione → Condividi…</b>, scegli il tuo utente, <b>Condividi</b> e <b>Fine</b>. Annota il percorso di rete (simile a <code>\\NOME-PC\QRLab</code>).</li>
+<li>In PowerPoint: <b>File → Opzioni → Centro protezione → Impostazioni Centro protezione… → Cataloghi di componenti aggiuntivi attendibili</b>. Incolla il percorso di rete in <b>URL catalogo</b>, <b>Aggiungi catalogo</b>, spunta <b>Mostra nel menu</b>, poi <b>OK</b>.</li>
+<li>Chiudi e riapri PowerPoint, vai su <b>Home → Componenti aggiuntivi → CARTELLA CONDIVISA</b>, seleziona <b>The Ultraspeaker QR Lab</b> e <b>Aggiungi</b>.</li>
 </ol>
-<p><b>Dillo a PowerPoint</b></p>
-<ol>
-<li>Apri PowerPoint → <b>File → Opzioni → Centro protezione → Impostazioni Centro protezione…</b></li>
-<li>A sinistra scegli <b>Cataloghi di componenti aggiuntivi attendibili</b>.</li>
-<li>In <b>URL catalogo</b> incolla il percorso di rete (<code>\\NOME-PC\QRLab</code>, non <code>C:\…</code>) e clicca <b>Aggiungi catalogo</b>.</li>
-<li>Spunta <b>Mostra nel menu</b>, poi <b>OK</b> e ancora <b>OK</b>.</li>
-<li>Chiudi PowerPoint del tutto e riaprilo.</li>
-</ol>
-<p><b>Attiva l'add-in</b></p>
-<ol>
-<li>Vai su <b>Home → Componenti aggiuntivi</b> (nelle versioni meno recenti: <b>Inserisci → Componenti aggiuntivi → I miei componenti aggiuntivi</b>).</li>
-<li>Apri la scheda <b>CARTELLA CONDIVISA</b>, seleziona <b>The Ultraspeaker QR Lab</b> e clicca <b>Aggiungi</b>.</li>
-<li>Da quel momento trovi il pulsante <b>QR Code</b> nella scheda <b>Inserisci</b>.</li>
-</ol>
-<div class="note">Sul PC aziendale i criteri dell'IT possono bloccare le cartelle condivise o i componenti aggiuntivi personali. In quel caso chiedi all'IT di distribuirlo dal Microsoft 365 admin center: basta il file <code>manifest.xml</code> (vedi sotto).</div>
-</section>
+<p class="note">Sul PC aziendale l'IT può distribuire l'add-in dal Microsoft 365 admin center con il solo file <code>manifest.xml</code>.</p>
 
-<section>
 <h2><span class="n">+</span>Altri modi</h2>
-<ol>
-<li><b>PowerPoint sul web</b> (office.com): <b>Home → Componenti aggiuntivi → Altri componenti aggiuntivi → I miei componenti aggiuntivi → Carica il mio componente aggiuntivo</b> e seleziona <code>manifest.xml</code>.</li>
-<li><b>Per tutto il team aziendale</b>: l'IT può caricare <code>manifest.xml</code> dal Microsoft 365 admin center (<b>Impostazioni → App integrate → Carica app personalizzate</b>) e distribuirlo a chi vuole, senza passaggi manuali per le singole persone.</li>
-</ol>
-</section>
+<ul>
+<li><b>PowerPoint sul web</b>: <b>Home → Componenti aggiuntivi → Altri componenti aggiuntivi → I miei componenti aggiuntivi → Carica il mio componente aggiuntivo</b> e seleziona <code>manifest.xml</code>.</li>
+<li><b>Versione web</b> (senza installare nulla): <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Crea i QR e le citazioni anche da telefono.</li>
+</ul>
 
-<section>
-<h2><span class="n">?</span>Buono a sapersi</h2>
+<h2><span class="n">R</span>La sezione Reference in breve</h2>
 <ol>
-<li>I QR sono <b>statici</b>: il contenuto è scritto nel codice, quindi funzionano per sempre e senza abbonamenti. Non si possono però modificare dopo la stampa né tracciare le scansioni.</li>
-<li><b>Vettoriale</b> resta nitido a qualsiasi dimensione (ideale per poster e roll‑up). Se la tua versione di PowerPoint non lo accetta, The Ultraspeaker QR Lab inserisce automaticamente un PNG ad alta risoluzione.</li>
-<li>Per aggiornare l'add-in basta ricaricare i file nuovi su GitHub: PowerPoint userà la nuova versione alla prossima apertura. Solo se cambia <code>manifest.xml</code> va ricopiato anche nella cartella <code>wef</code> (Mac) o nella cartella condivisa (Windows).</li>
-<li><b>Versione web</b> (senza installare nulla): <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Crea il QR e lo scarica in PNG o SVG; funziona anche da telefono. Il link è pubblico: chi lo riceve può usarlo.</li>
-<li><b>Lingue:</b> l'add-in è in italiano, inglese, spagnolo, francese e tedesco. Parte nella lingua di PowerPoint e si cambia dal menu in alto a destra del pannello; la scelta resta memorizzata.</li>
-<li>Prova sempre il QR con il telefono prima di stampare, soprattutto con logo grande, colori chiari o sfondo trasparente.</li>
+<li>Nel pannello scegli <b>Reference</b>, scrivi un DOI, un PMID, un link o il titolo e fai clic su <b>Cerca</b>.</li>
+<li>Controlla l'anteprima e gli eventuali avvisi (ritrattato, corretto, duplicato).</li>
+<li>Scegli stile (Vancouver, APA 7, AMA, Harvard), formato della citazione e layout, poi <b>Inserisci nella slide</b>.</li>
+<li>Alla fine usa <b>Aggiorna numerazione e citazioni</b> e <b>Genera le slide «Bibliografia»</b>.</li>
 </ol>
+<p>La ricerca richiede internet. Il posizionamento automatico e la bibliografia richiedono PowerPoint per Microsoft 365 aggiornato. Dettagli nella pagina <a href="support.html#it">Supporto</a>.</p>
+
+<h2><span class="n">?</span>Buono a sapersi</h2>
+<ul>
+<li>Per aggiornare l'add-in basta ricaricare i file nuovi su GitHub: PowerPoint userà la nuova versione alla prossima apertura. Se cambia <code>manifest.xml</code>, ricopialo anche nella cartella <code>wef</code> (Mac) o nella cartella condivisa (Windows).</li>
+<li>I QR sono statici: funzionano per sempre e senza abbonamenti. Prova sempre la scansione prima di stampare.</li>
+<li>L'add-in è in italiano, inglese, spagnolo, francese e tedesco; la lingua si cambia dal menu in alto a destra del pannello.</li>
+</ul>
 </section>
-<p class="muted">The Ultraspeaker QR Lab usa la libreria open source qrcode-generator di Kazuhiko Arase (licenza MIT).</p>
-<p class="tag"><picture><source srcset="assets/ultraspeaker-logo-white.svg" media="(prefers-color-scheme: dark)"><img src="assets/ultraspeaker-logo-black.svg" alt="The Ultraspeaker" style="display:block;width:180px;height:auto;margin:0 auto 14px"></picture><a href="mailto:info@theultraspeaker.com" style="color:inherit">Richiedi una consulenza</a> · info@theultraspeaker.com</p>
+<section id="en" data-lang="en" lang="en">
+<h1>Installing The Ultraspeaker QR Lab in PowerPoint</h1>
+<p>Three steps, about 10 minutes, to do once per computer (Mac or Windows). After that, the <b>QR Code</b> button stays in PowerPoint's <b>Insert</b> tab, with its two sections <b>QR</b> and <b>Reference</b>.</p>
+
+<h2><span class="n">1</span>Put the files online (GitHub Pages, free)</h2>
+<p>Office add-ins always load from a secure web address (https). GitHub Pages provides one for free.</p>
+<ol>
+<li>Create a free account on <b>github.com</b> (if you don't have one).</li>
+<li><b>+ → New repository</b>. Name: <code>ultraspeaker-qr-lab</code>, visibility <b>Public</b>, then <b>Create repository</b>.</li>
+<li>Upload to the repository: <code>index.html</code>, <code>taskpane.html</code>, <code>app.js</code>, <code>reference.js</code>, <code>i18n.js</code>, <code>qrcode.js</code>, <code>support.html</code>, <code>privacy.html</code>, <code>terms.html</code>, <code>GUIDA-INSTALLAZIONE.html</code>, <code>manifest.xml</code> and the <code>assets</code> and <code>fonts</code> folders. With GitHub Desktop: copy the files into the repository folder, then <b>Commit to main</b> and <b>Push origin</b>.</li>
+<li><b>Settings → Pages</b>: under “Branch” choose <b>main</b> and <b>/ (root)</b>, then <b>Save</b>.</li>
+<li>After 1–2 minutes open <code>https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html</code>: if you see The Ultraspeaker QR Lab, it's online.</li>
+</ol>
+
+<h2><span class="n">2</span>The manifest is ready</h2>
+<p><code>manifest.xml</code> is already set up for the GitHub account <b>niki977</b> and points to <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. You don't need to edit it, as long as the repository is named exactly <code>ultraspeaker-qr-lab</code>.</p>
+
+<h2><span class="n">3</span>Install in PowerPoint for Mac</h2>
+<ol>
+<li>Quit PowerPoint.</li>
+<li>In Finder press <b>⌘ + Shift + G</b> and paste: <code>~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/</code></li>
+<li>If it doesn't exist, create a folder named <code>wef</code> and copy <code>manifest.xml</code> into it.</li>
+<li>Open PowerPoint and a presentation, go to <b>Home → Add-ins</b> and choose <b>The Ultraspeaker QR Lab</b>.</li>
+<li>From then on you'll find the <b>QR Code</b> button in the <b>Insert</b> tab.</li>
+</ol>
+<p class="note">If the command doesn't appear, quit PowerPoint completely (⌘Q) and reopen it.</p>
+
+<h2><span class="n">3</span>Install in PowerPoint for Windows</h2>
+<ol>
+<li>Create a folder, for example <code>C:\QRLab</code>, and copy <code>manifest.xml</code> into it.</li>
+<li>Right-click the folder → <b>Properties → Sharing → Share…</b>, choose your user, <b>Share</b> and <b>Done</b>. Note the network path (similar to <code>\\PC-NAME\QRLab</code>).</li>
+<li>In PowerPoint: <b>File → Options → Trust Center → Trust Center Settings… → Trusted Add-in Catalogs</b>. Paste the network path into <b>Catalog Url</b>, <b>Add catalog</b>, tick <b>Show in Menu</b>, then <b>OK</b>.</li>
+<li>Close and reopen PowerPoint, go to <b>Home → Add-ins → SHARED FOLDER</b>, select <b>The Ultraspeaker QR Lab</b> and <b>Add</b>.</li>
+</ol>
+<p class="note">On a company PC, IT can deploy the add-in from the Microsoft 365 admin center using just <code>manifest.xml</code>.</p>
+
+<h2><span class="n">+</span>Other ways</h2>
+<ul>
+<li><b>PowerPoint on the web</b>: <b>Home → Add-ins → More Add-ins → My Add-ins → Upload My Add-in</b> and select <code>manifest.xml</code>.</li>
+<li><b>Web version</b> (nothing to install): <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. It creates QR codes and citations, from a phone too.</li>
+</ul>
+
+<h2><span class="n">R</span>The Reference section at a glance</h2>
+<ol>
+<li>In the panel choose <b>Reference</b>, type a DOI, a PMID, a link or the title and click <b>Search</b>.</li>
+<li>Check the preview and any warnings (retracted, corrected, duplicate).</li>
+<li>Choose the style (Vancouver, APA 7, AMA, Harvard), citation format and layout, then <b>Insert into slide</b>.</li>
+<li>At the end, use <b>Update numbering and citations</b> and <b>Create the “References” slides</b>.</li>
+</ol>
+<p>Searching needs an internet connection. Automatic positioning and the bibliography need an up-to-date PowerPoint for Microsoft 365. Details on the <a href="support.html#en">Support</a> page.</p>
+
+<h2><span class="n">?</span>Good to know</h2>
+<ul>
+<li>To update the add-in, just upload the new files to GitHub: PowerPoint uses the new version the next time it opens. If <code>manifest.xml</code> changes, copy it again into the <code>wef</code> folder (Mac) or the shared folder (Windows).</li>
+<li>QR codes are static: they work forever, without subscriptions. Always test the scan before printing.</li>
+<li>The add-in is available in Italian, English, Spanish, French and German; change the language from the menu at the top right of the panel.</li>
+</ul>
+</section>
+<section id="es" data-lang="es" lang="es">
+<h1>Instalar The Ultraspeaker QR Lab en PowerPoint</h1>
+<p>Tres pasos, unos 10 minutos, una sola vez por ordenador (Mac o Windows). Después el botón <b>QR Code</b> queda en la pestaña <b>Insertar</b> de PowerPoint, con sus dos secciones <b>QR</b> y <b>Referencias</b>.</p>
+
+<h2><span class="n">1</span>Publica los archivos (GitHub Pages, gratis)</h2>
+<p>Los complementos de Office siempre se cargan desde una dirección web segura (https). GitHub Pages la ofrece gratis.</p>
+<ol>
+<li>Crea una cuenta gratuita en <b>github.com</b> (si no la tienes).</li>
+<li><b>+ → New repository</b>. Nombre: <code>ultraspeaker-qr-lab</code>, visibilidad <b>Public</b>, luego <b>Create repository</b>.</li>
+<li>Sube al repositorio: <code>index.html</code>, <code>taskpane.html</code>, <code>app.js</code>, <code>reference.js</code>, <code>i18n.js</code>, <code>qrcode.js</code>, <code>support.html</code>, <code>privacy.html</code>, <code>terms.html</code>, <code>GUIDA-INSTALLAZIONE.html</code>, <code>manifest.xml</code> y las carpetas <code>assets</code> y <code>fonts</code>. Con GitHub Desktop: copia los archivos en la carpeta del repositorio, luego <b>Commit to main</b> y <b>Push origin</b>.</li>
+<li><b>Settings → Pages</b>: en “Branch” elige <b>main</b> y <b>/ (root)</b>, luego <b>Save</b>.</li>
+<li>Tras 1–2 minutos abre <code>https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html</code>: si ves The Ultraspeaker QR Lab, ya está en línea.</li>
+</ol>
+
+<h2><span class="n">2</span>El manifiesto ya está listo</h2>
+<p><code>manifest.xml</code> ya está configurado para la cuenta de GitHub <b>niki977</b> y apunta a <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. No hace falta editarlo, siempre que el repositorio se llame exactamente <code>ultraspeaker-qr-lab</code>.</p>
+
+<h2><span class="n">3</span>Instalar en PowerPoint para Mac</h2>
+<ol>
+<li>Cierra PowerPoint.</li>
+<li>En el Finder pulsa <b>⌘ + Mayús + G</b> y pega: <code>~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/</code></li>
+<li>Si no existe, crea una carpeta llamada <code>wef</code> y copia dentro <code>manifest.xml</code>.</li>
+<li>Abre PowerPoint y una presentación, ve a <b>Inicio → Complementos</b> y elige <b>The Ultraspeaker QR Lab</b>.</li>
+<li>A partir de ahí encontrarás el botón <b>QR Code</b> en la pestaña <b>Insertar</b>.</li>
+</ol>
+<p class="note">Si el comando no aparece, cierra PowerPoint por completo (⌘Q) y vuelve a abrirlo.</p>
+
+<h2><span class="n">3</span>Instalar en PowerPoint para Windows</h2>
+<ol>
+<li>Crea una carpeta, por ejemplo <code>C:\QRLab</code>, y copia dentro <code>manifest.xml</code>.</li>
+<li>Clic derecho en la carpeta → <b>Propiedades → Compartir → Compartir…</b>, elige tu usuario, <b>Compartir</b> y <b>Listo</b>. Anota la ruta de red (similar a <code>\\NOMBRE-PC\QRLab</code>).</li>
+<li>En PowerPoint: <b>Archivo → Opciones → Centro de confianza → Configuración del Centro de confianza… → Catálogos de complementos de confianza</b>. Pega la ruta de red en <b>Dirección URL del catálogo</b>, <b>Agregar catálogo</b>, marca <b>Mostrar en menú</b> y <b>Aceptar</b>.</li>
+<li>Cierra y abre PowerPoint, ve a <b>Inicio → Complementos → CARPETA COMPARTIDA</b>, selecciona <b>The Ultraspeaker QR Lab</b> y <b>Agregar</b>.</li>
+</ol>
+<p class="note">En un PC de empresa, el departamento de TI puede distribuir el complemento desde el Centro de administración de Microsoft 365 con solo el archivo <code>manifest.xml</code>.</p>
+
+<h2><span class="n">+</span>Otras formas</h2>
+<ul>
+<li><b>PowerPoint en la web</b>: <b>Inicio → Complementos → Más complementos → Mis complementos → Cargar mi complemento</b> y selecciona <code>manifest.xml</code>.</li>
+<li><b>Versión web</b> (sin instalar nada): <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Crea códigos QR y citas, también desde el teléfono.</li>
+</ul>
+
+<h2><span class="n">R</span>La sección Referencias en breve</h2>
+<ol>
+<li>En el panel elige <b>Referencias</b>, escribe un DOI, un PMID, un enlace o el título y haz clic en <b>Buscar</b>.</li>
+<li>Revisa la vista previa y los posibles avisos (retractado, corregido, duplicado).</li>
+<li>Elige el estilo (Vancouver, APA 7, AMA, Harvard), el formato de la cita y el diseño, luego <b>Insertar en la diapositiva</b>.</li>
+<li>Al final usa <b>Actualizar numeración y citas</b> y <b>Crear las diapositivas «Bibliografía»</b>.</li>
+</ol>
+<p>La búsqueda requiere internet. La colocación automática y la bibliografía requieren PowerPoint para Microsoft 365 actualizado. Detalles en la página de <a href="support.html#es">Soporte</a>.</p>
+
+<h2><span class="n">?</span>Conviene saber</h2>
+<ul>
+<li>Para actualizar el complemento basta con subir los archivos nuevos a GitHub: PowerPoint usará la nueva versión la próxima vez que se abra. Si cambia <code>manifest.xml</code>, cópialo de nuevo en la carpeta <code>wef</code> (Mac) o en la carpeta compartida (Windows).</li>
+<li>Los QR son estáticos: funcionan para siempre y sin suscripciones. Prueba siempre el escaneo antes de imprimir.</li>
+<li>El complemento está en italiano, inglés, español, francés y alemán; el idioma se cambia desde el menú arriba a la derecha del panel.</li>
+</ul>
+</section>
+<section id="fr" data-lang="fr" lang="fr">
+<h1>Installer The Ultraspeaker QR Lab dans PowerPoint</h1>
+<p>Trois étapes, environ 10 minutes, à faire une seule fois par ordinateur (Mac ou Windows). Ensuite, le bouton <b>QR Code</b> reste dans l'onglet <b>Insertion</b> de PowerPoint, avec ses deux sections <b>QR</b> et <b>Références</b>.</p>
+
+<h2><span class="n">1</span>Mettez les fichiers en ligne (GitHub Pages, gratuit)</h2>
+<p>Les compléments Office se chargent toujours depuis une adresse web sécurisée (https). GitHub Pages la fournit gratuitement.</p>
+<ol>
+<li>Créez un compte gratuit sur <b>github.com</b> (si vous n'en avez pas).</li>
+<li><b>+ → New repository</b>. Nom : <code>ultraspeaker-qr-lab</code>, visibilité <b>Public</b>, puis <b>Create repository</b>.</li>
+<li>Envoyez dans le dépôt : <code>index.html</code>, <code>taskpane.html</code>, <code>app.js</code>, <code>reference.js</code>, <code>i18n.js</code>, <code>qrcode.js</code>, <code>support.html</code>, <code>privacy.html</code>, <code>terms.html</code>, <code>GUIDA-INSTALLAZIONE.html</code>, <code>manifest.xml</code> et les dossiers <code>assets</code> et <code>fonts</code>. Avec GitHub Desktop : copiez les fichiers dans le dossier du dépôt, puis <b>Commit to main</b> et <b>Push origin</b>.</li>
+<li><b>Settings → Pages</b> : dans « Branch », choisissez <b>main</b> et <b>/ (root)</b>, puis <b>Save</b>.</li>
+<li>Après 1 à 2 minutes, ouvrez <code>https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html</code> : si vous voyez The Ultraspeaker QR Lab, c'est en ligne.</li>
+</ol>
+
+<h2><span class="n">2</span>Le manifeste est prêt</h2>
+<p><code>manifest.xml</code> est déjà configuré pour le compte GitHub <b>niki977</b> et pointe vers <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Inutile de le modifier, à condition que le dépôt s'appelle exactement <code>ultraspeaker-qr-lab</code>.</p>
+
+<h2><span class="n">3</span>Installer dans PowerPoint pour Mac</h2>
+<ol>
+<li>Quittez PowerPoint.</li>
+<li>Dans le Finder, appuyez sur <b>⌘ + Maj + G</b> et collez : <code>~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/</code></li>
+<li>S'il n'existe pas, créez un dossier nommé <code>wef</code> et copiez-y <code>manifest.xml</code>.</li>
+<li>Ouvrez PowerPoint et une présentation, allez dans <b>Accueil → Compléments</b> et choisissez <b>The Ultraspeaker QR Lab</b>.</li>
+<li>Vous trouverez ensuite le bouton <b>QR Code</b> dans l'onglet <b>Insertion</b>.</li>
+</ol>
+<p class="note">Si la commande n'apparaît pas, quittez complètement PowerPoint (⌘Q) et rouvrez-le.</p>
+
+<h2><span class="n">3</span>Installer dans PowerPoint pour Windows</h2>
+<ol>
+<li>Créez un dossier, par exemple <code>C:\QRLab</code>, et copiez-y <code>manifest.xml</code>.</li>
+<li>Clic droit sur le dossier → <b>Propriétés → Partage → Partager…</b>, choisissez votre utilisateur, <b>Partager</b> puis <b>Terminé</b>. Notez le chemin réseau (du type <code>\\NOM-PC\QRLab</code>).</li>
+<li>Dans PowerPoint : <b>Fichier → Options → Centre de gestion de la confidentialité → Paramètres du Centre de gestion de la confidentialité… → Catalogues de compléments approuvés</b>. Collez le chemin réseau dans <b>URL du catalogue</b>, <b>Ajouter un catalogue</b>, cochez <b>Afficher dans le menu</b>, puis <b>OK</b>.</li>
+<li>Fermez et rouvrez PowerPoint, allez dans <b>Accueil → Compléments → DOSSIER PARTAGÉ</b>, sélectionnez <b>The Ultraspeaker QR Lab</b> puis <b>Ajouter</b>.</li>
+</ol>
+<p class="note">Sur un PC d'entreprise, le service informatique peut déployer le complément depuis le Centre d'administration Microsoft 365 avec le seul fichier <code>manifest.xml</code>.</p>
+
+<h2><span class="n">+</span>Autres possibilités</h2>
+<ul>
+<li><b>PowerPoint pour le web</b> : <b>Accueil → Compléments → Plus de compléments → Mes compléments → Charger mon complément</b> et sélectionnez <code>manifest.xml</code>.</li>
+<li><b>Version web</b> (rien à installer) : <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Elle crée des QR codes et des citations, aussi depuis un téléphone.</li>
+</ul>
+
+<h2><span class="n">R</span>La section Références en bref</h2>
+<ol>
+<li>Dans le volet, choisissez <b>Références</b>, saisissez un DOI, un PMID, un lien ou le titre et cliquez sur <b>Rechercher</b>.</li>
+<li>Vérifiez l'aperçu et les éventuelles alertes (rétracté, corrigé, doublon).</li>
+<li>Choisissez le style (Vancouver, APA 7, AMA, Harvard), le format de citation et la mise en page, puis <b>Insérer dans la diapositive</b>.</li>
+<li>À la fin, utilisez <b>Mettre à jour numérotation et citations</b> et <b>Créer les diapositives « Bibliographie »</b>.</li>
+</ol>
+<p>La recherche nécessite internet. Le placement automatique et la bibliographie nécessitent PowerPoint pour Microsoft 365 à jour. Détails sur la page <a href="support.html#fr">Assistance</a>.</p>
+
+<h2><span class="n">?</span>Bon à savoir</h2>
+<ul>
+<li>Pour mettre à jour le complément, il suffit d'envoyer les nouveaux fichiers sur GitHub : PowerPoint utilisera la nouvelle version à la prochaine ouverture. Si <code>manifest.xml</code> change, recopiez-le aussi dans le dossier <code>wef</code> (Mac) ou le dossier partagé (Windows).</li>
+<li>Les QR codes sont statiques : ils fonctionnent pour toujours, sans abonnement. Testez toujours la lecture avant d'imprimer.</li>
+<li>Le complément est disponible en italien, anglais, espagnol, français et allemand ; changez la langue avec le menu en haut à droite du volet.</li>
+</ul>
+</section>
+<section id="de" data-lang="de" lang="de">
+<h1>The Ultraspeaker QR Lab in PowerPoint installieren</h1>
+<p>Drei Schritte, etwa 10 Minuten, einmal pro Computer (Mac oder Windows). Danach bleibt die Schaltfläche <b>QR Code</b> in der Registerkarte <b>Einfügen</b> von PowerPoint, mit den beiden Bereichen <b>QR</b> und <b>Literatur</b>.</p>
+
+<h2><span class="n">1</span>Dateien online stellen (GitHub Pages, kostenlos)</h2>
+<p>Office-Add-ins werden immer von einer sicheren Webadresse (https) geladen. GitHub Pages stellt sie kostenlos bereit.</p>
+<ol>
+<li>Erstellen Sie ein kostenloses Konto auf <b>github.com</b> (falls noch nicht vorhanden).</li>
+<li><b>+ → New repository</b>. Name: <code>ultraspeaker-qr-lab</code>, Sichtbarkeit <b>Public</b>, dann <b>Create repository</b>.</li>
+<li>Laden Sie in das Repository hoch: <code>index.html</code>, <code>taskpane.html</code>, <code>app.js</code>, <code>reference.js</code>, <code>i18n.js</code>, <code>qrcode.js</code>, <code>support.html</code>, <code>privacy.html</code>, <code>terms.html</code>, <code>GUIDA-INSTALLAZIONE.html</code>, <code>manifest.xml</code> sowie die Ordner <code>assets</code> und <code>fonts</code>. Mit GitHub Desktop: Dateien in den Repository-Ordner kopieren, dann <b>Commit to main</b> und <b>Push origin</b>.</li>
+<li><b>Settings → Pages</b>: unter „Branch“ <b>main</b> und <b>/ (root)</b> wählen, dann <b>Save</b>.</li>
+<li>Öffnen Sie nach 1–2 Minuten <code>https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html</code>: Wenn Sie The Ultraspeaker QR Lab sehen, ist es online.</li>
+</ol>
+
+<h2><span class="n">2</span>Das Manifest ist fertig</h2>
+<p><code>manifest.xml</code> ist bereits für das GitHub-Konto <b>niki977</b> eingerichtet und verweist auf <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Sie müssen es nicht ändern, solange das Repository genau <code>ultraspeaker-qr-lab</code> heißt.</p>
+
+<h2><span class="n">3</span>In PowerPoint für Mac installieren</h2>
+<ol>
+<li>Beenden Sie PowerPoint.</li>
+<li>Drücken Sie im Finder <b>⌘ + Umschalt + G</b> und fügen Sie ein: <code>~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/</code></li>
+<li>Falls nicht vorhanden, erstellen Sie einen Ordner namens <code>wef</code> und kopieren Sie <code>manifest.xml</code> hinein.</li>
+<li>Öffnen Sie PowerPoint und eine Präsentation, gehen Sie zu <b>Start → Add-Ins</b> und wählen Sie <b>The Ultraspeaker QR Lab</b>.</li>
+<li>Danach finden Sie die Schaltfläche <b>QR Code</b> in der Registerkarte <b>Einfügen</b>.</li>
+</ol>
+<p class="note">Wenn der Befehl nicht erscheint, beenden Sie PowerPoint vollständig (⌘Q) und öffnen Sie es erneut.</p>
+
+<h2><span class="n">3</span>In PowerPoint für Windows installieren</h2>
+<ol>
+<li>Erstellen Sie einen Ordner, zum Beispiel <code>C:\QRLab</code>, und kopieren Sie <code>manifest.xml</code> hinein.</li>
+<li>Rechtsklick auf den Ordner → <b>Eigenschaften → Freigabe → Freigabe…</b>, Ihren Benutzer wählen, <b>Freigabe</b> und <b>Fertig</b>. Notieren Sie den Netzwerkpfad (ähnlich <code>\\PC-NAME\QRLab</code>).</li>
+<li>In PowerPoint: <b>Datei → Optionen → Trust Center → Einstellungen für das Trust Center… → Kataloge vertrauenswürdiger Add-Ins</b>. Netzwerkpfad bei <b>Katalog-URL</b> einfügen, <b>Katalog hinzufügen</b>, <b>Im Menü anzeigen</b> aktivieren, dann <b>OK</b>.</li>
+<li>PowerPoint schließen und neu öffnen, <b>Start → Add-Ins → FREIGEGEBENER ORDNER</b>, <b>The Ultraspeaker QR Lab</b> auswählen und <b>Hinzufügen</b>.</li>
+</ol>
+<p class="note">Auf einem Firmen-PC kann die IT das Add-in über das Microsoft 365 Admin Center allein mit der Datei <code>manifest.xml</code> verteilen.</p>
+
+<h2><span class="n">+</span>Weitere Möglichkeiten</h2>
+<ul>
+<li><b>PowerPoint im Web</b>: <b>Start → Add-Ins → Weitere Add-Ins → Meine Add-Ins → Mein Add-In hochladen</b> und <code>manifest.xml</code> auswählen.</li>
+<li><b>Webversion</b> (ohne Installation): <code>https://niki977.github.io/ultraspeaker-qr-lab/</code>. Sie erstellt QR-Codes und Zitate, auch auf dem Telefon.</li>
+</ul>
+
+<h2><span class="n">R</span>Der Bereich Literatur in Kürze</h2>
+<ol>
+<li>Wählen Sie im Bereich <b>Literatur</b>, geben Sie eine DOI, PMID, einen Link oder den Titel ein und klicken Sie auf <b>Suchen</b>.</li>
+<li>Prüfen Sie die Vorschau und eventuelle Warnungen (zurückgezogen, korrigiert, Duplikat).</li>
+<li>Wählen Sie Stil (Vancouver, APA 7, AMA, Harvard), Zitatformat und Layout, dann <b>In Folie einfügen</b>.</li>
+<li>Verwenden Sie am Ende <b>Nummerierung und Zitate aktualisieren</b> und <b>Folien „Literatur“ erstellen</b>.</li>
+</ol>
+<p>Die Suche erfordert eine Internetverbindung. Automatische Platzierung und Literaturverzeichnis erfordern ein aktuelles PowerPoint für Microsoft 365. Details auf der Seite <a href="support.html#de">Support</a>.</p>
+
+<h2><span class="n">?</span>Gut zu wissen</h2>
+<ul>
+<li>Zum Aktualisieren genügt es, die neuen Dateien auf GitHub hochzuladen: PowerPoint verwendet die neue Version beim nächsten Öffnen. Ändert sich <code>manifest.xml</code>, kopieren Sie es erneut in den Ordner <code>wef</code> (Mac) bzw. den freigegebenen Ordner (Windows).</li>
+<li>QR-Codes sind statisch: Sie funktionieren für immer und ohne Abonnement. Testen Sie den Scan immer vor dem Drucken.</li>
+<li>Das Add-in ist auf Italienisch, Englisch, Spanisch, Französisch und Deutsch verfügbar; die Sprache ändern Sie über das Menü oben rechts im Bereich.</li>
+</ul>
+</section>
+<footer>© The Ultraspeaker · Nicholas D. Charles · <a data-p="support" data-href="support.html" href="support.html" data-it="Supporto" data-en="Support" data-es="Soporte" data-fr="Assistance" data-de="Support">Support</a> · <a data-p="privacy" data-href="privacy.html" href="privacy.html" data-it="Privacy" data-en="Privacy" data-es="Privacidad" data-fr="Confidentialité" data-de="Datenschutz">Privacy</a> · <a data-p="terms" data-href="terms.html" href="terms.html" data-it="Condizioni d'uso" data-en="Terms of use" data-es="Condiciones de uso" data-fr="Conditions d'utilisation" data-de="Nutzungsbedingungen">Terms of use</a></footer>
 </main>
 </body>
 </html>
