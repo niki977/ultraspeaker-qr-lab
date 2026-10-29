@@ -24,13 +24,13 @@
     ncbiLast = Math.max(Date.now(), ncbiLast + 380);
     if (wait > 0) await sleep(wait);
   }
-  async function fetchApi(url, kind = "json", retries = 2) {
+  async function fetchApi(url, kind = "json") {
     if (navigator.onLine === false) throw new RefError("offline");
     for (let i = 0; ; i++) {
-      const ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
-      const tm = setTimeout(() => ctl && ctl.abort(), 15000);
+      const ctl = new AbortController();
+      const tm = setTimeout(() => ctl.abort(), 15000);
       let r;
-      try { r = await fetch(url, ctl ? { signal: ctl.signal } : {}); }
+      try { r = await fetch(url, { signal: ctl.signal }); }
       catch (e) {
         clearTimeout(tm);
         if (e && e.name === "AbortError") throw new RefError("timeout");
@@ -38,7 +38,7 @@
       }
       clearTimeout(tm);
       if (r.status === 429 || r.status === 503) {
-        if (i < retries) { await sleep(1200 * (i + 1)); continue; }
+        if (i < 2) { await sleep(1200 * (i + 1)); continue; } // due nuovi tentativi
         throw new RefError("rate");
       }
       if (r.status === 404) throw new RefError("notfound");
@@ -139,7 +139,7 @@
     const pubtypes = (s.pubtype || []).map((p) => String(p).toLowerCase());
     return {
       doi: (idOf("doi") || (String(s.elocationid || "").match(DOI_RE) || [""])[0]).toLowerCase(),
-      pmid: String(s.uid || idOf("pubmed") || ""), pmcid: idOf("pmc") || idOf("pmcid") || "",
+      pmid: String(s.uid || idOf("pubmed") || ""), pmcid: idOf("pmc"),
       authors, title: cleanText(s.title).replace(/\.$/, ""), journal: titleCase(cleanText(s.fulljournalname)), journalAbbr: cleanText(s.source),
       year, volume: cleanText(s.volume), issue: cleanText(s.issue), pages: cleanText(s.pages || ""),
       status: statusFrom([], pubtypes.includes("retracted publication")),
@@ -171,7 +171,7 @@
           if (s) { const pm = fromPubmed(s); ref.journalAbbr = pm.journalAbbr || ref.journalAbbr; ref.pmcid = pm.pmcid; if (pm.status.retracted) ref.status.retracted = true; }
         } catch (e) { /* PubMed facoltativo */ }
       }
-    } else if (p.kind === "pmid") {
+    } else {
       const s = (await pubmedSummary([p.id]))[0];
       if (!s) throw new RefError("notfound");
       ref = fromPubmed(s);
@@ -183,32 +183,28 @@
           if (cr.journal) ref.journal = cr.journal; // nome ufficiale della rivista
         } catch (e) { /* Crossref facoltativo */ }
       }
-    } else throw new RefError("notfound");
+    }
     if (!ref.title && !ref.authors.length) throw new RefError("notfound");
-    await addOpenAccess(ref);
-    ref.id = uid(); ref.added = Date.now();
-    return ref;
-  }
-  async function addOpenAccess(ref) {
-    ref.oaUrl = ""; ref.oaChecked = false;
+    // versione open access: Unpaywall, altrimenti PubMed Central
+    ref.oaUrl = "";
     if (ref.doi) {
       try {
-        const u = await unpaywall(ref.doi);
-        const b = u && u.best_oa_location;
+        const u = await unpaywall(ref.doi), b = u && u.best_oa_location;
         if (u && u.is_oa && b) ref.oaUrl = b.url_for_landing_page || b.url || b.url_for_pdf || "";
-        ref.oaChecked = true;
       } catch (e) { /* Unpaywall facoltativo */ }
     }
     if (!ref.oaUrl && ref.pmcid) ref.oaUrl = "https://pmc.ncbi.nlm.nih.gov/articles/" + ref.pmcid + "/";
+    ref.id = uid();
+    return ref;
   }
   async function searchText(q) {
     try {
       const j = await eutils("esearch.fcgi", "db=pubmed&retmode=json&retmax=10&sort=relevance&term=" + encodeURIComponent(q));
       const ids = (j.esearchresult || {}).idlist || [];
-      if (ids.length) return (await pubmedSummary(ids)).map((s) => Object.assign(fromPubmed(s), { src: "pubmed" }));
+      if (ids.length) return (await pubmedSummary(ids)).map(fromPubmed);
     } catch (e) { if (e.code === "offline" || e.code === "rate") throw e; }
     const j = await crossrefSearch(q);
-    return ((j.message || {}).items || []).filter((m) => (m.title || [])[0]).map((m) => Object.assign(fromCrossref(m), { src: "crossref" }));
+    return ((j.message || {}).items || []).filter((m) => (m.title || [])[0]).map(fromCrossref);
   }
   async function fetchAbstract(pmid) {
     const xml = await eutils("efetch.fcgi", "db=pubmed&rettype=abstract&retmode=xml&id=" + pmid, "text");
@@ -219,9 +215,6 @@
   /* =====================================================================
      3. STILI DI CITAZIONE
      ===================================================================== */
-  const STYLES = ["vancouver", "apa", "ama", "harvard"];
-  const SHORTS = ["authorJournal", "numeric", "authorYear"];
-  const STYLE_NAME = { vancouver: "Vancouver", apa: "APA 7", ama: "AMA", harvard: "Harvard" };
   const NUMBERED = (style) => style === "vancouver" || style === "ama";
   const endDot = (s) => (s && !/[.?!]$/.test(s) ? s + "." : s);
   const dash = (p) => String(p || "").replace(/\s*[-–]\s*/g, "–");
@@ -308,26 +301,19 @@
   const LOCAL_KEY = "qrlab.refs";
   const PREF_KEY = "qrlab.refPrefs";
   const docSettings = () => { try { return L().isOffice() && Office.context.document.settings ? Office.context.document.settings : null; } catch (e) { return null; } };
-  const emptyDoc = () => ({ v: 1, refs: [], style: "vancouver", shortFmt: "authorJournal" });
+  const emptyDoc = () => ({ refs: [], style: "vancouver", shortFmt: "authorJournal" });
   let DOC = emptyDoc();
   function loadDoc() {
-    let d = null;
     const ds = docSettings();
-    if (ds) { try { d = ds.get(DOC_KEY); } catch (e) { d = null; } }
-    else d = L().store.get(LOCAL_KEY, null);
-    if (typeof d === "string") { try { d = JSON.parse(d); } catch (e) { d = null; } }
-    DOC = Object.assign(emptyDoc(), d && typeof d === "object" ? d : {});
-    if (!Array.isArray(DOC.refs)) DOC.refs = [];
-    if (!STYLES.includes(DOC.style)) DOC.style = "vancouver";
-    if (!SHORTS.includes(DOC.shortFmt)) DOC.shortFmt = "authorJournal";
+    DOC = Object.assign(emptyDoc(), (ds ? ds.get(DOC_KEY) : L().store.get(LOCAL_KEY, null)) || {});
   }
   let saveT;
   function saveDoc() {
     const ds = docSettings();
     if (!ds) { L().store.set(LOCAL_KEY, DOC); return; }
-    try { ds.set(DOC_KEY, DOC); } catch (e) { return; }
+    ds.set(DOC_KEY, DOC);
     clearTimeout(saveT);
-    saveT = setTimeout(() => { try { ds.saveAsync(() => {}); } catch (e) { /* ignora */ } }, 300);
+    saveT = setTimeout(() => ds.saveAsync(() => {}), 300);
   }
   const numOf = (ref) => DOC.refs.indexOf(ref) + 1;
   const normTitle = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
@@ -342,13 +328,12 @@
   function addToDoc(ref) { // restituisce il riferimento già presente se è un duplicato
     const ex = findSame(ref);
     if (ex) return { ref: ex, dup: true };
-    const c = JSON.parse(JSON.stringify(ref)); delete c.src; delete c.abstract;
+    const c = JSON.parse(JSON.stringify(ref)); delete c.abstract;
     DOC.refs.push(c); saveDoc();
     return { ref: c, dup: false };
   }
 
   const defaultPrefs = { preset: "discreet", pos: "left", font: "", size: 16, color: "#7f7f7f", what: "both", qrFmt: "svg", qrCm: 1.9, target: "doi", notes: false, bibQr: false };
-  const WHATS = ["both", "text", "qr"];
   const PRESETS = {
     discreet: { pos: "left", size: 16, color: "#7f7f7f", qrCm: 1.9 },
     centered: { pos: "center", size: 16, color: "#595959", qrCm: 1.9 },
@@ -409,49 +394,45 @@
   }
   function styleText(shape, opts) {
     const tf = shape.textFrame;
-    try { tf.wordWrap = true; tf.autoSizeSetting = "AutoSizeNone"; tf.verticalAlignment = opts.valign || "Bottom"; tf.leftMargin = 0; tf.rightMargin = 0; tf.topMargin = 0; tf.bottomMargin = 0; } catch (e) { /* proprietà non disponibile */ }
+    tf.wordWrap = true; tf.autoSizeSetting = "AutoSizeNone"; tf.verticalAlignment = opts.valign || "Bottom";
+    tf.leftMargin = 0; tf.rightMargin = 0; tf.topMargin = 0; tf.bottomMargin = 0;
     const tr = tf.textRange;
     tr.font.size = opts.size;
     if (opts.color) tr.font.color = opts.color;
     if (opts.font) tr.font.name = opts.font;
     if (opts.bold != null) tr.font.bold = opts.bold;
-    try { tr.paragraphFormat.horizontalAlignment = opts.align || "Left"; } catch (e) { /* ignora */ }
+    tr.paragraphFormat.horizontalAlignment = opts.align || "Left";
   }
-  // Formato scelto dall'utente: vettoriale (SVG) se PowerPoint lo accetta, altrimenti PNG ad alta risoluzione
+  // Formato scelto dall'utente: vettoriale (SVG) se PowerPoint lo accetta, altrimenti PNG ad alta risoluzione.
+  // I QR piccoli della bibliografia sono senza logo, per restare leggibili.
   let svgFallback = false;
-  const svgOk = () => { try { return Office.context.requirements.isSetSupported("ImageCoercion", "1.2"); } catch (e) { return false; } };
-  async function qrImagePayload(ref, sidePt) {
-    const out = refQR(ref);
+  async function qrImagePayload(ref, sidePt, small) {
+    const out = refQR(ref, small);
     if (!out) return null;
-    if (P.qrFmt === "svg") { if (svgOk()) return { data: out.svg, type: Office.CoercionType.XmlSvg }; svgFallback = true; }
-    const png = await L().svgToPng(out.svg, out.W, out.H, Math.max(300, Math.min(900, Math.round((sidePt / 72) * 300))));
+    if (P.qrFmt === "svg") { if (Office.context.requirements.isSetSupported("ImageCoercion", "1.2")) return { data: out.svg, type: Office.CoercionType.XmlSvg }; svgFallback = true; }
+    const png = await L().svgToPng(out.svg, out.W, out.H, small ? 300 : Math.max(300, Math.min(900, Math.round((sidePt / 72) * 300))));
     return { data: png.split(",")[1], type: Office.CoercionType.Image };
   }
-  // Inserisce un'immagine QR nella slide selezionata in una posizione precisa e restituisce l'id della nuova forma
+  // Inserisce un'immagine QR nella slide indicata in una posizione precisa e restituisce l'id della nuova forma
   async function placeQr(ref, x, y, side, slideId, kind = "qr") {
-    const pl = kind === "bibqr" ? await qrImagePayloadSmall(ref, side) : await qrImagePayload(ref, side);
+    const pl = await qrImagePayload(ref, side, kind === "bibqr");
     if (!pl) return null;
     let before = null;
-    if (fullApi()) {
-      await PowerPoint.run(async (ctx) => {
-        if (slideId) { ctx.presentation.setSelectedSlides([slideId]); await ctx.sync(); }
-        const sl = ctx.presentation.getSelectedSlides(); sl.load("items"); await ctx.sync();
-        if (!sl.items.length) return;
-        try { sl.items[0].setSelectedShapes([]); } catch (e) { /* ignora */ }
-        const sh = sl.items[0].shapes; sh.load("items/id"); await ctx.sync();
-        before = new Set(sh.items.map((s) => s.id));
-      });
-    }
+    await PowerPoint.run(async (ctx) => {
+      ctx.presentation.setSelectedSlides([slideId]); await ctx.sync();
+      const sl = ctx.presentation.getSelectedSlides(); sl.load("items"); await ctx.sync();
+      sl.items[0].setSelectedShapes([]);
+      const sh = sl.items[0].shapes; sh.load("items/id"); await ctx.sync();
+      before = new Set(sh.items.map((s) => s.id));
+    });
     await setData(pl.data, { coercionType: pl.type, imageLeft: x, imageTop: y, imageWidth: side, imageHeight: side });
-    if (!before) return null;
     let id = null;
     await PowerPoint.run(async (ctx) => {
       const sl = ctx.presentation.getSelectedSlides(); sl.load("items"); await ctx.sync();
-      if (!sl.items.length) return;
       const sh = sl.items[0].shapes; sh.load("items/id,items/name"); await ctx.sync();
       const fresh = sh.items.filter((s) => !before.has(s.id));
       const pic = fresh[fresh.length - 1];
-      if (pic) { pic.name = NAME_PREFIX + ref.id + ":" + kind; id = pic.id; try { pic.tags.add("USREF", ref.id); } catch (e) { /* ignora */ } await ctx.sync(); }
+      if (pic) { pic.name = NAME_PREFIX + ref.id + ":" + kind; id = pic.id; await ctx.sync(); }
     });
     return id;
   }
@@ -476,7 +457,6 @@
       const tb = slide.shapes.addTextBox(text, { left: g.tx, top: g.ty, width: g.tw, height: g.boxH });
       tb.name = NAME_PREFIX + ref.id + ":txt:" + DOC.shortFmt;
       styleText(tb, { size: P.size, color: P.color, font: P.font, align: g.align });
-      try { tb.tags.add("USREF", ref.id); tb.tags.add("USREFFMT", DOC.shortFmt); } catch (e) { /* ignora */ }
       tb.load("id"); await ctx.sync(); textId = tb.id;
     });
     let qrId = null;
@@ -497,7 +477,7 @@
   // Legge le citazioni presenti nelle slide, nell'ordine di comparsa
   async function scanSlides(ctx) {
     const slides = ctx.presentation.slides; slides.load("items/id"); await ctx.sync();
-    const per = slides.items.map((s) => { const c = s.shapes; c.load("items/id,items/name,items/type"); return c; });
+    const per = slides.items.map((s) => { const c = s.shapes; c.load("items/id,items/name"); return c; });
     await ctx.sync();
     const groups = [];
     per.forEach((c) => c.items.forEach((sh) => { if (sh.name && sh.name.startsWith(NAME_PREFIX) && /:grp$/.test(sh.name)) { try { const gs = sh.group.shapes; gs.load("items/id,items/name"); groups.push({ id: sh.id, gs }); } catch (e) { /* senza API dei gruppi */ } } }));
@@ -508,7 +488,7 @@
         const list = /:grp$/.test(sh.name || "") ? ((groups.find((g) => g.id === sh.id) || {}).gs || { items: [] }).items : [sh];
         list.forEach((x) => {
           const m = (x.name || "").match(/^UltraspeakerRef:([^:]+):(txt|qr|bib|bibqr|bibtitle)(?::(\w+))?$/);
-          if (m) found.push({ slide, slideIdx: si, shape: x, id: m[1], kind: m[2], fmt: m[3] || "" });
+          if (m) found.push({ slide, shape: x, id: m[1], kind: m[2], fmt: m[3] || "" });
         });
       });
     });
@@ -609,17 +589,10 @@
       }
     });
     let qrFail = 0;
-    for (const j of qrJobs) { // QR piccoli accanto alle voci (senza logo, per restare leggibili)
+    for (const j of qrJobs) { // QR piccoli accanto alle voci
       try { await placeQr(j.ref, j.x, j.y, 40, j.slideId, "bibqr"); } catch (e) { qrFail++; }
     }
     return { pages: pagesCount, entries: entries.length, qrFail };
-  }
-  async function qrImagePayloadSmall(ref, sidePt) {
-    const out = refQR(ref, true);
-    if (!out) return null;
-    if (P.qrFmt === "svg") { if (svgOk()) return { data: out.svg, type: Office.CoercionType.XmlSvg }; svgFallback = true; }
-    const png = await L().svgToPng(out.svg, out.W, out.H, 300);
-    return { data: png.split(",")[1], type: Office.CoercionType.Image };
   }
 
   /* =====================================================================
@@ -644,11 +617,10 @@
   let editing = null;    // id del riferimento in modifica
   let confirmDel = null; // id del riferimento in attesa di conferma eliminazione
   let busy = false;
-  const errMsg = (e) => t("ref.err." + ((e && e.code) || "generic")) || t("ref.err.generic");
-  function setStatus(msg, kind) {
-    const el = $("#refStatus");
-    el.textContent = msg || ""; el.className = "status" + (kind === "err" ? " ref-err" : "");
-  }
+  const errMsg = (e) => t("ref.err." + ((e && e.code) || "generic"));
+  function setMsg(sel, msg, kind) { const el = $(sel); el.textContent = msg || ""; el.className = "status" + (kind === "err" ? " ref-err" : ""); }
+  const setStatus = (msg, kind) => setMsg("#refStatus", msg, kind);
+  const setListStatus = (msg, kind) => setMsg("#refListStatus", msg, kind);
   const authorsLine = (r) => { const A = r.authors || []; const n = A.slice(0, 6).map(nlmName).join(", "); return A.length > 6 ? n + ", et al." : n; };
   const srcLine = (r) => [r.journalAbbr || r.journal, [r.year, r.volume ? r.volume + (r.issue ? "(" + r.issue + ")" : "") : "", hyph(r.pages)].filter(Boolean).join(" · ")].filter(Boolean).join(" — ");
 
@@ -660,7 +632,7 @@
     $$(".ref-res", box).forEach((b) => b.addEventListener("click", async () => {
       const r = results[+b.dataset.i];
       const p = r.pmid ? { kind: "pmid", id: r.pmid } : r.doi ? { kind: "doi", id: r.doi } : null;
-      if (!p) { cur = Object.assign({ id: uid(), added: Date.now() }, r); results = []; renderResults(); renderPreview(); return; }
+      if (!p) { cur = Object.assign({ id: uid() }, r); results = []; renderResults(); renderPreview(); return; }
       results = []; renderResults();
       await runLookup(p);
     }));
@@ -955,7 +927,6 @@
     } catch (e) { setListStatus(t("ref.err.bib"), "err"); }
     finally { b.disabled = false; renderList(); }
   }
-  function setListStatus(msg, kind) { const el = $("#refListStatus"); el.textContent = msg || ""; el.className = "status" + (kind === "err" ? " ref-err" : ""); }
 
   function linkify(a) {
     a.addEventListener("click", (e) => {
@@ -1011,12 +982,7 @@
   function init() {
     if (inited) return;
     inited = true;
-    const stored = L().store.get(PREF_KEY, {}) || {};
-    P = Object.assign({}, defaultPrefs, stored);
-    if (stored.qr === false && !stored.what) P.what = "text"; // preferenza della prima versione
-    delete P.qr;
-    if (!WHATS.includes(P.what)) P.what = "both";
-    if (P.qrFmt !== "png") P.qrFmt = "svg";
+    P = Object.assign({}, defaultPrefs, L().store.get(PREF_KEY, {}));
     loadDoc();
     bind();
     applyLang();
@@ -1024,6 +990,5 @@
   // Il pannello si è accorto di essere in PowerPoint solo dopo l'avvio: ricarico dal documento
   function officeReady() { if (!inited) return; loadDoc(); applyLang(); }
 
-  window.QRRef = { init, applyLang, officeReady, refresh: () => { if (inited) renderInsertUI(); },
-    _test: { parseInput, parseList, fromCrossref, fromPubmed, formatFull, formatShort, layout, paginate, statusFrom, get DOC() { return DOC; }, get P() { return P; } } };
+  window.QRRef = { init, applyLang, officeReady, refresh: () => { if (inited) renderInsertUI(); } };
 })();

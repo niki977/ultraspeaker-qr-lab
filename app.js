@@ -198,19 +198,12 @@
   const state = store.get("qrstudio.state", null) || {};
   const S = {
     type: state.type || "url",
-    values: state.values || (window.QR_DEMO || window.QR_WEB ? { url: { url: "www.theultraspeaker.com" } } : {}),
+    values: state.values || (window.QR_WEB ? { url: { url: "www.theultraspeaker.com" } } : {}),
     design: Object.assign({}, DEFAULT_DESIGN, state.design || {}),
     format: state.format || "png",
     sizeCm: state.sizeCm || 5,
   };
-  // Il vecchio nero predefinito (#171a26) diventa il nero pieno del marchio
-  ["dotColor", "cornerSqColor", "cornerDotColor", "frameColor"].forEach((k) => { if (S.design[k] === "#171a26") S.design[k] = "#000000"; });
-  // La forma "Elegante" (classy-rounded) è stata tolta: diventa "Classy"
-  if (S.design.dotType === "classy-rounded") S.design.dotType = "classy";
-  // Migrazione dai nomi usati nella prima versione
-  if (S.design.cornerSqType === "dot") S.design.cornerSqType = "circle";
-  if (S.design.cornerDotType === "dot") S.design.cornerDotType = "circle";
-  if (S.design.logo && /^data:image\/svg/.test(S.design.logo) && !(S.design.logoName || "").startsWith("icon:")) { /* verrà convertito all'avvio */ }
+
   /* La password Wi-Fi non viene mai salvata: resta solo in memoria finché il pannello è aperto */
   const noPass = (v) => { const c = JSON.parse(JSON.stringify(v || {})); delete c.pass; return c; };
   const safeValues = (all) => { const c = JSON.parse(JSON.stringify(all || {})); if (c.wifi) delete c.wifi.pass; return c; };
@@ -484,29 +477,18 @@
     return c;
   };
   const designKey = (d) => JSON.stringify(Object.assign({}, d, { logo: d.logo ? d.logo.length : 0 }));
-  // Porta un design salvato (anche da versioni precedenti) nel formato attuale
+  // Logo a icona senza immagine salvata (era troppo grande per la memoria): lo rigenero
+  const restoreIcon = () => { if ((S.design.logoName || "").startsWith("icon:") && !S.design.logo) setIconLogo(); };
   function loadDesign(d) {
     S.design = Object.assign({}, DEFAULT_DESIGN, { frameText: t("frame.default") }, JSON.parse(JSON.stringify(d || {})));
-    if (S.design.dotType === "classy-rounded") S.design.dotType = "classy";
-    ["cornerSqType", "cornerDotType"].forEach((k) => { if (S.design[k] === "dot") S.design[k] = "circle"; });
-    ["dotColor", "cornerSqColor", "cornerDotColor", "frameColor"].forEach((k) => { if (S.design[k] === "#171a26") S.design[k] = "#000000"; });
-    if ((S.design.logoName || "").startsWith("icon:") && (!S.design.logo || S.design.logoName === "icon:brand")) setIconLogo();
+    restoreIcon();
   }
   function applyDesign(d) {
     loadDesign(d);
     syncDesignUI(); update(); toast(t("toast.preset"));
   }
   // Ultimi 2 design usati (indipendenti dal contenuto del QR)
-  function lastDesigns() {
-    const saved = store.get("qrlab.lastDesigns", null);
-    if (saved) return saved;
-    const out = [], seen = new Set(); // prima volta: li ricavo dai QR recenti
-    for (const r of store.get("qrstudio.recent", [])) {
-      const k = designKey(r.design); if (seen.has(k)) continue;
-      seen.add(k); out.push(r.design); if (out.length === 2) break;
-    }
-    return out;
-  }
+  const lastDesigns = () => store.get("qrlab.lastDesigns", []);
   function rememberDesign(d) {
     const c = cleanDesign(d), k = designKey(c);
     const list = [c].concat(lastDesigns().filter((x) => designKey(x) !== k)).slice(0, 2);
@@ -631,18 +613,16 @@
   /* Motore di disegno leggero: tutti i moduli in un unico tracciato, niente maschere.
      Il QR è disegnato in "unità modulo" dentro un gruppo scalato: file piccolo e veloce da gestire in PowerPoint. */
   function matrix(data, ec) {
-    qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];
     const q = qrcode(0, ec);
     q.addData(data, "Byte");
     q.make();
     return q;
   }
   const DOT_R = { // raggi degli angoli esposti [tl, tr, br, bl], in frazioni di modulo
-    rounded: [0.3, 0.3, 0.3, 0.3], "extra-rounded": [0.5, 0.5, 0.5, 0.5], classy: [0.5, 0, 0.5, 0], "classy-rounded": [0.5, 0.2, 0.5, 0.2] };
+    rounded: [0.3, 0.3, 0.3, 0.3], "extra-rounded": [0.5, 0.5, 0.5, 0.5], classy: [0.5, 0, 0.5, 0] };
 
   function bodyPath(q, n, skip, type) {
     const dark = (r, c) => r >= 0 && c >= 0 && r < n && c < n && !skip(r, c) && q.isDark(r, c);
-    if (type === "classy-rounded") type = "classy"; // forma rimossa
     // Capsule: punti che si fondono in capsule verticali
     if (type === "vpills") {
       let d = "";
@@ -885,7 +865,6 @@
     if (!current) return;
     const wPt = Math.min(30, Math.max(1, +S.sizeCm || 5)) * CM_TO_PT;
     const hPt = (wPt * current.H) / current.W;
-    if (window.QR_DEMO) { toast(t("toast.demo")); addRecent(); return; }
     if (window.QR_WEB) { if (shareMode) { share(); return; } download("png"); toast(t("toast.downloaded")); return; }
     if (!inOffice) {
       toast(t("toast.browser"));
@@ -977,8 +956,7 @@
       const src = isWifi ? buildSVG(data) : current;
       thumb = await svgToPng(src.svg, src.W, src.H, 96);
     } catch (e) { return; }
-    const design = Object.assign({}, S.design);
-    if (design.logo && design.logo.length > 150000) { design.logo = null; design.logoName = ""; }
+    const design = cleanDesign(S.design);
     let list = store.get("qrstudio.recent", []);
     list = list.filter((r) => r.data !== data);
     list.unshift({ data, type: S.type, values, design, thumb });
@@ -1002,8 +980,7 @@
   function labelButtons() {
     if (window.QR_WEB && shareMode) { $("#insertLabel").textContent = t("btn.share"); $("#barInsert").textContent = t("btn.shareShort"); $("#dlPngLabel").textContent = "PNG"; $("#dlSvgLabel").textContent = "SVG"; return; }
     if (window.QR_WEB) { $("#insertLabel").textContent = t("btn.downloadPng"); $("#barInsert").textContent = t("btn.downloadPng"); $("#dlSvgLabel").textContent = t("btn.downloadSvg"); return; }
-    if (window.QR_DEMO) { $("#insertLabel").textContent = t("btn.insertDemo"); $("#barInsert").textContent = t("btn.insert"); }
-    else if (!inOffice) { $("#insertLabel").textContent = t("btn.insertBrowser"); $("#barInsert").textContent = t("btn.downloadPng"); }
+    if (!inOffice) { $("#insertLabel").textContent = t("btn.insertBrowser"); $("#barInsert").textContent = t("btn.downloadPng"); }
     else { $("#insertLabel").textContent = t("btn.insert"); $("#barInsert").textContent = t("btn.insert"); }
     // In PowerPoint i pulsanti di download non funzionano su tutte le piattaforme (es. Mac): li nascondo, resta l'inserimento
     if (inOffice) $(".btns").hidden = true;
@@ -1040,7 +1017,7 @@
   }
   // Strumenti del QR Lab messi a disposizione della sezione Reference (reference.js)
   window.QRLab = {
-    t: (k, v) => t(k, v), toast, store, getLang: () => LANG, isOffice: () => inOffice,
+    t: (k, v) => t(k, v), toast, store, isOffice: () => inOffice,
     design: () => S.design, buildSVG: (data, d, ec) => buildSVG(data, d, ec), svgToPng, withFont, openUrl,
     showQrDesign: () => { setMode("qr"); const c = $("[data-tab=stile]"); if (c) c.closest(".card").scrollIntoView({ behavior: "smooth", block: "start" }); },
   };
@@ -1054,7 +1031,6 @@
 
   function init() {
     LANG = detectLang();
-    if (window.QR_DEMO) $("#appSub").dataset.i18n = "app.subDemo";
     if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = t("frame.default");
     $("#langSel").innerHTML = I18N.langs.map(([c, n]) => `<option value="${c}">${n}</option>`).join("");
     $("#langSel").addEventListener("change", (e) => setLang(e.target.value));
@@ -1070,20 +1046,13 @@
     // Versione web: "Richiedi una consulenza" (email). Add-in: "Aiuto e supporto", perché le regole di
     // Microsoft Marketplace non consentono di indirizzare gli utenti verso servizi esterni dall'add-in.
     const cta = $("#ctaMail");
-    if (!window.QR_WEB && !window.QR_DEMO) {
+    if (!window.QR_WEB) {
       cta.dataset.i18n = "cta.help";
       cta.href = new URL("support.html", location.href).href;
       cta.target = "_blank"; cta.rel = "noopener"; cta.removeAttribute("title");
     }
-    // Link del pannello (CTA e logo -> www.theultraspeaker.com)
-    [cta, $("#logoLink")].forEach((a) => a.addEventListener("click", (e) => {
-      if (!inOffice) return; // nel browser il link funziona normalmente
-      try {
-        // nel pannello di PowerPoint i link vanno aperti dal sistema
-        if (Office.context.requirements.isSetSupported("OpenBrowserWindowApi", "1.1")) { e.preventDefault(); Office.context.ui.openBrowserWindow(a.href); }
-      } catch (err) { /* lascio agire il link normale */ }
-    }));
-    if (window.QR_DEMO) $("#dlPng").parentElement.hidden = true;
+    // Link del pannello: in PowerPoint li apre il sistema, nel browser funzionano normalmente
+    [cta, $("#logoLink")].forEach((a) => a.addEventListener("click", (e) => { if (inOffice) { e.preventDefault(); openUrl(a.href); } }));
     if (window.QR_WEB) { // versione web: download al posto dell'inserimento
       $("#appSub").dataset.i18n = "app.subWeb";
       $("#widthLbl").dataset.i18n = "lbl.printWidth";
@@ -1099,8 +1068,7 @@
       }
       $("#webHint").hidden = false;
     }
-    // Le icone salvate come SVG e il logo Ultraspeaker vengono rigenerati (il logo del marchio ora è vettoriale)
-    if (S.design.logoName && S.design.logoName.startsWith("icon:") && (/^data:image\/svg/.test(S.design.logo || "") || S.design.logoName === "icon:brand")) setIconLogo();
+    restoreIcon();
     // Sezioni QR | Reference (frecce sinistra/destra come nelle schede standard)
     const modeBtns = $$(".modes [role=tab]");
     modeBtns.forEach((b) => {
@@ -1112,7 +1080,6 @@
     setMode(store.get("qrlab.mode", "qr"));
   }
 
-  window.__qrLab = { svg: () => (current ? current.svg : null), svgPreview: () => (current ? withFont(current.svg) : null) }; // per diagnostica
 
   let started = false;
   const start = () => { if (!started) { started = true; init(); } };
