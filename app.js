@@ -26,6 +26,7 @@
     return v;
   }
   function detectLang() {
+    if (INCOMING && INCOMING.lang) return INCOMING.lang;
     const saved = store.get("qrlab.lang", null);
     if (saved && LANGS.includes(saved)) return saved;
     let l = "";
@@ -196,9 +197,26 @@
     ec: "M", margin: 20,
   };
   const state = store.get("qrstudio.state", null) || {};
+  /* Link ricevuto da un'altra app The Ultraspeaker (per esempio il Feedback Lab):
+     ?url=https://…  contenuto del QR, &name=…  nome del file scaricato, &lang=it|en|es|fr|de  lingua del pannello.
+     Solo nella versione web; il contenuto si può sempre cambiare a mano. */
+  const INCOMING = (function () {
+    if (!window.QR_WEB) return null;
+    try {
+      const p = new URLSearchParams(location.search);
+      const u = (p.get("url") || "").trim();
+      if (!/^https?:\/\/\S+$/i.test(u) || u.length > 1000) return null;
+      const name = (p.get("name") || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+      const lang = (p.get("lang") || "").slice(0, 2).toLowerCase();
+      // tolgo i parametri dall'indirizzo: se si ricarica la pagina restano le modifiche fatte
+      try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) { /* ignora */ }
+      return { url: u, name: name, lang: LANGS.includes(lang) ? lang : "" };
+    } catch (e) { return null; }
+  })();
   const S = {
-    type: state.type || "url",
-    values: state.values || (window.QR_WEB ? { url: { url: "www.theultraspeaker.com" } } : {}),
+    type: INCOMING ? "url" : state.type || "url",
+    values: Object.assign({}, state.values || (window.QR_WEB ? { url: { url: "www.theultraspeaker.com" } } : {}), INCOMING ? { url: { url: INCOMING.url } } : {}),
     design: Object.assign({}, DEFAULT_DESIGN, state.design || {}),
     format: state.format || "png",
     sizeCm: state.sizeCm || 5,
@@ -890,7 +908,11 @@
   function setData(val, opts) {
     return new Promise((res, rej) => Office.context.document.setSelectedDataAsync(val, opts, (r) => (r.status === Office.AsyncResultStatus.Succeeded ? res() : rej(r.error))));
   }
-  function fileBase() { return "qr-" + S.type + "-" + new Date().toISOString().slice(0, 10); }
+  function fileBase() {
+    // QR arrivato da un'altra app: nome del file scelto da quell'app, finché il link resta lo stesso
+    if (INCOMING && INCOMING.name && S.type === "url" && trim(vals().url) === INCOMING.url) return "qr-" + INCOMING.name;
+    return "qr-" + S.type + "-" + new Date().toISOString().slice(0, 10);
+  }
   /* ---------- Condivisione da cellulare (versione web) ----------
      Sul telefono il pulsante principale apre il menu Condividi del sistema:
      da lì si salva nelle Foto (iPhone: "Salva immagine") o si invia con WhatsApp, Messaggi, Telegram…
@@ -1077,7 +1099,7 @@
     });
     if (window.QRRef) window.QRRef.init();
     applyLang();
-    setMode(store.get("qrlab.mode", "qr"));
+    setMode(INCOMING ? "qr" : store.get("qrlab.mode", "qr"));
   }
 
 
