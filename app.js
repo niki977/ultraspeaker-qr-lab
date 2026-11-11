@@ -10,6 +10,26 @@
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage non disponibile */ } },
   };
+  /* Memoria del browser: tutte le chiavi del Lab sono ultraspeaker.qr.<cosa>.
+     Le chiavi delle versioni precedenti (qrlab.*, qrstudio.*) vengono copiate una volta e poi cancellate. */
+  const KEY = (k) => "ultraspeaker.qr." + k;
+  (function migrateKeys() {
+    const OLD = { custom: "qrlab.custom", lastDesigns: "qrlab.lastDesigns", mode: "qrlab.mode", refPrefs: "qrlab.refPrefs", refs: "qrlab.refs", state: "qrstudio.state", recent: "qrstudio.recent" };
+    try {
+      Object.keys(OLD).forEach((k) => {
+        const v = localStorage.getItem(OLD[k]);
+        if (v == null) return;
+        if (localStorage.getItem(KEY(k)) == null) localStorage.setItem(KEY(k), v);
+        localStorage.removeItem(OLD[k]);
+      });
+    } catch (e) { /* memoria non disponibile */ }
+  })();
+  // Pannello di PowerPoint: taskpane.html lascia un segno prima di rimandare qui; Office aggiunge _host_Info all'indirizzo
+  const PANEL = (function () {
+    try { if (sessionStorage.getItem("ultraspeaker.qr.panel")) return true; } catch (e) { /* memoria non disponibile */ }
+    return /[?&]_host_Info=/i.test(location.search);
+  })();
+  let WEB = !PANEL; // versione web: si scarica invece di inserire nella slide
   let inOffice = false;
   let toastT;
   function toast(msg) {
@@ -21,19 +41,20 @@
   const LANGS = I18N.langs.map((l) => l[0]);
   let LANG = "it";
   function t(k, vars) {
-    let v = (I18N[LANG] && I18N[LANG][k]) || I18N.it[k] || k;
+    let v = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k;
     if (vars) for (const n in vars) v = v.replace("{" + n + "}", vars[n]);
     return v;
   }
+  // Lingua comune a tutti i Lab (shared/ultraspeaker-lang.js); quella indicata da un'altra app ha la precedenza
+  const LANG_CHOSEN = (function () { try { return !!(localStorage.getItem("ultraspeaker.lang") || localStorage.getItem("qrlab.lang")); } catch (e) { return false; } })();
   function detectLang() {
-    if (INCOMING && INCOMING.lang) return INCOMING.lang;
-    const saved = store.get("qrlab.lang", null);
-    if (saved && LANGS.includes(saved)) return saved;
-    let l = "";
-    try { if (inOffice && Office.context && Office.context.displayLanguage) l = Office.context.displayLanguage; } catch (e) { /* ignora */ }
-    if (!l) l = (navigator.languages && navigator.languages[0]) || navigator.language || "it";
-    l = l.slice(0, 2).toLowerCase();
-    return LANGS.includes(l) ? l : "en";
+    const UL = window.UltraspeakerLang;
+    if (INCOMING && INCOMING.lang) return UL.set(INCOMING.lang);
+    let host = null;
+    try { if (inOffice) host = Office.context.displayLanguage; } catch (e) { /* lingua di Office non disponibile */ }
+    const l = UL.set(UL.get("qrlab.lang", host));
+    try { localStorage.removeItem("qrlab.lang"); } catch (e) { /* memoria non disponibile */ }
+    return l;
   }
   // Applica le traduzioni a tutti gli elementi con data-i18n
   function applyStatic() {
@@ -196,12 +217,12 @@
     frame: "none", frameText: "SCANSIONAMI", frameColor: "#000000", frameTextColor: "#ffffff",
     ec: "M", margin: 20,
   };
-  const state = store.get("qrstudio.state", null) || {};
+  const state = store.get(KEY("state"), null) || {};
   /* Link ricevuto da un'altra app The Ultraspeaker (per esempio il Feedback Lab):
      ?url=https://…  contenuto del QR, &name=…  nome del file scaricato, &lang=it|en|es|fr|de  lingua del pannello.
      Solo nella versione web; il contenuto si può sempre cambiare a mano. */
   const INCOMING = (function () {
-    if (!window.QR_WEB) return null;
+    if (PANEL) return null;
     try {
       const p = new URLSearchParams(location.search);
       const u = (p.get("url") || "").trim();
@@ -216,7 +237,7 @@
   })();
   const S = {
     type: INCOMING ? "url" : state.type || "url",
-    values: Object.assign({}, state.values || (window.QR_WEB ? { url: { url: "www.theultraspeaker.com" } } : {}), INCOMING ? { url: { url: INCOMING.url } } : {}),
+    values: Object.assign({}, state.values || (WEB ? { url: { url: "www.theultraspeaker.com" } } : {}), INCOMING ? { url: { url: INCOMING.url } } : {}),
     design: Object.assign({}, DEFAULT_DESIGN, state.design || {}),
     format: state.format || "png",
     sizeCm: state.sizeCm || 5,
@@ -228,17 +249,17 @@
   // Pulizia dei dati salvati dalle versioni precedenti, che potevano contenere la password
   (function purgeSavedPasswords() {
     if (S.values.wifi && S.values.wifi.pass) delete S.values.wifi.pass;
-    const st = store.get("qrstudio.state", null);
-    if (st && st.values && st.values.wifi && "pass" in st.values.wifi) { delete st.values.wifi.pass; store.set("qrstudio.state", st); }
-    const rec = store.get("qrstudio.recent", []);
+    const st = store.get(KEY("state"), null);
+    if (st && st.values && st.values.wifi && "pass" in st.values.wifi) { delete st.values.wifi.pass; store.set(KEY("state"), st); }
+    const rec = store.get(KEY("recent"), []);
     // i QR Wi-Fi recenti salvati prima contengono la password anche nella miniatura: li elimino
     const clean = rec.filter((r) => !(r.type === "wifi" && /;P:/.test(r.data || "")));
-    if (clean.length !== rec.length) store.set("qrstudio.recent", clean);
+    if (clean.length !== rec.length) store.set(KEY("recent"), clean);
   })();
   const saveState = () => {
     const d = Object.assign({}, S.design);
     if (d.logo && d.logo.length > 300000) { d.logo = null; d.logoName = ""; }
-    store.set("qrstudio.state", { type: S.type, values: safeValues(S.values), design: d, format: S.format, sizeCm: S.sizeCm });
+    store.set(KEY("state"), { type: S.type, values: safeValues(S.values), design: d, format: S.format, sizeCm: S.sizeCm });
   };
   const vals = () => (S.values[S.type] = S.values[S.type] || {});
 
@@ -256,12 +277,12 @@
     const val = v[f.k] != null ? v[f.k] : "";
     let inp;
     const ph = esc(f.ph ? t(f.ph) : "");
-    if (f.select) inp = `<select id="${id}" data-k="${f.k}">${f.select.map(([o, l]) => `<option value="${o}" ${val === o ? "selected" : ""}>${esc(t(l))}</option>`).join("")}</select>`;
+    if (f.select) inp = `<select class="us-field" id="${id}" data-k="${f.k}">${f.select.map(([o, l]) => `<option value="${o}" ${val === o ? "selected" : ""}>${esc(t(l))}</option>`).join("")}</select>`;
     else if (f.check) return `<label class="check"><input type="checkbox" id="${id}" data-k="${f.k}" ${val ? "checked" : ""}> ${esc(t(f.label))}</label>`;
-    else if (f.area) inp = `<textarea id="${id}" data-k="${f.k}" placeholder="${ph}">${esc(val)}</textarea>`;
-    else inp = `<input type="${f.type || "text"}" id="${id}" data-k="${f.k}" placeholder="${ph}" value="${esc(val)}" autocomplete="off">`;
+    else if (f.area) inp = `<textarea class="us-field" id="${id}" data-k="${f.k}" placeholder="${ph}">${esc(val)}</textarea>`;
+    else inp = `<input type="${f.type || "text"}" class="us-field" id="${id}" data-k="${f.k}" placeholder="${ph}" value="${esc(val)}" autocomplete="off">`;
     const sel = f.sel && inOffice ? `<button type="button" class="inline-btn" data-sel="${f.k}">${esc(t("useSelection"))}</button>` : "";
-    return `<div class="field"><label for="${id}">${esc(t(f.label))}${f.req ? "" : ` <span style="font-weight:400;color:var(--ink-3)">${esc(t("optional"))}</span>`}</label>${inp}${f.hint ? `<div class="hint">${esc(t(f.hint))}</div>` : ""}${sel}</div>`;
+    return `<div class="field"><label for="${id}">${esc(t(f.label))}${f.req ? "" : ` <span class="opt">${esc(t("optional"))}</span>`}</label>${inp}${f.hint ? `<div class="hint">${esc(t(f.hint))}</div>` : ""}${sel}</div>`;
   }
 
   function renderFields() {
@@ -408,7 +429,7 @@
 
     // Loghi a icona
     const ic = $("#iconLogos");
-    ic.innerHTML = `<button type="button" class="tile" data-ico=""><span class="thumb" style="font-size:20px;color:var(--ink-3)">∅</span><span data-i18n="logo.none">${esc(t("logo.none"))}</span></button>` +
+    ic.innerHTML = `<button type="button" class="tile" data-ico=""><span class="thumb" style="font-size:20px;color:var(--us-ash)">∅</span><span data-i18n="logo.none">${esc(t("logo.none"))}</span></button>` +
       `<button type="button" class="tile" data-ico="brand"><span class="thumb"><img alt="" src="${BRAND_LOGO}"></span><span>Ultraspeaker</span></button>` +
       LOGO_ICONS.map((k) => `<button type="button" class="tile" data-ico="${k}"><span class="thumb"><img alt="" src="${iconLogo(k, "#000000")}"></span><span data-i18n="type.${k}">${esc(t("type." + k))}</span></button>`).join("");
     $$("#iconLogos .tile").forEach((b) => b.addEventListener("click", () => {
@@ -455,8 +476,8 @@
     });
 
     // Tab
-    $$(".tabs [role=tab]").forEach((b) => b.addEventListener("click", () => {
-      $$(".tabs [role=tab]").forEach((x) => x.setAttribute("aria-selected", x === b));
+    $$(".design-tabs [role=tab]").forEach((b) => b.addEventListener("click", () => {
+      $$(".design-tabs [role=tab]").forEach((x) => x.setAttribute("aria-selected", x === b));
       $$(".panel").forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.tab));
     }));
     $("#resetDesign").addEventListener("click", () => { S.design = Object.assign({}, DEFAULT_DESIGN, { frameText: t("frame.default") }); syncDesignUI(); update(); toast(t("toast.reset")); });
@@ -506,15 +527,15 @@
     syncDesignUI(); update(); toast(t("toast.preset"));
   }
   // Ultimi 2 design usati (indipendenti dal contenuto del QR)
-  const lastDesigns = () => store.get("qrlab.lastDesigns", []);
+  const lastDesigns = () => store.get(KEY("lastDesigns"), []);
   function rememberDesign(d) {
     const c = cleanDesign(d), k = designKey(c);
     const list = [c].concat(lastDesigns().filter((x) => designKey(x) !== k)).slice(0, 2);
-    store.set("qrlab.lastDesigns", list);
+    store.set(KEY("lastDesigns"), list);
   }
   function renderMyPresets() {
     const box = $("#myPresets"); if (!box) return;
-    const slots = store.get("qrlab.custom", [null, null]);
+    const slots = store.get(KEY("custom"), [null, null]);
     const last = lastDesigns();
     let html = "";
     [0, 1].forEach((i) => {
@@ -533,16 +554,16 @@
     $$("[data-slot]", box).forEach((el) => {
       const i = +el.dataset.slot;
       const save = () => {
-        const cur = store.get("qrlab.custom", [null, null]);
+        const cur = store.get(KEY("custom"), [null, null]);
         cur[i] = { name: cur[i] ? cur[i].name : null, design: cleanDesign(S.design) };
-        store.set("qrlab.custom", cur); renderMyPresets();
+        store.set(KEY("custom"), cur); renderMyPresets();
         toast(t("toast.customSaved", { name: cur[i].name || t("custom.default", { n: i + 1 }) }));
       };
-      $(".my-main", el).addEventListener("click", () => { const cur = store.get("qrlab.custom", [null, null]); if (cur[i]) applyDesign(cur[i].design); else save(); });
+      $(".my-main", el).addEventListener("click", () => { const cur = store.get(KEY("custom"), [null, null]); if (cur[i]) applyDesign(cur[i].design); else save(); });
       const bs = $('[data-act="save"]', el), br = $('[data-act="rename"]', el);
       if (bs) bs.addEventListener("click", save);
       if (br) br.addEventListener("click", () => {
-        const nm = $(".nm", el), cur = store.get("qrlab.custom", [null, null]);
+        const nm = $(".nm", el), cur = store.get(KEY("custom"), [null, null]);
         const inp = document.createElement("input"); inp.type = "text"; inp.maxLength = 18; inp.placeholder = t("custom.namePh");
         inp.value = cur[i].name || ""; inp.setAttribute("aria-label", t("custom.rename"));
         el.replaceChild(inp, $(".my-acts", el)); inp.focus(); inp.select();
@@ -550,7 +571,7 @@
         let done = false;
         const commit = (ok) => {
           if (done) return; done = true;
-          if (ok) { const c2 = store.get("qrlab.custom", [null, null]); c2[i].name = inp.value.trim() || null; store.set("qrlab.custom", c2); toast(t("toast.renamed")); }
+          if (ok) { const c2 = store.get(KEY("custom"), [null, null]); c2[i].name = inp.value.trim() || null; store.set(KEY("custom"), c2); toast(t("toast.renamed")); }
           renderMyPresets();
         };
         inp.addEventListener("keydown", (e) => { if (e.key === "Enter") commit(true); if (e.key === "Escape") commit(false); });
@@ -868,9 +889,9 @@
     // Moduli sottili + occhio molto decorativo: combinazione delicata per alcuni lettori
     if (["lines", "dots"].includes(d.dotType) && ["star", "plus", "diamond", "dots9"].includes(d.cornerDotType)) warns.push(t("warn.fragile"));
     if (d.margin < 10 && d.frame === "none") warns.push(t("warn.margin"));
-    const html = warns.map((w) => `<div class="warn">${esc(w)}</div>`).join("");
+    const html = warns.map((w) => `<div class="us-note us-note--warn">${esc(w)}</div>`).join("");
     $("#warnBox").innerHTML = html;
-    $("#contrastWarn").innerHTML = minC < 3 ? '<div class="warn">' + esc(t("warn.contrastShort")) + '</div>' : "";
+    $("#contrastWarn").innerHTML = minC < 3 ? '<div class="us-note us-note--warn">' + esc(t("warn.contrastShort")) + '</div>' : "";
   }
 
   function setReady(ok) {
@@ -883,7 +904,7 @@
     if (!current) return;
     const wPt = Math.min(30, Math.max(1, +S.sizeCm || 5)) * CM_TO_PT;
     const hPt = (wPt * current.H) / current.W;
-    if (window.QR_WEB) { if (shareMode) { share(); return; } download("png"); toast(t("toast.downloaded")); return; }
+    if (WEB) { if (shareMode) { share(); return; } download("png"); toast(t("toast.downloaded")); return; }
     if (!inOffice) {
       toast(t("toast.browser"));
       download("png"); return;
@@ -917,7 +938,7 @@
      Sul telefono il pulsante principale apre il menu Condividi del sistema:
      da lì si salva nelle Foto (iPhone: "Salva immagine") o si invia con WhatsApp, Messaggi, Telegram…
      Il PNG viene preparato in anticipo, perché Safari apre il menu solo se la chiamata parte subito dal tocco. */
-  const MOBILE = window.QR_WEB && (matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+  const MOBILE = WEB && (matchMedia("(pointer: coarse)").matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
   let shareMode = false, shareFile = null, shareFor = null, shareT;
   function pngPx() { return Math.max(600, Math.min(3000, Math.round(((+S.sizeCm || 5) / 2.54) * 300))); }
   function detectShare() {
@@ -959,7 +980,7 @@
     if (!current) return;
     let href;
     if (kind === "svg") href = URL.createObjectURL(new Blob([current.svg], { type: "image/svg+xml" }));
-    else href = await svgToPng(current.svg, current.W, current.H, window.QR_WEB ? pngPx() : 2000);
+    else href = await svgToPng(current.svg, current.W, current.H, WEB ? pngPx() : 2000);
     const a = document.createElement("a"); a.href = href; a.download = fileBase() + "." + kind;
     document.body.appendChild(a); a.click(); a.remove();
     if (kind === "svg") setTimeout(() => URL.revokeObjectURL(href), 2000);
@@ -979,15 +1000,15 @@
       thumb = await svgToPng(src.svg, src.W, src.H, 96);
     } catch (e) { return; }
     const design = cleanDesign(S.design);
-    let list = store.get("qrstudio.recent", []);
+    let list = store.get(KEY("recent"), []);
     list = list.filter((r) => r.data !== data);
     list.unshift({ data, type: S.type, values, design, thumb });
-    store.set("qrstudio.recent", list.slice(0, 8));
+    store.set(KEY("recent"), list.slice(0, 8));
     rememberDesign(S.design);
     renderRecent(); renderMyPresets();
   }
   function renderRecent() {
-    const list = store.get("qrstudio.recent", []);
+    const list = store.get(KEY("recent"), []);
     const box = $("#recent");
     if (!list.length) { box.innerHTML = '<span class="recent-empty">' + esc(t("recent.empty")) + '</span>'; return; }
     box.innerHTML = list.map((r, i) => `<button type="button" data-i="${i}" title="${esc(r.data.slice(0, 80))}"><img alt="${esc(t("recent.alt"))}" src="${esc(r.thumb)}"></button>`).join("");
@@ -1000,8 +1021,8 @@
 
   /* ---------- Avvio ---------- */
   function labelButtons() {
-    if (window.QR_WEB && shareMode) { $("#insertLabel").textContent = t("btn.share"); $("#barInsert").textContent = t("btn.shareShort"); $("#dlPngLabel").textContent = "PNG"; $("#dlSvgLabel").textContent = "SVG"; return; }
-    if (window.QR_WEB) { $("#insertLabel").textContent = t("btn.downloadPng"); $("#barInsert").textContent = t("btn.downloadPng"); $("#dlSvgLabel").textContent = t("btn.downloadSvg"); return; }
+    if (WEB && shareMode) { $("#insertLabel").textContent = t("btn.share"); $("#barInsert").textContent = t("btn.shareShort"); $("#dlPngLabel").textContent = "PNG"; $("#dlSvgLabel").textContent = "SVG"; return; }
+    if (WEB) { $("#insertLabel").textContent = t("btn.downloadPng"); $("#barInsert").textContent = t("btn.downloadPng"); $("#dlSvgLabel").textContent = t("btn.downloadSvg"); return; }
     if (!inOffice) { $("#insertLabel").textContent = t("btn.insertBrowser"); $("#barInsert").textContent = t("btn.downloadPng"); }
     else { $("#insertLabel").textContent = t("btn.insert"); $("#barInsert").textContent = t("btn.insert"); }
     // In PowerPoint i pulsanti di download non funzionano su tutte le piattaforme (es. Mac): li nascondo, resta l'inserimento
@@ -1010,6 +1031,11 @@
   function applyLang() {
     applyStatic(); labelButtons();
     $("#langSel").value = LANG;
+    // pagine di servizio e guida PDF nella lingua corrente
+    const UL = window.UltraspeakerLang;
+    $$(".us-links a").forEach((a) => { a.href = UL.linkWithLang(a.getAttribute("href"), LANG); });
+    const g = $("#usGuide"); g.href = UL.guideHref("qr", LANG); g.setAttribute("aria-label", t("us.guide.title"));
+    $("#usCta").href = "mailto:info@theultraspeaker.com?subject=" + encodeURIComponent(t("us.cta") + " – QR Lab");
     renderTypes(); renderFields(); syncDesignUI(); renderRecent(); renderMyPresets(); render();
     if (window.QRRef) window.QRRef.applyLang(); // sezione Reference
   }
@@ -1024,10 +1050,8 @@
     $("#bar").hidden = MODE !== "qr";
     $("#appSub").hidden = MODE !== "qr";
     $("#refSub").hidden = MODE !== "ref";
-    // il piè di pagina (Arena e link) segue la sezione attiva
-    const foot = $(".foot"), host = MODE === "ref" ? $("#refFootHost") : $("#qrFootHost");
-    if (foot && host && foot.parentNode !== host) host.appendChild(foot);
-    store.set("qrlab.mode", MODE);
+    $("#staticNote").hidden = MODE !== "qr"; // la nota sui QR statici riguarda solo la sezione QR
+    store.set(KEY("mode"), MODE);
     if (MODE === "ref" && window.QRRef) window.QRRef.refresh();
     if (focus) { const b = $(`.modes [data-mode="${MODE}"]`); if (b) b.focus(); }
   }
@@ -1039,23 +1063,23 @@
   }
   // Strumenti del QR Lab messi a disposizione della sezione Reference (reference.js)
   window.QRLab = {
-    t: (k, v) => t(k, v), toast, store, isOffice: () => inOffice,
+    t: (k, v) => t(k, v), toast, store, isOffice: () => inOffice, isMobile: () => MOBILE, showRef: () => setMode("ref"),
     design: () => S.design, buildSVG: (data, d, ec) => buildSVG(data, d, ec), svgToPng, withFont, openUrl,
-    showQrDesign: () => { setMode("qr"); const c = $("[data-tab=stile]"); if (c) c.closest(".card").scrollIntoView({ behavior: "smooth", block: "start" }); },
+    showQrDesign: () => { setMode("qr"); const c = $("[data-tab=stile]"); if (c) c.closest(".us-panel").scrollIntoView({ behavior: "smooth", block: "start" }); },
   };
   function setLang(l) {
     if (!LANGS.includes(l) || l === LANG) return;
     // Se il testo della cornice è quello predefinito, lo traduco; se l'hai scritto tu, resta com'è
     if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = I18N[l]["frame.default"];
-    LANG = l; store.set("qrlab.lang", l); saveState();
+    LANG = window.UltraspeakerLang.set(l); saveState();
     applyLang();
   }
 
   function init() {
     LANG = detectLang();
     if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = t("frame.default");
-    $("#langSel").innerHTML = I18N.langs.map(([c, n]) => `<option value="${c}">${n}</option>`).join("");
-    $("#langSel").addEventListener("change", (e) => setLang(e.target.value));
+    document.body.classList.toggle("us-addin", inOffice);
+    window.UltraspeakerLang.bindSelect($("#langSel"), LANG, setLang);
     buildDesignUI();
     $$("#format button").forEach((b) => b.addEventListener("click", () => { S.format = b.dataset.v; update(); }));
     $("#sizeCm").addEventListener("input", (e) => { S.sizeCm = +e.target.value || 5; saveState(); });
@@ -1064,18 +1088,9 @@
     $("#barImg").addEventListener("click", () => $("#previewCard").scrollIntoView({ behavior: "smooth" }));
     $("#dlPng").addEventListener("click", () => download("png"));
     $("#dlSvg").addEventListener("click", () => download("svg"));
-    // Link in fondo al pannello.
-    // Versione web: "Richiedi una consulenza" (email). Add-in: "Aiuto e supporto", perché le regole di
-    // Microsoft Marketplace non consentono di indirizzare gli utenti verso servizi esterni dall'add-in.
-    const cta = $("#ctaMail");
-    if (!window.QR_WEB) {
-      cta.dataset.i18n = "cta.help";
-      cta.href = new URL("support.html", location.href).href;
-      cta.target = "_blank"; cta.rel = "noopener"; cta.removeAttribute("title");
-    }
-    // Link del pannello: in PowerPoint li apre il sistema, nel browser funzionano normalmente
-    [cta, $("#logoLink")].forEach((a) => a.addEventListener("click", (e) => { if (inOffice) { e.preventDefault(); openUrl(a.href); } }));
-    if (window.QR_WEB) { // versione web: download al posto dell'inserimento
+    // Link del pannello (logo, Guida, pagine di servizio): in PowerPoint li apre il browser di sistema
+    $$("#logoLink, #usGuide, .us-links a").forEach((a) => a.addEventListener("click", (e) => { if (inOffice) { e.preventDefault(); openUrl(a.href); } }));
+    if (WEB) { // versione web: download al posto dell'inserimento
       $("#appSub").dataset.i18n = "app.subWeb";
       $("#widthLbl").dataset.i18n = "lbl.printWidth";
       $("#formatBox").hidden = true;
@@ -1084,9 +1099,9 @@
         $("#insertBtn svg").innerHTML = '<path d="M12 15V4M8 8l4-4 4 4"/><path d="M6 11H5v9h14v-9h-1"/>';
         $("#webHint").dataset.i18n = "web.hintMobile";
       } else {
-        $("#dlPng").style.display = "none";
+        $("#dlPng").hidden = true;
         $("#insertBtn svg").innerHTML = '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>';
-        $(".btns").style.gridTemplateColumns = "1fr";
+        $(".btns").classList.add("single");
       }
       $("#webHint").hidden = false;
     }
@@ -1099,7 +1114,7 @@
     });
     if (window.QRRef) window.QRRef.init();
     applyLang();
-    setMode(INCOMING ? "qr" : store.get("qrlab.mode", "qr"));
+    setMode(INCOMING ? "qr" : store.get(KEY("mode"), "qr"));
   }
 
 
@@ -1107,7 +1122,9 @@
   const start = () => { if (!started) { started = true; init(); } };
   // PowerPoint ha risposto dopo che il pannello era già partito (computer lento)
   function officeArrivedLate() {
-    if (!store.get("qrlab.lang", null)) {
+    WEB = false;
+    document.body.classList.add("us-addin");
+    if (!LANG_CHOSEN && !(INCOMING && INCOMING.lang)) {
       const l = detectLang();
       if (l !== LANG) { if (FRAME_DEFAULTS().includes(S.design.frameText)) S.design.frameText = I18N[l]["frame.default"]; LANG = l; }
     }
@@ -1117,7 +1134,7 @@
   if (window.Office && Office.onReady) {
     Office.onReady((info) => {
       const host = !!(info && info.host);
-      if (!started) { inOffice = host; start(); }
+      if (!started) { inOffice = host; if (host) WEB = false; start(); }
       else if (host && !inOffice) { inOffice = true; officeArrivedLate(); }
     });
     setTimeout(start, 2500); // fallback se Office.js non risponde (es. aperto nel browser)

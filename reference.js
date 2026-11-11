@@ -288,6 +288,7 @@
   }
   function formatShort(r, fmt, num) {
     if (fmt === "numeric") return "[" + (num || "?") + "]";
+    if (fmt === "full") return formatFull(r, DOC.style); // citazione completa, senza numero anche negli stili numerati
     const who = firstAuthors(r) || r.journalAbbr || r.journal || "";
     if (fmt === "authorYear") return `(${who}${r.year ? ", " + r.year : ""})`;
     const j = r.journalAbbr || r.journal || "";
@@ -298,10 +299,11 @@
      4. ARCHIVIO: impostazioni del documento (restano nel .pptx) o browser
      ===================================================================== */
   const DOC_KEY = "ultraspeakerReferences";
-  const LOCAL_KEY = "qrlab.refs";
-  const PREF_KEY = "qrlab.refPrefs";
+  const LOCAL_KEY = "ultraspeaker.qr.refs";
+  const PREF_KEY = "ultraspeaker.qr.refPrefs";
+  const SPEAKER_KEY = "ultraspeaker.qr.speaker";
   const docSettings = () => { try { return L().isOffice() && Office.context.document.settings ? Office.context.document.settings : null; } catch (e) { return null; } };
-  const emptyDoc = () => ({ refs: [], style: "vancouver", shortFmt: "authorJournal" });
+  const emptyDoc = () => ({ refs: [], order: [], style: "vancouver", shortFmt: "authorJournal" });
   let DOC = emptyDoc();
   function loadDoc() {
     const ds = docSettings();
@@ -316,6 +318,15 @@
     saveT = setTimeout(() => ds.saveAsync(() => {}), 300);
   }
   const numOf = (ref) => DOC.refs.indexOf(ref) + 1;
+  // Ordine dell'elenco e del PDF: all'inizio quello di aggiunta, poi quello scelto trascinando.
+  // La numerazione delle slide resta quella di DOC.refs (ordine di comparsa).
+  function listed() {
+    const by = new Map(DOC.refs.map((r) => [r.id, r]));
+    const ord = (DOC.order || []).filter((id) => by.has(id));
+    DOC.refs.forEach((r) => { if (!ord.includes(r.id)) ord.push(r.id); });
+    DOC.order = ord;
+    return ord.map((id) => by.get(id));
+  }
   const normTitle = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
   function sameRef(a, b) {
     if (a === b) return false;
@@ -378,11 +389,10 @@
   const MARGIN = 18;
   function layout(W, H, text, withQr) {
     const q = withQr ? Math.max(28, Math.min(120, P.qrCm * CM_TO_PT)) : 0, gap = withQr ? 10 : 0;
-    const boxH = Math.max(P.size * 1.5, 18);
     const textW = Math.min(W - 2 * MARGIN - q - gap, Math.max(60, text.length * P.size * 0.55 + 16));
-    const out = { q, boxH, align: "Left" };
+    const out = { q, align: "Left" };
     const bottom = H - MARGIN;
-    out.ty = bottom - boxH; out.qy = bottom - q;
+    out.qy = bottom - q;
     if (!text) { out.qx = P.pos === "left" ? MARGIN : P.pos === "right" ? W - MARGIN - q : (W - q) / 2; return out; } // solo QR
     if (P.pos === "left") { out.qx = MARGIN; out.tx = MARGIN + q + gap; out.tw = Math.min(W * 0.62, W - out.tx - MARGIN); }
     else if (P.pos === "right") { out.qx = W - MARGIN - q; out.tw = Math.min(W * 0.62, W - 2 * MARGIN - q - gap); out.tx = W - MARGIN - q - gap - out.tw; out.align = "Right"; }
@@ -390,6 +400,10 @@
       if (!withQr) { out.tx = MARGIN; out.tw = W - 2 * MARGIN; out.align = "Center"; }
       else { const total = textW + gap + q; out.tx = (W - total) / 2; out.tw = textW; out.qx = out.tx + textW + gap; }
     }
+    // una riga per le citazioni brevi; la citazione completa cresce verso l'alto di quante righe servono
+    const lines = Math.ceil((text.length * P.size * 0.5) / out.tw);
+    out.boxH = Math.max(P.size * 1.5, 18, lines * P.size * 1.25);
+    out.ty = bottom - out.boxH;
     return out;
   }
   function styleText(shape, opts) {
@@ -712,10 +726,10 @@
     if (!cur) { box.innerHTML = `<p class="ref-empty">${esc(t("ref.preview.empty"))}</p>`; return; }
     const r = cur, ex = findSame(r);
     const warn = [];
-    if (r.status && r.status.retracted) warn.push(`<div class="warn ref-warn-bad">${esc(t("ref.warn.retracted"))}</div>`);
-    else if (r.status && r.status.concern) warn.push(`<div class="warn">${esc(t("ref.warn.concern"))}</div>`);
-    else if (r.status && r.status.corrected) warn.push(`<div class="warn">${esc(t("ref.warn.corrected"))}</div>`);
-    if (ex) warn.push(`<div class="warn">${esc(t("ref.warn.dup", { n: numOf(ex) }))}</div>`);
+    if (r.status && r.status.retracted) warn.push(`<div class="us-note us-note--crit">${esc(t("ref.warn.retracted"))}</div>`);
+    else if (r.status && r.status.concern) warn.push(`<div class="us-note us-note--warn">${esc(t("ref.warn.concern"))}</div>`);
+    else if (r.status && r.status.corrected) warn.push(`<div class="us-note us-note--warn">${esc(t("ref.warn.corrected"))}</div>`);
+    if (ex) warn.push(`<div class="us-note us-note--warn">${esc(t("ref.warn.dup", { n: numOf(ex) }))}</div>`);
     const links = [];
     if (r.doi) links.push(`<a href="https://doi.org/${esc(r.doi)}" target="_blank" rel="noopener">DOI ${esc(r.doi)}</a>`);
     if (r.pmid) links.push(`<a href="https://pubmed.ncbi.nlm.nih.gov/${esc(r.pmid)}/" target="_blank" rel="noopener">PMID ${esc(r.pmid)}</a>`);
@@ -755,6 +769,7 @@
     $$("#refShort button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === DOC.shortFmt));
     if (!cur) return;
     $("#refShortOut").textContent = formatShort(cur, DOC.shortFmt, currentNum(cur));
+    $("#refShortOut").classList.toggle("full", DOC.shortFmt === "full");
     $("#refFullOut").textContent = (NUMBERED(DOC.style) ? currentNum(cur) + ". " : "") + formatFull(cur, DOC.style);
     renderInsertUI();
   }
@@ -786,6 +801,7 @@
     }
     const ins = $("#refInsertBtn");
     ins.disabled = !cur;
+    $("#refAddBtn").disabled = !cur;
     $("#refInsertLabel").textContent = L().isOffice() ? t("ref.insert") : P.what === "qr" ? t("ref.dlQr" + (P.qrFmt === "svg" ? "Svg" : "")) : t("ref.copyShort");
     $("#refDlQrLabel").textContent = t("ref.dlQr" + (P.qrFmt === "svg" ? "Svg" : ""));
     $("#refDlQr").hidden = L().isOffice() || P.what !== "both";
@@ -840,36 +856,46 @@
     const dups = dupIds();
     $("#refCount").textContent = DOC.refs.length ? "(" + DOC.refs.length + ")" : "";
     $("#refBibBtns").hidden = !DOC.refs.length;
+    $("#refListHint").hidden = DOC.refs.length < 1;
     if (!DOC.refs.length) { box.innerHTML = `<p class="ref-empty">${esc(t("ref.list.empty"))}</p>`; return; }
-    box.innerHTML = DOC.refs.map((r, i) => {
-      if (editing === r.id) return editForm(r, i);
+    box.innerHTML = listed().map((r) => {
+      if (editing === r.id) return editForm(r);
       const flags = [];
       if (r.status && r.status.retracted) flags.push(badge("bad", t("ref.flag.retracted")));
       else if (r.status && (r.status.corrected || r.status.concern)) flags.push(badge("warn", t(r.status.concern ? "ref.flag.concern" : "ref.flag.corrected")));
       if (dups.has(r.id)) flags.push(badge("warn", t("ref.flag.dup")));
       if (L().isOffice() && r.onSlides === false) flags.push(badge("dim", t("ref.flag.notOnSlides")));
       const del = confirmDel === r.id;
-      return `<div class="ref-item" data-id="${esc(r.id)}">
-        <span class="ref-num">${i + 1}</span>
-        <div class="ref-item-body"><div class="ref-item-short">${esc(formatShort(r, "authorJournal"))}</div><div class="ref-item-title">${esc(r.title)}</div>${flags.length ? `<div class="ref-badges">${flags.join("")}</div>` : ""}</div>
+      const short = formatShort(r, "authorJournal");
+      return `<div class="ref-item" data-id="${esc(r.id)}" tabindex="0" aria-label="${esc(t("ref.act.use") + ": " + short)}" aria-describedby="refListHint">
+        <span class="ref-grip" aria-hidden="true"><svg viewBox="0 0 12 16"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></svg></span>
+        <span class="ref-num">${numOf(r)}</span>
+        <div class="ref-item-body"><div class="ref-item-short">${esc(short)}</div><div class="ref-item-title">${esc(r.title)}</div>${flags.length ? `<div class="ref-badges">${flags.join("")}</div>` : ""}</div>
         <div class="ref-item-acts">
-          <button type="button" data-act="use" title="${esc(t("ref.act.use"))}" aria-label="${esc(t("ref.act.use"))}"><svg viewBox="0 0 24 24"><path d="M4 12h12M12 6l6 6-6 6"/></svg></button>
           <button type="button" data-act="edit" title="${esc(t("ref.act.edit"))}" aria-label="${esc(t("ref.act.edit"))}"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
           <button type="button" data-act="del" class="${del ? "confirm" : ""}" title="${esc(t(del ? "ref.act.confirmDel" : "ref.act.del"))}" aria-label="${esc(t(del ? "ref.act.confirmDel" : "ref.act.del"))}">${del ? esc(t("ref.act.confirmShort")) : '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg>'}</button>
         </div></div>`;
     }).join("");
     $$(".ref-item [data-act]", box).forEach((b) => b.addEventListener("click", () => onItemAct(b.closest(".ref-item").dataset.id, b.dataset.act)));
+    $$(".ref-item", box).forEach((it) => {
+      it.addEventListener("click", (e) => { if (!dragged && !e.target.closest("button, a")) useRef(it.dataset.id); });
+      it.addEventListener("keydown", (e) => {
+        if (e.target !== it) return;
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); useRef(it.dataset.id); }
+        else if (e.altKey && (e.key === "ArrowUp" || e.key === "ArrowDown")) { e.preventDefault(); moveBy(it.dataset.id, e.key === "ArrowUp" ? -1 : 1); }
+      });
+    });
     const f = $(".ref-edit", box);
     if (f) bindEditForm(f);
   }
   const FIELDS = [["authorsText", "ref.f.authors"], ["title", "ref.f.title"], ["journal", "ref.f.journal"], ["journalAbbr", "ref.f.journalAbbr"], ["year", "ref.f.year"], ["volume", "ref.f.volume"], ["issue", "ref.f.issue"], ["pages", "ref.f.pages"], ["doi", "DOI"], ["pmid", "PMID"]];
   const authorsToText = (r) => (r.authors || []).map((a) => (a.org ? a.family : a.family + (a.given ? ", " + a.given : ""))).join("; ");
   const textToAuthors = (s) => String(s || "").split(";").map((x) => x.trim()).filter(Boolean).map((x) => { const [f, g] = x.split(",").map((y) => y.trim()); return g ? { family: f, given: g, init: /^[A-Z]{1,5}$/.test(g) } : { family: f, given: "", org: x.split(/\s+/).length > 2 }; });
-  function editForm(r, i) {
+  function editForm(r) {
     const v = Object.assign({}, r, { authorsText: authorsToText(r) });
-    return `<form class="ref-edit" data-id="${esc(r.id)}"><div class="ref-edit-h">${esc(t("ref.act.edit"))} · ${i + 1}</div>
-      ${FIELDS.map(([k, lab]) => `<div class="field"><label>${esc(lab.startsWith("ref.") ? t(lab) : lab)}</label>${k === "title" || k === "authorsText" ? `<textarea name="${k}" rows="2">${esc(v[k] || "")}</textarea>` : `<input type="text" name="${k}" value="${esc(v[k] || "")}">`}${k === "authorsText" ? `<div class="hint">${esc(t("ref.f.authorsHint"))}</div>` : ""}</div>`).join("")}
-      <div class="btns"><button class="btn" type="button" data-cancel>${esc(t("ref.cancel"))}</button><button class="btn" type="submit">${esc(t("ref.save"))}</button></div></form>`;
+    return `<form class="ref-edit" data-id="${esc(r.id)}"><div class="ref-edit-h">${esc(t("ref.act.edit"))} · ${numOf(r)}</div>
+      ${FIELDS.map(([k, lab]) => `<div class="field"><label>${esc(lab.startsWith("ref.") ? t(lab) : lab)}</label>${k === "title" || k === "authorsText" ? `<textarea class="us-field" name="${k}" rows="2">${esc(v[k] || "")}</textarea>` : `<input type="text" class="us-field" name="${k}" value="${esc(v[k] || "")}">`}${k === "authorsText" ? `<div class="hint">${esc(t("ref.f.authorsHint"))}</div>` : ""}</div>`).join("")}
+      <div class="btns"><button class="us-btn" type="button" data-cancel>${esc(t("ref.cancel"))}</button><button class="us-btn" type="submit">${esc(t("ref.save"))}</button></div></form>`;
   }
   function bindEditForm(f) {
     f.addEventListener("submit", (e) => {
@@ -892,7 +918,6 @@
   async function onItemAct(id, act) {
     const r = DOC.refs.find((x) => x.id === id);
     if (!r) return;
-    if (act === "use") { cur = JSON.parse(JSON.stringify(r)); cur.abstract = null; renderPreview(); if (cur.pmid) loadAbstract(cur); $("#refPreviewCard").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     if (act === "edit") { editing = id; confirmDel = null; renderList(); return; }
     if (act === "del") {
       if (confirmDel !== id) { confirmDel = id; renderList(); setTimeout(() => { if (confirmDel === id) { confirmDel = null; renderList(); } }, 4000); return; }
@@ -902,6 +927,189 @@
       renderList(); renderCite(); L().toast(t("ref.toast.deleted"));
     }
   }
+  // Riporta un riferimento dell'elenco nell'anteprima, pronto per essere inserito di nuovo
+  function useRef(id) {
+    const r = DOC.refs.find((x) => x.id === id);
+    if (!r || editing) return;
+    cur = JSON.parse(JSON.stringify(r)); cur.abstract = null;
+    renderPreview(); if (cur.pmid) loadAbstract(cur);
+    $("#refPreviewCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function moveTo(id, targetId, after) {
+    const ord = listed().map((r) => r.id).filter((x) => x !== id);
+    let i = ord.indexOf(targetId);
+    if (i < 0) return;
+    if (after) i++;
+    ord.splice(i, 0, id);
+    DOC.order = ord; saveDoc(); renderList();
+  }
+  function moveBy(id, step) {
+    const ord = listed().map((r) => r.id), i = ord.indexOf(id), j = i + step;
+    if (i < 0 || j < 0 || j >= ord.length) return;
+    moveTo(id, ord[j], step > 0);
+    const it = $(`.ref-item[data-id="${CSS.escape(id)}"]`); if (it) it.focus();
+  }
+  /* Trascinamento con mouse, penna o dito (sul telefono si afferra la maniglia a sinistra,
+     così il resto del riquadro lascia scorrere la pagina) */
+  let drag = null, dragged = false;
+  function bindDrag(box) {
+    box.addEventListener("pointerdown", (e) => {
+      const it = e.target.closest(".ref-item");
+      if (!it || e.button !== 0 || e.target.closest("button, a, input, textarea")) return;
+      if (e.pointerType === "touch" && !e.target.closest(".ref-grip")) return;
+      drag = { it, id: it.dataset.id, y0: e.clientY, pid: e.pointerId, moved: false, target: null, after: false };
+    });
+    box.addEventListener("pointermove", (e) => {
+      if (!drag || e.pointerId !== drag.pid) return;
+      const dy = e.clientY - drag.y0;
+      if (!drag.moved) {
+        if (Math.abs(dy) < 6) return;
+        drag.moved = true; drag.it.classList.add("dragging");
+        try { drag.it.setPointerCapture(e.pointerId); } catch (x) { /* cattura non disponibile */ }
+      }
+      e.preventDefault();
+      drag.it.style.transform = "translateY(" + dy + "px)";
+      const others = $$(".ref-item", box).filter((x) => x !== drag.it);
+      others.forEach((o) => o.classList.remove("drop-before", "drop-after"));
+      let target = null, after = false;
+      for (const o of others) {
+        const rc = o.getBoundingClientRect();
+        if (e.clientY < rc.top + rc.height / 2) { target = o; after = false; break; }
+        target = o; after = true;
+      }
+      if (target) target.classList.add(after ? "drop-after" : "drop-before");
+      drag.target = target ? target.dataset.id : null; drag.after = after;
+    });
+    const end = () => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (!d.moved) return; // era un clic
+      dragged = true; setTimeout(() => { dragged = false; }, 0); // il clic che segue il rilascio non riapre l'anteprima
+      if (d.target) moveTo(d.id, d.target, d.after); else renderList();
+    };
+    box.addEventListener("pointerup", end);
+    box.addEventListener("pointercancel", end);
+  }
+
+  // Aggiunge l'articolo in anteprima all'elenco senza toccare le slide
+  function doAdd() {
+    if (!cur) return;
+    const { ref, dup } = addToDoc(cur);
+    if (!dup && L().isOffice()) { ref.onSlides = false; saveDoc(); }
+    L().toast(dup ? t("ref.toast.already", { n: numOf(ref) }) : t("ref.toast.added"));
+    renderPreview(); renderList();
+  }
+
+  /* --- bibliografia in PDF ---
+     Nella versione web il PDF si crea e si scarica qui (sul telefono si condivide).
+     Nel pannello di PowerPoint i download non funzionano ovunque: la versione web si apre nel browser
+     con i dati nell'indirizzo (#bibpdf=…) e il PDF si scarica da lì. */
+  let pdfData = null; // dati arrivati dal pannello
+  function pdfSource() {
+    if (pdfData) return pdfData;
+    const d = Object.assign({}, L().design(), { frame: "none", logo: null, logoName: "" });
+    return { refs: listed(), style: DOC.style, target: P.target, design: d };
+  }
+  function setExtra(v) {
+    P.pdfExtra = v;
+    $$("#bibExtra button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
+  }
+  function openPdfDialog(prefill) {
+    const f = prefill || {};
+    $("#bibTitle").value = f.title || "";
+    $("#bibSpeaker").value = f.speaker != null ? f.speaker : L().store.get(SPEAKER_KEY, "");
+    $("#bibDate").value = f.date || "";
+    setExtra(f.extra || P.pdfExtra || "text");
+    setMsg("#bibStatus", "");
+    $("#bibGo").disabled = false;
+    if (!L().isOffice() && window.QRBibPdf) window.QRBibPdf.prepare().catch(() => {});
+    $("#bibDialog").showModal();
+    $("#bibTitle").focus();
+  }
+  const rawFields = ["authors", "title", "journal", "journalAbbr", "year", "volume", "issue", "pages", "doi", "pmid", "oaUrl"];
+  async function encodePayload(obj) {
+    const json = JSON.stringify(obj);
+    if (window.CompressionStream) {
+      const buf = await new Response(new Blob([json]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer();
+      return "z" + b64url(new Uint8Array(buf));
+    }
+    return "j" + b64url(new TextEncoder().encode(json));
+  }
+  async function decodePayload(s) {
+    const bytes = fromB64url(s.slice(1));
+    if (s[0] === "z") return JSON.parse(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text());
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  const b64url = (u8) => { let s = ""; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
+  const fromB64url = (s) => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+  function pdfDate(iso) {
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-").map(Number);
+    try { return new Intl.DateTimeFormat(document.documentElement.lang || "en", { day: "numeric", month: "long", year: "numeric" }).format(new Date(y, m - 1, d)); }
+    catch (e) { return iso; }
+  }
+  async function makePdf(e) {
+    e.preventDefault();
+    const title = $("#bibTitle").value.trim();
+    if (!title) { setMsg("#bibStatus", t("ref.pdf.needTitle"), "err"); $("#bibTitle").focus(); return; }
+    const speaker = $("#bibSpeaker").value.trim(), date = $("#bibDate").value, extra = P.pdfExtra || "text";
+    L().store.set(SPEAKER_KEY, speaker); savePrefs();
+    const src = pdfSource();
+    if (L().isOffice()) {
+      const payload = { title, speaker, date, extra, style: src.style, target: src.target, design: src.design,
+        refs: src.refs.map((r) => { const o = {}; rawFields.forEach((k) => { if (r[k]) o[k] = r[k]; }); return o; }) };
+      const url = new URL("index.html", location.href);
+      url.search = "?lang=" + document.documentElement.lang;
+      url.hash = "bibpdf=" + await encodePayload(payload);
+      L().openUrl(url.href);
+      $("#bibDialog").close();
+      L().toast(t("ref.pdf.browser"));
+      return;
+    }
+    const go = $("#bibGo"); go.disabled = true; setMsg("#bibStatus", t("ref.pdf.working"));
+    try {
+      const withQr = extra === "qr" || extra === "both", withLink = extra === "link" || extra === "both";
+      const target = (r) => (src.target === "oa" && r.oaUrl ? r.oaUrl : doiUrl(r));
+      const entries = await Promise.all(src.refs.map(async (r) => {
+        const url = target(r), e = { text: formatFull(r, src.style), url: withLink ? url : "" };
+        if (withQr && url) {
+          const out = L().buildSVG(url, src.design, src.design.ec || "M");
+          e.qr = await L().svgToPng(out.svg, out.W, out.H, 300); e.qrUrl = url;
+        }
+        return e;
+      }));
+      const blob = await window.QRBibPdf.build({ title, speaker, date: pdfDate(date), label: t("ref.bibTitle"), powered: "powered by", entries });
+      const name = (t("ref.bibTitle") + " - " + title).replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120) + ".pdf";
+      const file = new File([blob], name, { type: "application/pdf" });
+      let shared = false;
+      if (L().isMobile() && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); shared = true; }
+        catch (x) { if (x && x.name === "AbortError") shared = true; }
+      }
+      if (!shared) {
+        const href = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = href; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(href), 4000);
+      }
+      $("#bibDialog").close();
+      L().toast(t("ref.pdf.done"));
+    } catch (x) {
+      setMsg("#bibStatus", t("ref.pdf.fail"), "err");
+    } finally { go.disabled = false; }
+  }
+  // Pannello → browser: dati della bibliografia nell'indirizzo
+  async function readPdfHash() {
+    const m = /^#bibpdf=(.+)$/.exec(location.hash);
+    if (!m) return;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* indirizzo invariato */ }
+    try {
+      pdfData = await decodePayload(m[1]);
+      L().showRef();
+      openPdfDialog(pdfData);
+    } catch (e) { pdfData = null; }
+  }
+
   async function doRenumber() {
     if (!L().isOffice()) return;
     if (!fullApi()) { L().toast(t("ref.err.oldPpt")); return; }
@@ -964,6 +1172,13 @@
     $("#refQrCm").addEventListener("input", (e) => { P.qrCm = +e.target.value; custom(); });
     $("#refNotes").addEventListener("change", (e) => { P.notes = e.target.checked; savePrefs(); });
     $("#refInsertBtn").addEventListener("click", doInsert);
+    $("#refAddBtn").addEventListener("click", doAdd);
+    $("#refPdfBtn").addEventListener("click", () => { pdfData = null; openPdfDialog(); });
+    $$("#bibExtra button").forEach((b) => b.addEventListener("click", () => setExtra(b.dataset.v)));
+    $("#bibForm").addEventListener("submit", makePdf);
+    $("#bibCancel").addEventListener("click", () => $("#bibDialog").close());
+    $("#bibDialog").addEventListener("close", () => { pdfData = null; });
+    bindDrag($("#refList"));
     $("#refDlQr").addEventListener("click", downloadQr);
     $("#refQrDesign").addEventListener("click", () => L().showQrDesign());
     $("#refRenumBtn").addEventListener("click", doRenumber);
@@ -986,6 +1201,7 @@
     loadDoc();
     bind();
     applyLang();
+    if (!L().isOffice()) readPdfHash();
   }
   // Il pannello si è accorto di essere in PowerPoint solo dopo l'avvio: ricarico dal documento
   function officeReady() { if (!inited) return; loadDoc(); applyLang(); }

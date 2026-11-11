@@ -5,16 +5,17 @@
            xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
            xsi:type="TaskPaneApp">
   <Id>9b87d7b7-3a31-4cd3-9102-120b315eb797</Id>
-  <Version>1.2.0.0</Version>
+  <Version>1.3.0.0</Version>
   <ProviderName>The Ultraspeaker</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="The Ultraspeaker QR Lab"/>
   <Description DefaultValue="Create custom QR codes (links, Wi-Fi, contacts, events and more) and cite scientific papers from DOI or PubMed with a QR code to the article, then insert them into your slides in one click."><Override Locale="it-IT" Value="Crea QR code personalizzati (link, Wi-Fi, contatti, eventi e altro) e cita articoli scientifici da DOI o PubMed con un QR che porta al paper, poi inseriscili nella slide con un clic."/><Override Locale="es-ES" Value="Crea códigos QR personalizados (enlaces, Wi-Fi, contactos, eventos y más) y cita artículos científicos desde DOI o PubMed con un QR al artículo, e insértalos en la diapositiva con un clic."/><Override Locale="fr-FR" Value="Créez des QR codes personnalisés (liens, Wi-Fi, contacts, événements et plus) et citez des articles scientifiques depuis DOI ou PubMed avec un QR vers l'article, puis insérez-les en un clic."/><Override Locale="de-DE" Value="Erstellen Sie individuelle QR-Codes (Links, WLAN, Kontakte, Termine und mehr) und zitieren Sie Fachartikel per DOI oder PubMed mit QR-Code zum Artikel – mit einem Klick in die Folie."/></Description>
-  <IconUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-32.png?v=2"/>
-  <HighResolutionIconUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-64.png?v=2"/>
+  <IconUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-64.png?v=20261111"/>
+  <HighResolutionIconUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-128.png?v=20261111"/>
   <SupportUrl DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/support.html"/>
   <AppDomains>
     <AppDomain>https://niki977.github.io</AppDomain>
+    <AppDomain>https://www.theultraspeaker.com</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Presentation"/>
@@ -30,18 +31,18 @@
           <GetStarted>
             <Title resid="GetStarted.Title"/>
             <Description resid="GetStarted.Description"/>
-            <LearnMoreUrl resid="Support.Url"/>
+            <LearnMoreUrl resid="Guide.Url"/>
           </GetStarted>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
-            <OfficeTab id="TabInsert">
-              <Group id="QRStudio.Group">
+            <OfficeTab id="TabHome">
+              <Group id="Ultraspeaker.QRLab.Group">
                 <Label resid="Group.Label"/>
                 <Icon>
                   <bt:Image size="16" resid="Icon.16"/>
                   <bt:Image size="32" resid="Icon.32"/>
                   <bt:Image size="80" resid="Icon.80"/>
                 </Icon>
-                <Control xsi:type="Button" id="QRStudio.Open">
+                <Control xsi:type="Button" id="Ultraspeaker.QRLab.Button">
                   <Label resid="Button.Label"/>
                   <Supertip>
                     <Title resid="Button.Label"/>
@@ -65,22 +66,52 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-16.png?v=2"/>
-        <bt:Image id="Icon.32" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-32.png?v=2"/>
-        <bt:Image id="Icon.80" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-80.png?v=2"/>
+        <bt:Image id="Icon.16" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-16.png?v=20261111"/>
+        <bt:Image id="Icon.32" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-32.png?v=20261111"/>
+        <bt:Image id="Icon.80" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/assets/icon-80.png?v=20261111"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Taskpane.Url" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/taskpane.html"/>
-        <bt:Url id="Support.Url" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/support.html"/>
+        <bt:Url id="Guide.Url" DefaultValue="https://niki977.github.io/ultraspeaker-qr-lab/guide/qr-lab-guide-en.pdf">
+          <bt:Override Locale="it-IT" Value="https://niki977.github.io/ultraspeaker-qr-lab/guide/qr-lab-guide-it.pdf"/>
+          <bt:Override Locale="es-ES" Value="https://niki977.github.io/ultraspeaker-qr-lab/guide/qr-lab-guide-es.pdf"/>
+          <bt:Override Locale="fr-FR" Value="https://niki977.github.io/ultraspeaker-qr-lab/guide/qr-lab-guide-fr.pdf"/>
+          <bt:Override Locale="de-DE" Value="https://niki977.github.io/ultraspeaker-qr-lab/guide/qr-lab-guide-de.pdf"/>
+        </bt:Url>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="The Ultraspeaker QR Lab is ready"><bt:Override Locale="it-IT" Value="The Ultraspeaker QR Lab è pronto"/><bt:Override Locale="es-ES" Value="The Ultraspeaker QR Lab está listo"/><bt:Override Locale="fr-FR" Value="The Ultraspeaker QR Lab est prêt"/><bt:Override Locale="de-DE" Value="The Ultraspeaker QR Lab ist bereit"/></bt:String>
-        <bt:String id="Group.Label" DefaultValue="The Ultraspeaker QR Lab"/>
-        <bt:String id="Button.Label" DefaultValue="QR Code"/>
+        <bt:String id="Group.Label" DefaultValue="The Ultraspeaker">
+          <bt:Override Locale="it-IT" Value="The Ultraspeaker"/>
+          <bt:Override Locale="es-ES" Value="The Ultraspeaker"/>
+          <bt:Override Locale="fr-FR" Value="The Ultraspeaker"/>
+          <bt:Override Locale="de-DE" Value="The Ultraspeaker"/>
+        </bt:String>
+        <bt:String id="Button.Label" DefaultValue="QR Lab">
+          <bt:Override Locale="it-IT" Value="QR Lab"/>
+          <bt:Override Locale="es-ES" Value="QR Lab"/>
+          <bt:Override Locale="fr-FR" Value="QR Lab"/>
+          <bt:Override Locale="de-DE" Value="QR Lab"/>
+        </bt:String>
+        <bt:String id="GetStarted.Title" DefaultValue="The Ultraspeaker QR Lab is ready">
+          <bt:Override Locale="it-IT" Value="The Ultraspeaker QR Lab è pronto"/>
+          <bt:Override Locale="es-ES" Value="The Ultraspeaker QR Lab está listo"/>
+          <bt:Override Locale="fr-FR" Value="The Ultraspeaker QR Lab est prêt"/>
+          <bt:Override Locale="de-DE" Value="The Ultraspeaker QR Lab ist bereit"/>
+        </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Go to Insert &gt; QR Code to create a custom QR code."><bt:Override Locale="it-IT" Value="Vai su Inserisci &gt; QR Code per creare un QR personalizzato."/><bt:Override Locale="es-ES" Value="Ve a Insertar &gt; QR Code para crear un QR personalizado."/><bt:Override Locale="fr-FR" Value="Allez dans Insertion &gt; QR Code pour créer un QR personnalisé."/><bt:Override Locale="de-DE" Value="Gehen Sie zu Einfügen &gt; QR Code, um einen individuellen QR-Code zu erstellen."/></bt:String>
-        <bt:String id="Button.Tooltip" DefaultValue="Create a custom QR code or a scientific citation with a QR code and insert it into the slide."><bt:Override Locale="it-IT" Value="Crea un QR code personalizzato o una citazione scientifica con QR e inseriscili nella slide."/><bt:Override Locale="es-ES" Value="Crea un código QR personalizado o una cita científica con QR e insértalos en la diapositiva."/><bt:Override Locale="fr-FR" Value="Créez un QR code personnalisé ou une citation scientifique avec QR et insérez-les dans la diapositive."/><bt:Override Locale="de-DE" Value="Erstellen Sie einen individuellen QR-Code oder ein wissenschaftliches Zitat mit QR-Code und fügen Sie es in die Folie ein."/></bt:String>
+        <bt:String id="Button.Tooltip" DefaultValue="Create a custom QR code or a scientific citation with a QR code and insert it into the slide.">
+          <bt:Override Locale="it-IT" Value="Crea un QR code personalizzato o una citazione scientifica con QR e inseriscili nella slide."/>
+          <bt:Override Locale="es-ES" Value="Crea un código QR personalizado o una cita científica con QR e insértalos en la diapositiva."/>
+          <bt:Override Locale="fr-FR" Value="Créez un QR code personnalisé ou une citation scientifique avec QR et insérez-les dans la diapositive."/>
+          <bt:Override Locale="de-DE" Value="Erstellen Sie einen individuellen QR-Code oder ein wissenschaftliches Zitat mit QR-Code und fügen Sie es in die Folie ein."/>
+        </bt:String>
+        <bt:String id="GetStarted.Description" DefaultValue="Open QR Lab from the Home tab to create a custom QR code or a citation with a QR code.">
+          <bt:Override Locale="it-IT" Value="Apri QR Lab dalla scheda Home per creare un QR personalizzato o una citazione con QR."/>
+          <bt:Override Locale="es-ES" Value="Abre QR Lab desde la pestaña Inicio para crear un QR personalizado o una cita con QR."/>
+          <bt:Override Locale="fr-FR" Value="Ouvrez QR Lab depuis l’onglet Accueil pour créer un QR personnalisé ou une citation avec QR."/>
+          <bt:Override Locale="de-DE" Value="Öffnen Sie QR Lab über die Registerkarte Start, um einen individuellen QR-Code oder ein Zitat mit QR-Code zu erstellen."/>
+        </bt:String>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

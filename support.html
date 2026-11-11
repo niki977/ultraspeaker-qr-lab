@@ -1,87 +1,42 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Support – The Ultraspeaker QR Lab</title>
-<link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
-<link rel="icon" href="assets/favicon-32.png?v=2" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
-<style>
-@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-regular.woff2) format("woff2")}
-@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-italic.woff2) format("woff2")}
-@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-bold.woff2) format("woff2")}
-@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-bolditalic.woff2) format("woff2")}
-:root{--bg:#000;--surface:#111;--ink:#fff;--ink-2:#c8c8c8;--line:#2a2a2a;--soft:#222;--code:#1c1c1c;color-scheme:dark}
-body{margin:0;background:var(--bg);color:var(--ink);font:500 15.5px/1.7 "Champagne & Limousines","Avenir Next","Segoe UI",Arial,sans-serif;font-size-adjust:0.47}
-header{background:#000;color:#fff;padding:26px 16px 18px}
-header .in,main{max-width:760px;margin:0 auto}
-.logo{display:block;width:min(240px,62%);border:0}
-.logo img{display:block;width:100%;height:auto}
-nav{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
-nav a{color:#fff;text-decoration:none;border-bottom:1px solid #666}
-nav a[aria-current="page"]{border-bottom-color:#fff}
-.langs{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
-.langs a{font-size:12px;color:#bbb;text-decoration:none;border:1px solid #333;border-radius:6px;padding:3px 9px}
-.langs a[aria-current="true"]{color:#000;background:#fff;border-color:#fff}
-main{padding:28px 16px 64px}
-section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:22px}
-h1{font-size:24px;margin:0 0 8px;text-wrap:balance}
-h2{font-size:15.5px;margin:24px 0 6px;letter-spacing:.02em}
-h2 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:11px;margin-right:8px;vertical-align:1px}
-p,li,dd{color:var(--ink-2)}
-p{margin:6px 0}
-ol,ul{padding-left:20px;margin:6px 0}
-li{margin:4px 0}
-b{font-weight:700;color:var(--ink)}
-dt{font-weight:700;margin-top:14px}
-dd{margin:2px 0 0}
-code{background:var(--code);padding:1px 6px;border-radius:5px;font-size:13px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
-.upd{font-size:13px;color:var(--ink-2);margin-bottom:10px}
-.note{background:var(--soft);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:14.5px}
-a{color:var(--ink)}
-footer{text-align:center;font-size:12px;color:var(--ink-2);margin-top:8px}
-footer a{margin:0 6px}
-.js section[data-lang]{display:none}
-.js section[data-lang].on{display:block}
-</style>
-<script>
-(function(){
-  document.documentElement.classList.add("js");
-  var L=["it","en","es","fr","de"], pick=function(){
-    var h=(location.hash||"").slice(1); if(L.indexOf(h)>=0) return h;
-    try{var s=JSON.parse(localStorage.getItem("qrlab.lang")||"null"); if(L.indexOf(s)>=0) return s;}catch(e){}
-    var n=((navigator.languages&&navigator.languages[0])||navigator.language||"en").slice(0,2).toLowerCase();
-    return L.indexOf(n)>=0?n:"en";
-  };
-  function show(l){
-    document.querySelectorAll("section[data-lang]").forEach(function(s){s.classList.toggle("on",s.getAttribute("data-lang")===l);});
-    document.querySelectorAll(".langs a").forEach(function(a){a.setAttribute("aria-current",a.getAttribute("data-l")===l?"true":"false");});
-    document.querySelectorAll("nav a[data-p]").forEach(function(a){a.textContent=a.getAttribute("data-"+l)||a.textContent; a.href=a.getAttribute("data-href")+"#"+l;});
-    document.querySelectorAll("footer a[data-p]").forEach(function(a){a.textContent=a.getAttribute("data-"+l)||a.textContent; a.href=a.getAttribute("data-href")+"#"+l;});
-    document.documentElement.lang=l;
-    var t=document.querySelector("section.on h1"); if(t) document.title=t.textContent;
-  }
-  document.addEventListener("DOMContentLoaded",function(){
-    show(pick());
-    document.querySelectorAll(".langs a").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();var l=a.getAttribute("data-l");history.replaceState(null,"","#"+l);show(l);});});
-    window.addEventListener("hashchange",function(){var h=location.hash.slice(1); if(L.indexOf(h)>=0) show(h);});
-  });
-})();
-</script>
+<title>Supporto · The Ultraspeaker QR Lab</title>
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=20261111">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261111">
+<link rel="stylesheet" href="shared/ultraspeaker-lab.css?v=20261111">
+<link rel="stylesheet" href="css/app.css?v=20261111">
+<script src="shared/ultraspeaker-lang.js?v=20261111"></script>
+<!-- Lingua letta prima del disegno della pagina, così compare subito il testo giusto -->
+<script>document.documentElement.lang = UltraspeakerLang.get("qrlab.lang");</script>
 </head>
-<body>
-<header><div class="in"><a class="logo" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab – www.theultraspeaker.com"></a>
-<nav><a data-p="support" data-href="support.html" href="support.html" data-it="Supporto" data-en="Support" data-es="Soporte" data-fr="Assistance" data-de="Support" aria-current="page">Support</a><a data-p="privacy" data-href="privacy.html" href="privacy.html" data-it="Privacy" data-en="Privacy" data-es="Privacidad" data-fr="Confidentialité" data-de="Datenschutz">Privacy</a><a data-p="terms" data-href="terms.html" href="terms.html" data-it="Condizioni d'uso" data-en="Terms of use" data-es="Condiciones de uso" data-fr="Conditions d'utilisation" data-de="Nutzungsbedingungen">Terms of use</a><a data-p="guide" data-href="GUIDA-INSTALLAZIONE.html" href="GUIDA-INSTALLAZIONE.html" data-it="Guida" data-en="Guide" data-es="Guía" data-fr="Guide" data-de="Anleitung">Guide</a></nav>
-<div class="langs"><a href="#it" data-l="it" lang="it">Italiano</a><a href="#en" data-l="en" lang="en">English</a><a href="#es" data-l="es" lang="es">Español</a><a href="#fr" data-l="fr" lang="fr">Français</a><a href="#de" data-l="de" lang="de">Deutsch</a></div></div></header>
+<body data-page="support">
+<div class="us-doc">
+  <header class="us-header">
+    <a class="us-logo" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg?v=20261111" alt="The Ultraspeaker QR Lab" width="158" height="60"></a>
+    <div class="us-header-tools">
+      <label class="us-lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="us-sr" data-t="language">Lingua</span><select id="lang"></select></label>
+      <a class="us-btn us-guide" id="usGuide" href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" aria-label="Guida d'utilizzo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-t="guide">Guida</span></a>
+    </div>
+  </header>
+  <nav class="us-doc-nav"><a href="support.html" data-nav="support" aria-current="page">Supporto</a><a href="privacy.html" data-nav="privacy">Privacy</a><a href="terms.html" data-nav="terms">Condizioni d'uso</a><a href="GUIDA-INSTALLAZIONE.html" data-nav="install">Installazione</a></nav>
 <main>
-<section id="it" data-lang="it" lang="it">
+<div data-lang="it" lang="it">
 <h1>The Ultraspeaker QR Lab – Supporto</h1>
+<p class="us-updated">Ultimo aggiornamento: 11 novembre 2026</p>
+<p><b>Titolare:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
 <p>The Ultraspeaker QR Lab crea QR code personalizzati e li inserisce nelle slide senza uscire da PowerPoint. Con la sezione <b>Reference</b> cita anche la letteratura scientifica, con un QR che porta al paper. È disponibile in italiano, inglese, spagnolo, francese e tedesco.</p>
+
+<p class="note"><b>Guida d'utilizzo in PDF:</b> <a href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" lang="it">Italiano</a> · <a href="guide/qr-lab-guide-en.pdf" target="_blank" rel="noopener" lang="en">English</a> · <a href="guide/qr-lab-guide-es.pdf" target="_blank" rel="noopener" lang="es">Español</a> · <a href="guide/qr-lab-guide-fr.pdf" target="_blank" rel="noopener" lang="fr">Français</a> · <a href="guide/qr-lab-guide-de.pdf" target="_blank" rel="noopener" lang="de">Deutsch</a></p>
 
 <h2><span class="n">1</span>Sezione QR</h2>
 <ol>
-<li>In PowerPoint apri la scheda <b>Inserisci</b> e fai clic su <b>QR Code</b> (gruppo “The Ultraspeaker QR Lab”). In alto nel pannello scegli <b>QR</b>.</li>
+<li>In PowerPoint apri la scheda <b>Home</b> e fai clic su <b>QR Lab</b> (gruppo “The Ultraspeaker”). In alto nel pannello scegli <b>QR</b>.</li>
 <li>Scegli cosa deve aprire il QR: link, testo, email, telefono, SMS, WhatsApp, Wi‑Fi, biglietto da visita, posizione, evento o profilo social.</li>
 <li>Compila il contenuto e personalizza il design: forma dei moduli, occhi, colori, logo e cornice.</li>
 <li>Scegli PNG o Vettoriale, imposta la larghezza in centimetri e fai clic su <b>Inserisci nella slide</b>.</li>
@@ -92,11 +47,13 @@ footer a{margin:0 6px}
 <li>In alto nel pannello scegli <b>Reference</b>.</li>
 <li>Scrivi un <b>DOI</b>, un <b>PMID</b>, un link di PubMed o doi.org, oppure alcune parole del titolo o il nome di un autore, e fai clic su <b>Cerca</b>. Con una ricerca libera scegli l'articolo giusto dall'elenco.</li>
 <li>Controlla l'<b>anteprima</b>: autori, titolo, rivista, anno, volume e pagine. Qui compaiono anche gli avvisi se l'articolo è stato <b>ritrattato</b> o <b>corretto</b>, il link alla versione <b>open access</b> quando esiste e l'avviso se il riferimento è già nella presentazione.</li>
-<li>Scegli lo <b>stile della bibliografia</b> (Vancouver, predefinito; APA 7; AMA; Harvard) e la <b>citazione nella slide</b>: «Rossi et al., J Dent 2023», numerica «[1]» oppure «(Rossi et al., 2023)».</li>
+<li>Scegli lo <b>stile della bibliografia</b> (Vancouver, predefinito; APA 7; AMA; Harvard) e la <b>citazione nella slide</b>: «Rossi et al., J Dent 2023», numerica «[1]» oppure «(Rossi et al., 2023)» oppure la citazione <b>Completa</b>, uguale a quella della bibliografia ma senza numero.</li>
 <li>Scegli un <b>layout pronto</b> (Discreto, Centrato, Evidente, Sfondo scuro) oppure regola posizione in basso (sinistra, centro, destra), font, dimensione e colore. In «Cosa inserire» scegli <b>Citazione + QR</b>, <b>Solo citazione</b> oppure <b>Solo QR</b>. Il QR può aprire il DOI o la versione open access e si inserisce in <b>vettoriale (SVG)</b>, nitido a ogni dimensione, oppure in <b>PNG</b>; se la tua versione di PowerPoint non accetta il vettoriale, l'app usa automaticamente un PNG ad alta risoluzione. Colori, forme e logo del QR sono quelli scelti nella sezione QR.</li>
 <li>Seleziona la slide e fai clic su <b>Inserisci nella slide</b>. Nelle versioni recenti di PowerPoint testo e QR vengono raggruppati, così si spostano insieme.</li>
 </ol>
-<p><b>Riferimenti della presentazione.</b> Ogni riferimento inserito o importato resta salvato <b>dentro il file .pptx</b>. Dall'elenco puoi mostrarlo di nuovo, modificarlo o eliminarlo (anche dalle slide). <b>Aggiorna numerazione e citazioni</b> rinumera i riferimenti secondo l'ordine di comparsa nelle slide e aggiorna il testo delle citazioni. <b>Genera le slide «Bibliografia»</b> aggiunge in fondo una o più slide con la bibliografia nello stile scelto, eventualmente con un piccolo QR per ogni voce; se le generi di nuovo, quelle precedenti vengono sostituite.</p>
+<p><b>Riferimenti della presentazione.</b> Ogni riferimento inserito o importato resta salvato <b>dentro il file .pptx</b>. Fai clic su un riferimento dell'elenco per riportarlo nell'anteprima e inserirlo di nuovo; trascinalo per cambiare l'ordine dell'elenco e del PDF (sul telefono afferra i puntini a sinistra). Puoi anche modificarlo o eliminarlo (anche dalle slide). <b>Aggiorna numerazione e citazioni</b> rinumera i riferimenti secondo l'ordine di comparsa nelle slide e aggiorna il testo delle citazioni. <b>Genera le slide «Bibliografia»</b> aggiunge in fondo una o più slide con la bibliografia nello stile scelto, eventualmente con un piccolo QR per ogni voce; se le generi di nuovo, quelle precedenti vengono sostituite.</p>
+<p><b>Solo nella bibliografia.</b> Con <b>Aggiungi alla bibliografia</b>, accanto a «Inserisci nella slide», l'articolo entra nell'elenco senza toccare le slide.</p>
+<p><b>Bibliografia in PDF.</b> <b>Scarica PDF</b> chiede il titolo della lecture (obbligatorio), lo speaker e la data, e cosa mettere accanto a ogni voce: solo testo, link, QR oppure link e QR. Il PDF ha pagine bianche, il carattere The Ultraspeaker e un elenco senza numeri, nell'ordine dell'elenco: è pensato per chi ascolta, che non ha le slide sotto gli occhi. Sul telefono si apre il menu di condivisione. Nel pannello di PowerPoint la bibliografia si apre nel browser, da cui scarichi il PDF.</p>
 <p><b>Importazione in blocco.</b> Apri «Importa un elenco di DOI o PMID», incolla un DOI, un PMID o un link per riga e fai clic su <b>Importa nella bibliografia</b>. I duplicati vengono riconosciuti e non aggiunti due volte.</p>
 <p><b>Abstract nelle note del relatore.</b> PowerPoint non permette ancora agli add-in di scrivere nelle note. Se spunti l'opzione, l'abstract PubMed viene copiato negli appunti al momento dell'inserimento: incollalo nelle note con ⌘V / Ctrl+V.</p>
 
@@ -118,7 +75,7 @@ footer a{margin:0 6px}
 <dt>I QR code scadono?</dt>
 <dd>No. Sono statici: il contenuto è scritto nel codice, quindi funzionano per sempre, senza abbonamenti né tracciamento.</dd>
 <dt>La password del Wi‑Fi viene salvata?</dt>
-<dd>No. Serve solo a creare il codice e non viene mai memorizzata. Vedi l'<a href="privacy.html#it">informativa sulla privacy</a>.</dd>
+<dd>No. Serve solo a creare il codice e non viene mai memorizzata. Vedi l'<a href="privacy.html">informativa sulla privacy</a>.</dd>
 <dt>Come cambio lingua?</dt>
 <dd>Dal menu in alto a destra nel pannello. All'inizio l'app usa la lingua di PowerPoint.</dd>
 <dt>Posso usarlo senza PowerPoint?</dt>
@@ -127,14 +84,21 @@ footer a{margin:0 6px}
 
 <h2>Contatti</h2>
 <p class="note">Scrivi a <a href="mailto:info@theultraspeaker.com?subject=The%20Ultraspeaker%20QR%20Lab%20-%20Supporto">info@theultraspeaker.com</a>. Descrivi il problema, la versione di PowerPoint e il sistema operativo: ti risponderemo il prima possibile.</p>
-</section>
-<section id="en" data-lang="en" lang="en">
+
+<h2>Altri strumenti The Ultraspeaker</h2>
+<p><a href="https://niki977.github.io/ultraspeaker-qr-lab/" target="_blank" rel="noopener">The Ultraspeaker QR Lab</a> · <a href="https://niki977.github.io/ultraspeaker-image-lab/" target="_blank" rel="noopener">The Ultraspeaker Image Lab</a> · <a href="https://niki977.github.io/ultraspeaker-flipbook-lab/" target="_blank" rel="noopener">The Ultraspeaker Flipbook Lab</a> · <a href="https://niki977.github.io/ultraspeaker-projector-lab/" target="_blank" rel="noopener">The Ultraspeaker Projector Lab</a> · <a href="https://niki977.github.io/ultraspeaker-check-lab/" target="_blank" rel="noopener">The Ultraspeaker Check Lab</a></p>
+</div>
+<div data-lang="en" lang="en">
 <h1>The Ultraspeaker QR Lab – Support</h1>
+<p class="us-updated">Last updated: 11 November 2026</p>
+<p><b>Owner:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
 <p>The Ultraspeaker QR Lab creates custom QR codes and inserts them into your slides without leaving PowerPoint. With the <b>Reference</b> section it also cites the scientific literature, with a QR code that leads to the paper. It is available in English, Italian, Spanish, French and German.</p>
+
+<p class="note"><b>User guide (PDF):</b> <a href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" lang="it">Italiano</a> · <a href="guide/qr-lab-guide-en.pdf" target="_blank" rel="noopener" lang="en">English</a> · <a href="guide/qr-lab-guide-es.pdf" target="_blank" rel="noopener" lang="es">Español</a> · <a href="guide/qr-lab-guide-fr.pdf" target="_blank" rel="noopener" lang="fr">Français</a> · <a href="guide/qr-lab-guide-de.pdf" target="_blank" rel="noopener" lang="de">Deutsch</a></p>
 
 <h2><span class="n">1</span>QR section</h2>
 <ol>
-<li>In PowerPoint, open the <b>Insert</b> tab and click <b>QR Code</b> (group “The Ultraspeaker QR Lab”). At the top of the panel choose <b>QR</b>.</li>
+<li>In PowerPoint, open the <b>Home</b> tab and click <b>QR Lab</b> (group “The Ultraspeaker”). At the top of the panel choose <b>QR</b>.</li>
 <li>Choose what the QR code should open: link, text, email, phone, SMS, WhatsApp, Wi‑Fi, contact card, location, calendar event or social profile.</li>
 <li>Fill in the content, then customise the design: module shape, eyes, colours, logo and frame.</li>
 <li>Choose PNG or Vector, set the width in centimetres and click <b>Insert into slide</b>.</li>
@@ -145,11 +109,13 @@ footer a{margin:0 6px}
 <li>At the top of the panel choose <b>Reference</b>.</li>
 <li>Type a <b>DOI</b>, a <b>PMID</b>, a PubMed or doi.org link, or a few words of the title or an author's name, and click <b>Search</b>. For a free-text search, pick the right article from the list.</li>
 <li>Check the <b>preview</b>: authors, title, journal, year, volume and pages. It also warns you if the article has been <b>retracted</b> or <b>corrected</b>, links to the <b>open access</b> version when there is one, and tells you if the reference is already in the presentation.</li>
-<li>Choose the <b>bibliography style</b> (Vancouver, the default; APA 7; AMA; Harvard) and the <b>citation on the slide</b>: “Rossi et al., J Dent 2023”, numeric “[1]” or “(Rossi et al., 2023)”.</li>
+<li>Choose the <b>bibliography style</b> (Vancouver, the default; APA 7; AMA; Harvard) and the <b>citation on the slide</b>: “Rossi et al., J Dent 2023”, numeric “[1]” or “(Rossi et al., 2023)” or the <b>Full</b> citation, the same as in the bibliography but without a number.</li>
 <li>Pick a <b>ready-made layout</b> (Discreet, Centred, Prominent, Dark background) or adjust the position at the bottom (left, centre, right), font, size and colour. Under “What to insert” choose <b>Citation + QR</b>, <b>Citation only</b> or <b>QR only</b>. The QR code can open the DOI or the open access version and is inserted as <b>vector (SVG)</b>, sharp at any size, or as <b>PNG</b>; if your version of PowerPoint doesn't accept vector images, the app automatically uses a high-resolution PNG. The QR colours, shapes and logo are those chosen in the QR section.</li>
 <li>Select the slide and click <b>Insert into slide</b>. In recent versions of PowerPoint, text and QR are grouped so they move together.</li>
 </ol>
-<p><b>References in this presentation.</b> Every reference you insert or import is saved <b>inside the .pptx file</b>. From the list you can show it again, edit it or delete it (from the slides too). <b>Update numbering and citations</b> renumbers the references in their order of appearance on the slides and updates the citation text. <b>Create the “References” slides</b> adds one or more slides at the end with the bibliography in the chosen style, optionally with a small QR for each entry; if you create them again, the previous ones are replaced.</p>
+<p><b>References in this presentation.</b> Every reference you insert or import is saved <b>inside the .pptx file</b>. Click a reference in the list to bring it back to the preview and insert it again; drag it to change the order of the list and of the PDF (on a phone, hold the dots on the left). You can also edit it or delete it (from the slides too). <b>Update numbering and citations</b> renumbers the references in their order of appearance on the slides and updates the citation text. <b>Create the “References” slides</b> adds one or more slides at the end with the bibliography in the chosen style, optionally with a small QR for each entry; if you create them again, the previous ones are replaced.</p>
+<p><b>Bibliography only.</b> <b>Add to bibliography</b>, next to “Insert into slide”, adds the article to the list without changing the slides.</p>
+<p><b>Bibliography as PDF.</b> <b>Download PDF</b> asks for the lecture title (required), the speaker and the date, and what to put next to each entry: text only, link, QR or link and QR. The PDF has white pages, The Ultraspeaker typeface and an unnumbered list in the order of the list: it is made for the audience, who don't have the slides in front of them. On a phone the share menu opens. In the PowerPoint panel the bibliography opens in your browser, where you download the PDF.</p>
 <p><b>Bulk import.</b> Open “Import a list of DOIs or PMIDs”, paste one DOI, PMID or link per line and click <b>Import into the bibliography</b>. Duplicates are recognised and not added twice.</p>
 <p><b>Abstract in the speaker notes.</b> PowerPoint doesn't yet let add-ins write to the notes. If you tick the option, the PubMed abstract is copied to the clipboard when you insert the citation: paste it into the notes with ⌘V / Ctrl+V.</p>
 
@@ -171,7 +137,7 @@ footer a{margin:0 6px}
 <dt>Do QR codes expire?</dt>
 <dd>No. The codes are static: the content is written inside the code, so they work forever, without subscriptions or tracking.</dd>
 <dt>Is my Wi‑Fi password saved?</dt>
-<dd>No. It is used only to create the code and is never stored. See the <a href="privacy.html#en">Privacy Policy</a>.</dd>
+<dd>No. It is used only to create the code and is never stored. See the <a href="privacy.html">Privacy Policy</a>.</dd>
 <dt>How do I change the language?</dt>
 <dd>Use the language menu at the top right of the panel. By default the app follows the language of PowerPoint.</dd>
 <dt>Can I use it without PowerPoint?</dt>
@@ -180,14 +146,21 @@ footer a{margin:0 6px}
 
 <h2>Contact</h2>
 <p class="note">Write to <a href="mailto:info@theultraspeaker.com?subject=The%20Ultraspeaker%20QR%20Lab%20-%20Support">info@theultraspeaker.com</a>. Please describe the problem, your version of PowerPoint and your operating system. We'll get back to you as soon as possible.</p>
-</section>
-<section id="es" data-lang="es" lang="es">
+
+<h2>Other The Ultraspeaker tools</h2>
+<p><a href="https://niki977.github.io/ultraspeaker-qr-lab/" target="_blank" rel="noopener">The Ultraspeaker QR Lab</a> · <a href="https://niki977.github.io/ultraspeaker-image-lab/" target="_blank" rel="noopener">The Ultraspeaker Image Lab</a> · <a href="https://niki977.github.io/ultraspeaker-flipbook-lab/" target="_blank" rel="noopener">The Ultraspeaker Flipbook Lab</a> · <a href="https://niki977.github.io/ultraspeaker-projector-lab/" target="_blank" rel="noopener">The Ultraspeaker Projector Lab</a> · <a href="https://niki977.github.io/ultraspeaker-check-lab/" target="_blank" rel="noopener">The Ultraspeaker Check Lab</a></p>
+</div>
+<div data-lang="es" lang="es">
 <h1>The Ultraspeaker QR Lab – Soporte</h1>
+<p class="us-updated">Última actualización: 11 de noviembre de 2026</p>
+<p><b>Titular:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
 <p>The Ultraspeaker QR Lab crea códigos QR personalizados y los inserta en las diapositivas sin salir de PowerPoint. Con la sección <b>Referencias</b> también cita la literatura científica, con un QR que lleva al artículo. Está disponible en español, italiano, inglés, francés y alemán.</p>
+
+<p class="note"><b>Guía de uso en PDF:</b> <a href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" lang="it">Italiano</a> · <a href="guide/qr-lab-guide-en.pdf" target="_blank" rel="noopener" lang="en">English</a> · <a href="guide/qr-lab-guide-es.pdf" target="_blank" rel="noopener" lang="es">Español</a> · <a href="guide/qr-lab-guide-fr.pdf" target="_blank" rel="noopener" lang="fr">Français</a> · <a href="guide/qr-lab-guide-de.pdf" target="_blank" rel="noopener" lang="de">Deutsch</a></p>
 
 <h2><span class="n">1</span>Sección QR</h2>
 <ol>
-<li>En PowerPoint abre la pestaña <b>Insertar</b> y haz clic en <b>QR Code</b> (grupo “The Ultraspeaker QR Lab”). Arriba en el panel elige <b>QR</b>.</li>
+<li>En PowerPoint abre la pestaña <b>Inicio</b> y haz clic en <b>QR Lab</b> (grupo “The Ultraspeaker”). Arriba en el panel elige <b>QR</b>.</li>
 <li>Elige qué debe abrir el QR: enlace, texto, email, teléfono, SMS, WhatsApp, Wi‑Fi, tarjeta de contacto, ubicación, evento o perfil social.</li>
 <li>Completa el contenido y personaliza el diseño: forma de los módulos, ojos, colores, logo y marco.</li>
 <li>Elige PNG o Vectorial, indica el ancho en centímetros y haz clic en <b>Insertar en la diapositiva</b>.</li>
@@ -198,11 +171,13 @@ footer a{margin:0 6px}
 <li>Arriba en el panel elige <b>Referencias</b>.</li>
 <li>Escribe un <b>DOI</b>, un <b>PMID</b>, un enlace de PubMed o doi.org, o algunas palabras del título o el nombre de un autor, y haz clic en <b>Buscar</b>. En una búsqueda libre elige el artículo correcto de la lista.</li>
 <li>Revisa la <b>vista previa</b>: autores, título, revista, año, volumen y páginas. También avisa si el artículo ha sido <b>retractado</b> o <b>corregido</b>, enlaza la versión en <b>acceso abierto</b> cuando existe e indica si la referencia ya está en la presentación.</li>
-<li>Elige el <b>estilo de la bibliografía</b> (Vancouver, predeterminado; APA 7; AMA; Harvard) y la <b>cita en la diapositiva</b>: «Rossi et al., J Dent 2023», numérica «[1]» o «(Rossi et al., 2023)».</li>
+<li>Elige el <b>estilo de la bibliografía</b> (Vancouver, predeterminado; APA 7; AMA; Harvard) y la <b>cita en la diapositiva</b>: «Rossi et al., J Dent 2023», numérica «[1]» o «(Rossi et al., 2023)» o la cita <b>Completa</b>, igual que en la bibliografía pero sin número.</li>
 <li>Elige un <b>diseño listo</b> (Discreto, Centrado, Destacado, Fondo oscuro) o ajusta la posición abajo (izquierda, centro, derecha), la fuente, el tamaño y el color. En «Qué insertar» elige <b>Cita + QR</b>, <b>Solo cita</b> o <b>Solo QR</b>. El QR puede abrir el DOI o la versión en acceso abierto y se inserta en <b>vectorial (SVG)</b>, nítido a cualquier tamaño, o en <b>PNG</b>; si tu versión de PowerPoint no acepta vectoriales, la app usa automáticamente un PNG de alta resolución. Colores, formas y logo del QR son los elegidos en la sección QR.</li>
 <li>Selecciona la diapositiva y haz clic en <b>Insertar en la diapositiva</b>. En las versiones recientes de PowerPoint, texto y QR se agrupan para moverse juntos.</li>
 </ol>
-<p><b>Referencias de la presentación.</b> Cada referencia insertada o importada se guarda <b>dentro del archivo .pptx</b>. Desde la lista puedes mostrarla de nuevo, editarla o eliminarla (también de las diapositivas). <b>Actualizar numeración y citas</b> renumera las referencias según su orden de aparición en las diapositivas y actualiza el texto de las citas. <b>Crear las diapositivas «Bibliografía»</b> añade al final una o más diapositivas con la bibliografía en el estilo elegido, con un pequeño QR por entrada si lo deseas; si las creas de nuevo, las anteriores se sustituyen.</p>
+<p><b>Referencias de la presentación.</b> Cada referencia insertada o importada se guarda <b>dentro del archivo .pptx</b>. Haz clic en una referencia de la lista para volver a verla en la vista previa e insertarla de nuevo; arrástrala para cambiar el orden de la lista y del PDF (en el teléfono, sujeta los puntos de la izquierda). También puedes editarla o eliminarla (también de las diapositivas). <b>Actualizar numeración y citas</b> renumera las referencias según su orden de aparición en las diapositivas y actualiza el texto de las citas. <b>Crear las diapositivas «Bibliografía»</b> añade al final una o más diapositivas con la bibliografía en el estilo elegido, con un pequeño QR por entrada si lo deseas; si las creas de nuevo, las anteriores se sustituyen.</p>
+<p><b>Solo en la bibliografía.</b> Con <b>Añadir a la bibliografía</b>, junto a «Insertar en la diapositiva», el artículo entra en la lista sin tocar las diapositivas.</p>
+<p><b>Bibliografía en PDF.</b> <b>Descargar PDF</b> pide el título de la ponencia (obligatorio), el ponente y la fecha, y qué poner junto a cada entrada: solo texto, enlace, QR o enlace y QR. El PDF tiene páginas blancas, la tipografía The Ultraspeaker y una lista sin números, en el orden de la lista: está pensado para el público, que no tiene las diapositivas delante. En el teléfono se abre el menú de compartir. En el panel de PowerPoint la bibliografía se abre en el navegador, desde donde descargas el PDF.</p>
 <p><b>Importación en bloque.</b> Abre «Importar una lista de DOI o PMID», pega un DOI, PMID o enlace por línea y haz clic en <b>Importar a la bibliografía</b>. Los duplicados se reconocen y no se añaden dos veces.</p>
 <p><b>Resumen en las notas del orador.</b> PowerPoint todavía no permite que los complementos escriban en las notas. Si marcas la opción, el resumen de PubMed se copia al portapapeles al insertar la cita: pégalo en las notas con ⌘V / Ctrl+V.</p>
 
@@ -224,7 +199,7 @@ footer a{margin:0 6px}
 <dt>¿Caducan los códigos QR?</dt>
 <dd>No. Son estáticos: el contenido está escrito en el código, así que funcionan para siempre, sin suscripciones ni seguimiento.</dd>
 <dt>¿Se guarda la contraseña del Wi‑Fi?</dt>
-<dd>No. Solo sirve para crear el código y nunca se almacena. Consulta la <a href="privacy.html#es">política de privacidad</a>.</dd>
+<dd>No. Solo sirve para crear el código y nunca se almacena. Consulta la <a href="privacy.html">política de privacidad</a>.</dd>
 <dt>¿Cómo cambio el idioma?</dt>
 <dd>Desde el menú arriba a la derecha del panel. Al principio la app usa el idioma de PowerPoint.</dd>
 <dt>¿Puedo usarlo sin PowerPoint?</dt>
@@ -233,14 +208,21 @@ footer a{margin:0 6px}
 
 <h2>Contacto</h2>
 <p class="note">Escribe a <a href="mailto:info@theultraspeaker.com?subject=The%20Ultraspeaker%20QR%20Lab%20-%20Soporte">info@theultraspeaker.com</a>. Describe el problema, tu versión de PowerPoint y tu sistema operativo: te responderemos lo antes posible.</p>
-</section>
-<section id="fr" data-lang="fr" lang="fr">
+
+<h2>Otras herramientas The Ultraspeaker</h2>
+<p><a href="https://niki977.github.io/ultraspeaker-qr-lab/" target="_blank" rel="noopener">The Ultraspeaker QR Lab</a> · <a href="https://niki977.github.io/ultraspeaker-image-lab/" target="_blank" rel="noopener">The Ultraspeaker Image Lab</a> · <a href="https://niki977.github.io/ultraspeaker-flipbook-lab/" target="_blank" rel="noopener">The Ultraspeaker Flipbook Lab</a> · <a href="https://niki977.github.io/ultraspeaker-projector-lab/" target="_blank" rel="noopener">The Ultraspeaker Projector Lab</a> · <a href="https://niki977.github.io/ultraspeaker-check-lab/" target="_blank" rel="noopener">The Ultraspeaker Check Lab</a></p>
+</div>
+<div data-lang="fr" lang="fr">
 <h1>The Ultraspeaker QR Lab – Assistance</h1>
+<p class="us-updated">Dernière mise à jour : 11 novembre 2026</p>
+<p><b>Titulaire:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
 <p>The Ultraspeaker QR Lab crée des QR codes personnalisés et les insère dans vos diapositives sans quitter PowerPoint. Avec la section <b>Références</b>, il cite aussi la littérature scientifique, avec un QR code qui mène à l'article. Il est disponible en français, italien, anglais, espagnol et allemand.</p>
+
+<p class="note"><b>Guide d'utilisation en PDF:</b> <a href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" lang="it">Italiano</a> · <a href="guide/qr-lab-guide-en.pdf" target="_blank" rel="noopener" lang="en">English</a> · <a href="guide/qr-lab-guide-es.pdf" target="_blank" rel="noopener" lang="es">Español</a> · <a href="guide/qr-lab-guide-fr.pdf" target="_blank" rel="noopener" lang="fr">Français</a> · <a href="guide/qr-lab-guide-de.pdf" target="_blank" rel="noopener" lang="de">Deutsch</a></p>
 
 <h2><span class="n">1</span>Section QR</h2>
 <ol>
-<li>Dans PowerPoint, ouvrez l'onglet <b>Insertion</b> et cliquez sur <b>QR Code</b> (groupe « The Ultraspeaker QR Lab »). En haut du volet, choisissez <b>QR</b>.</li>
+<li>Dans PowerPoint, ouvrez l'onglet <b>Accueil</b> et cliquez sur <b>QR Lab</b> (groupe « The Ultraspeaker »). En haut du volet, choisissez <b>QR</b>.</li>
 <li>Choisissez ce que le QR doit ouvrir : lien, texte, e-mail, téléphone, SMS, WhatsApp, Wi‑Fi, carte de visite, lieu, événement ou profil social.</li>
 <li>Saisissez le contenu, puis personnalisez le design : forme des modules, yeux, couleurs, logo et cadre.</li>
 <li>Choisissez PNG ou Vectoriel, indiquez la largeur en centimètres et cliquez sur <b>Insérer dans la diapositive</b>.</li>
@@ -251,11 +233,13 @@ footer a{margin:0 6px}
 <li>En haut du volet, choisissez <b>Références</b>.</li>
 <li>Saisissez un <b>DOI</b>, un <b>PMID</b>, un lien PubMed ou doi.org, ou quelques mots du titre ou le nom d'un auteur, puis cliquez sur <b>Rechercher</b>. Pour une recherche libre, choisissez le bon article dans la liste.</li>
 <li>Vérifiez l'<b>aperçu</b> : auteurs, titre, revue, année, volume et pages. Il vous avertit aussi si l'article a été <b>rétracté</b> ou <b>corrigé</b>, donne le lien vers la version en <b>libre accès</b> quand elle existe et signale si la référence figure déjà dans la présentation.</li>
-<li>Choisissez le <b>style de la bibliographie</b> (Vancouver, par défaut ; APA 7 ; AMA ; Harvard) et la <b>citation sur la diapositive</b> : « Rossi et al., J Dent 2023 », numérique « [1] » ou « (Rossi et al., 2023) ».</li>
+<li>Choisissez le <b>style de la bibliographie</b> (Vancouver, par défaut ; APA 7 ; AMA ; Harvard) et la <b>citation sur la diapositive</b> : « Rossi et al., J Dent 2023 », numérique « [1] » ou « (Rossi et al., 2023) » ou la citation <b>Complète</b>, identique à celle de la bibliographie mais sans numéro.</li>
 <li>Choisissez une <b>mise en page prête</b> (Discret, Centré, Visible, Fond sombre) ou réglez la position en bas (gauche, centre, droite), la police, la taille et la couleur. Dans « Que insérer », choisissez <b>Citation + QR</b>, <b>Citation seule</b> ou <b>QR seul</b>. Le QR peut ouvrir le DOI ou la version en libre accès et s'insère en <b>vectoriel (SVG)</b>, net à toutes les tailles, ou en <b>PNG</b> ; si votre version de PowerPoint n'accepte pas le vectoriel, l'application utilise automatiquement un PNG haute résolution. Les couleurs, formes et logo du QR sont ceux choisis dans la section QR.</li>
 <li>Sélectionnez la diapositive et cliquez sur <b>Insérer dans la diapositive</b>. Dans les versions récentes de PowerPoint, le texte et le QR sont groupés pour se déplacer ensemble.</li>
 </ol>
-<p><b>Références de la présentation.</b> Chaque référence insérée ou importée est enregistrée <b>dans le fichier .pptx</b>. Depuis la liste, vous pouvez l'afficher à nouveau, la modifier ou la supprimer (aussi des diapositives). <b>Mettre à jour numérotation et citations</b> renumérote les références selon leur ordre d'apparition dans les diapositives et met à jour le texte des citations. <b>Créer les diapositives « Bibliographie »</b> ajoute à la fin une ou plusieurs diapositives avec la bibliographie dans le style choisi, avec un petit QR par entrée si vous le souhaitez ; si vous les créez à nouveau, les précédentes sont remplacées.</p>
+<p><b>Références de la présentation.</b> Chaque référence insérée ou importée est enregistrée <b>dans le fichier .pptx</b>. Cliquez sur une référence de la liste pour la retrouver dans l'aperçu et l'insérer à nouveau ; faites-la glisser pour changer l'ordre de la liste et du PDF (sur téléphone, saisissez les points à gauche). Vous pouvez aussi la modifier ou la supprimer (aussi des diapositives). <b>Mettre à jour numérotation et citations</b> renumérote les références selon leur ordre d'apparition dans les diapositives et met à jour le texte des citations. <b>Créer les diapositives « Bibliographie »</b> ajoute à la fin une ou plusieurs diapositives avec la bibliographie dans le style choisi, avec un petit QR par entrée si vous le souhaitez ; si vous les créez à nouveau, les précédentes sont remplacées.</p>
+<p><b>Seulement dans la bibliographie.</b> <b>Ajouter à la bibliographie</b>, à côté de « Insérer dans la diapositive », ajoute l'article à la liste sans modifier les diapositives.</p>
+<p><b>Bibliographie en PDF.</b> <b>Télécharger le PDF</b> demande le titre de la conférence (obligatoire), l'intervenant et la date, et ce qu'il faut placer à côté de chaque entrée : texte seul, lien, QR ou lien et QR. Le PDF a des pages blanches, la police The Ultraspeaker et une liste sans numéros, dans l'ordre de la liste : il est pensé pour le public, qui n'a pas les diapositives sous les yeux. Sur téléphone, le menu de partage s'ouvre. Dans le volet PowerPoint, la bibliographie s'ouvre dans le navigateur, d'où vous téléchargez le PDF.</p>
 <p><b>Importation groupée.</b> Ouvrez « Importer une liste de DOI ou PMID », collez un DOI, PMID ou lien par ligne et cliquez sur <b>Importer dans la bibliographie</b>. Les doublons sont reconnus et ne sont pas ajoutés deux fois.</p>
 <p><b>Résumé dans les notes de l'orateur.</b> PowerPoint ne permet pas encore aux compléments d'écrire dans les notes. Si vous cochez l'option, le résumé PubMed est copié dans le presse-papiers au moment de l'insertion : collez-le dans les notes avec ⌘V / Ctrl+V.</p>
 
@@ -277,7 +261,7 @@ footer a{margin:0 6px}
 <dt>Les QR codes expirent-ils ?</dt>
 <dd>Non. Ils sont statiques : le contenu est écrit dans le code, ils fonctionnent donc pour toujours, sans abonnement ni suivi.</dd>
 <dt>Mon mot de passe Wi‑Fi est-il enregistré ?</dt>
-<dd>Non. Il sert uniquement à créer le code et n'est jamais conservé. Voir la <a href="privacy.html#fr">politique de confidentialité</a>.</dd>
+<dd>Non. Il sert uniquement à créer le code et n'est jamais conservé. Voir la <a href="privacy.html">politique de confidentialité</a>.</dd>
 <dt>Comment changer de langue ?</dt>
 <dd>Avec le menu en haut à droite du volet. Par défaut, l'application suit la langue de PowerPoint.</dd>
 <dt>Puis-je l'utiliser sans PowerPoint ?</dt>
@@ -286,14 +270,21 @@ footer a{margin:0 6px}
 
 <h2>Contact</h2>
 <p class="note">Écrivez à <a href="mailto:info@theultraspeaker.com?subject=The%20Ultraspeaker%20QR%20Lab%20-%20Assistance">info@theultraspeaker.com</a>. Décrivez le problème, votre version de PowerPoint et votre système d'exploitation : nous vous répondrons dès que possible.</p>
-</section>
-<section id="de" data-lang="de" lang="de">
+
+<h2>Autres outils The Ultraspeaker</h2>
+<p><a href="https://niki977.github.io/ultraspeaker-qr-lab/" target="_blank" rel="noopener">The Ultraspeaker QR Lab</a> · <a href="https://niki977.github.io/ultraspeaker-image-lab/" target="_blank" rel="noopener">The Ultraspeaker Image Lab</a> · <a href="https://niki977.github.io/ultraspeaker-flipbook-lab/" target="_blank" rel="noopener">The Ultraspeaker Flipbook Lab</a> · <a href="https://niki977.github.io/ultraspeaker-projector-lab/" target="_blank" rel="noopener">The Ultraspeaker Projector Lab</a> · <a href="https://niki977.github.io/ultraspeaker-check-lab/" target="_blank" rel="noopener">The Ultraspeaker Check Lab</a></p>
+</div>
+<div data-lang="de" lang="de">
 <h1>The Ultraspeaker QR Lab – Support</h1>
+<p class="us-updated">Zuletzt aktualisiert: 11. November 2026</p>
+<p><b>Inhaber:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
 <p>The Ultraspeaker QR Lab erstellt individuelle QR-Codes und fügt sie in Ihre Folien ein, ohne PowerPoint zu verlassen. Mit dem Bereich <b>Literatur</b> zitiert es auch wissenschaftliche Literatur, mit einem QR-Code, der zum Paper führt. Es ist auf Deutsch, Italienisch, Englisch, Spanisch und Französisch verfügbar.</p>
+
+<p class="note"><b>Bedienungsanleitung als PDF:</b> <a href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" lang="it">Italiano</a> · <a href="guide/qr-lab-guide-en.pdf" target="_blank" rel="noopener" lang="en">English</a> · <a href="guide/qr-lab-guide-es.pdf" target="_blank" rel="noopener" lang="es">Español</a> · <a href="guide/qr-lab-guide-fr.pdf" target="_blank" rel="noopener" lang="fr">Français</a> · <a href="guide/qr-lab-guide-de.pdf" target="_blank" rel="noopener" lang="de">Deutsch</a></p>
 
 <h2><span class="n">1</span>Bereich QR</h2>
 <ol>
-<li>Öffnen Sie in PowerPoint die Registerkarte <b>Einfügen</b> und klicken Sie auf <b>QR Code</b> (Gruppe „The Ultraspeaker QR Lab“). Wählen Sie oben im Bereich <b>QR</b>.</li>
+<li>Öffnen Sie in PowerPoint die Registerkarte <b>Start</b> und klicken Sie auf <b>QR Lab</b> (Gruppe „The Ultraspeaker“). Wählen Sie oben im Bereich <b>QR</b>.</li>
 <li>Wählen Sie, was der QR-Code öffnen soll: Link, Text, E-Mail, Telefon, SMS, WhatsApp, WLAN, Visitenkarte, Ort, Termin oder Social-Media-Profil.</li>
 <li>Geben Sie den Inhalt ein und gestalten Sie das Design: Modulform, Augen, Farben, Logo und Rahmen.</li>
 <li>Wählen Sie PNG oder Vektor, legen Sie die Breite in Zentimetern fest und klicken Sie auf <b>In Folie einfügen</b>.</li>
@@ -304,11 +295,13 @@ footer a{margin:0 6px}
 <li>Wählen Sie oben im Bereich <b>Literatur</b>.</li>
 <li>Geben Sie eine <b>DOI</b>, eine <b>PMID</b>, einen PubMed- oder doi.org-Link oder einige Wörter des Titels bzw. einen Autorennamen ein und klicken Sie auf <b>Suchen</b>. Bei einer freien Suche wählen Sie den richtigen Artikel aus der Liste.</li>
 <li>Prüfen Sie die <b>Vorschau</b>: Autoren, Titel, Zeitschrift, Jahr, Band und Seiten. Sie warnt außerdem, wenn der Artikel <b>zurückgezogen</b> oder <b>korrigiert</b> wurde, verlinkt die <b>Open-Access</b>-Version, sofern vorhanden, und zeigt an, ob die Quelle bereits in der Präsentation ist.</li>
-<li>Wählen Sie den <b>Zitierstil des Literaturverzeichnisses</b> (Vancouver, Standard; APA 7; AMA; Harvard) und das <b>Zitat auf der Folie</b>: „Rossi et al., J Dent 2023“, numerisch „[1]“ oder „(Rossi et al., 2023)“.</li>
+<li>Wählen Sie den <b>Zitierstil des Literaturverzeichnisses</b> (Vancouver, Standard; APA 7; AMA; Harvard) und das <b>Zitat auf der Folie</b>: „Rossi et al., J Dent 2023“, numerisch „[1]“ oder „(Rossi et al., 2023)“ oder das <b>vollständige</b> Zitat, wie im Literaturverzeichnis, aber ohne Nummer.</li>
 <li>Wählen Sie ein <b>fertiges Layout</b> (Dezent, Zentriert, Auffällig, Dunkler Hintergrund) oder passen Sie Position unten (links, Mitte, rechts), Schriftart, Größe und Farbe an. Unter „Was einfügen“ wählen Sie <b>Zitat + QR</b>, <b>Nur Zitat</b> oder <b>Nur QR</b>. Der QR-Code kann die DOI oder die Open-Access-Version öffnen und wird als <b>Vektor (SVG)</b>, in jeder Größe scharf, oder als <b>PNG</b> eingefügt; akzeptiert Ihre PowerPoint-Version keine Vektorgrafiken, verwendet die App automatisch ein hochaufgelöstes PNG. Farben, Formen und Logo des QR stammen aus dem Bereich QR.</li>
 <li>Wählen Sie die Folie aus und klicken Sie auf <b>In Folie einfügen</b>. In aktuellen PowerPoint-Versionen werden Text und QR gruppiert und bewegen sich gemeinsam.</li>
 </ol>
-<p><b>Quellen dieser Präsentation.</b> Jede eingefügte oder importierte Quelle wird <b>in der .pptx-Datei</b> gespeichert. In der Liste können Sie sie erneut anzeigen, bearbeiten oder löschen (auch von den Folien). <b>Nummerierung und Zitate aktualisieren</b> nummeriert die Quellen in der Reihenfolge ihres Auftretens auf den Folien neu und aktualisiert den Zitattext. <b>Folien „Literatur“ erstellen</b> fügt am Ende eine oder mehrere Folien mit dem Literaturverzeichnis im gewählten Stil hinzu, auf Wunsch mit einem kleinen QR pro Eintrag; erstellen Sie sie erneut, werden die vorherigen ersetzt.</p>
+<p><b>Quellen dieser Präsentation.</b> Jede eingefügte oder importierte Quelle wird <b>in der .pptx-Datei</b> gespeichert. Klicken Sie auf eine Quelle in der Liste, um sie wieder in der Vorschau anzuzeigen und erneut einzufügen; ziehen Sie sie, um die Reihenfolge der Liste und des PDFs zu ändern (auf dem Telefon die Punkte links festhalten). Sie können sie auch bearbeiten oder löschen (auch von den Folien). <b>Nummerierung und Zitate aktualisieren</b> nummeriert die Quellen in der Reihenfolge ihres Auftretens auf den Folien neu und aktualisiert den Zitattext. <b>Folien „Literatur“ erstellen</b> fügt am Ende eine oder mehrere Folien mit dem Literaturverzeichnis im gewählten Stil hinzu, auf Wunsch mit einem kleinen QR pro Eintrag; erstellen Sie sie erneut, werden die vorherigen ersetzt.</p>
+<p><b>Nur im Literaturverzeichnis.</b> <b>Zum Literaturverzeichnis hinzufügen</b> neben „In Folie einfügen“ nimmt den Artikel in die Liste auf, ohne die Folien zu ändern.</p>
+<p><b>Literaturverzeichnis als PDF.</b> <b>PDF herunterladen</b> fragt nach dem Titel des Vortrags (Pflichtfeld), dem Referenten und dem Datum sowie danach, was neben jedem Eintrag stehen soll: nur Text, Link, QR oder Link und QR. Das PDF hat weiße Seiten, die Schrift von The Ultraspeaker und eine Liste ohne Nummern in der Reihenfolge der Liste: Es ist für das Publikum gedacht, das die Folien nicht vor sich hat. Auf dem Telefon öffnet sich das Teilen-Menü. Im PowerPoint-Bereich öffnet sich das Literaturverzeichnis im Browser, wo Sie das PDF herunterladen.</p>
 <p><b>Massenimport.</b> Öffnen Sie „Liste von DOIs oder PMIDs importieren“, fügen Sie eine DOI, PMID oder einen Link pro Zeile ein und klicken Sie auf <b>In das Literaturverzeichnis importieren</b>. Duplikate werden erkannt und nicht doppelt hinzugefügt.</p>
 <p><b>Abstract in den Notizen.</b> PowerPoint erlaubt Add-ins noch nicht, in die Notizen zu schreiben. Wenn Sie die Option aktivieren, wird das PubMed-Abstract beim Einfügen in die Zwischenablage kopiert: Fügen Sie es mit ⌘V / Strg+V in die Notizen ein.</p>
 
@@ -330,7 +323,7 @@ footer a{margin:0 6px}
 <dt>Laufen QR-Codes ab?</dt>
 <dd>Nein. Sie sind statisch: Der Inhalt steht im Code selbst, daher funktionieren sie für immer, ohne Abonnement und ohne Tracking.</dd>
 <dt>Wird mein WLAN-Passwort gespeichert?</dt>
-<dd>Nein. Es dient nur zur Erstellung des Codes und wird nie gespeichert. Siehe die <a href="privacy.html#de">Datenschutzerklärung</a>.</dd>
+<dd>Nein. Es dient nur zur Erstellung des Codes und wird nie gespeichert. Siehe die <a href="privacy.html">Datenschutzerklärung</a>.</dd>
 <dt>Wie ändere ich die Sprache?</dt>
 <dd>Über das Sprachmenü oben rechts im Bereich. Standardmäßig folgt die App der Sprache von PowerPoint.</dd>
 <dt>Kann ich es ohne PowerPoint nutzen?</dt>
@@ -339,8 +332,16 @@ footer a{margin:0 6px}
 
 <h2>Kontakt</h2>
 <p class="note">Schreiben Sie an <a href="mailto:info@theultraspeaker.com?subject=The%20Ultraspeaker%20QR%20Lab%20-%20Support">info@theultraspeaker.com</a>. Beschreiben Sie das Problem, Ihre PowerPoint-Version und Ihr Betriebssystem: Wir melden uns so schnell wie möglich.</p>
-</section>
-<footer>© The Ultraspeaker · Nicholas D. Charles · <a data-p="privacy" data-href="privacy.html" href="privacy.html" data-it="Privacy" data-en="Privacy" data-es="Privacidad" data-fr="Confidentialité" data-de="Datenschutz">Privacy</a> · <a data-p="terms" data-href="terms.html" href="terms.html" data-it="Condizioni d'uso" data-en="Terms of use" data-es="Condiciones de uso" data-fr="Conditions d'utilisation" data-de="Nutzungsbedingungen">Terms of use</a> · <a data-p="guide" data-href="GUIDA-INSTALLAZIONE.html" href="GUIDA-INSTALLAZIONE.html" data-it="Guida" data-en="Guide" data-es="Guía" data-fr="Guide" data-de="Anleitung">Guide</a></footer>
+
+<h2>Weitere Werkzeuge von The Ultraspeaker</h2>
+<p><a href="https://niki977.github.io/ultraspeaker-qr-lab/" target="_blank" rel="noopener">The Ultraspeaker QR Lab</a> · <a href="https://niki977.github.io/ultraspeaker-image-lab/" target="_blank" rel="noopener">The Ultraspeaker Image Lab</a> · <a href="https://niki977.github.io/ultraspeaker-flipbook-lab/" target="_blank" rel="noopener">The Ultraspeaker Flipbook Lab</a> · <a href="https://niki977.github.io/ultraspeaker-projector-lab/" target="_blank" rel="noopener">The Ultraspeaker Projector Lab</a> · <a href="https://niki977.github.io/ultraspeaker-check-lab/" target="_blank" rel="noopener">The Ultraspeaker Check Lab</a></p>
+</div>
 </main>
+  <footer class="us-footer">
+    <a class="us-cta" id="usCta" href="mailto:info@theultraspeaker.com"><img src="assets/arena-white.svg" alt=""><span data-t="cta">Richiedi un consiglio</span></a>
+    <p class="us-links"><a href="support.html" data-nav="support">Supporto</a><a href="privacy.html" data-nav="privacy">Privacy</a><a href="terms.html" data-nav="terms">Condizioni d'uso</a><a href="GUIDA-INSTALLAZIONE.html" data-nav="install">Installazione</a></p>
+  </footer>
+</div>
+<script src="legal.js?v=20261111"></script>
 </body>
 </html>

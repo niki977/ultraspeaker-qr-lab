@@ -4,300 +4,102 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Ultraspeaker QR Lab</title>
-<link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
-<link rel="icon" href="assets/favicon-32.png?v=2" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
+<meta name="description" content="Create custom QR codes and scientific citations with a QR to the paper, ready for your slides.">
 <meta name="theme-color" content="#000000">
-<!-- nome breve sotto l'icona quando si salva la pagina sulla schermata Home -->
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-title" content="QR Lab">
 <meta name="application-name" content="QR Lab">
-<link rel="manifest" href="app.webmanifest">
-<script>window.QR_WEB=true;</script>
-<script src="qrcode.js?v=20261104a"></script>
-<script src="i18n.js?v=20261104a"></script>
-<style>
-@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-regular.woff2) format("woff2")}
-@font-face{font-family:"Champagne & Limousines";font-weight:400;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-italic.woff2) format("woff2")}
-@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/champagne-limousines-bold.woff2) format("woff2")}
-@font-face{font-family:"Champagne & Limousines";font-weight:700;font-style:italic;font-display:swap;src:url(fonts/champagne-limousines-bolditalic.woff2) format("woff2")}
-/* Immagine coordinata The Ultraspeaker: bianco e nero, tipografia geometrica, maiuscolo spaziato */
-:root{
-  --bg:#000000; --surface:#111111; --surface-2:#1b1b1b; --ink:#ffffff; --ink-2:#d0d0d0; --ink-3:#8e8e8e;
-  --line:#2a2a2a; --accent:#ffffff; --accent-ink:#000000; --accent-soft:#262626; --warn:#ffcf80; --warn-soft:#2d230f;
-  --ring:rgba(255,255,255,.25); --radius:10px; --shadow:none; color-scheme:dark;
-}
-/* Sfondo sempre nero, come le altre app The Ultraspeaker (indipendente dal tema chiaro/scuro del sistema) */
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:500 14px/1.5 "Champagne & Limousines","Avenir Next","Segoe UI",-apple-system,Arial,sans-serif;font-size-adjust:0.47;-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit;color:inherit}
-.app{max-width:1080px;margin:0 auto;padding:0 12px 96px}
-/* Intestazione: fascia nera con il logo */
-header.brand{background:#000;color:#fff;margin:0 0 14px;padding:18px 16px 14px;border-bottom:1px solid #1f1f1f}
-.brand-in{max-width:1080px;margin:0 auto}
-.brand-row{display:flex;align-items:flex-start;gap:12px}
-.brand .logo-link{display:block;width:min(230px,60%);min-width:0;border-radius:4px}
-.brand .logo-link:focus-visible{outline:2px solid #fff;outline-offset:4px}
-.brand .lockup{display:block;width:100%;height:auto}
-.brand-tool{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-top:12px}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.brand-tool p{margin:0;font-size:12px;color:#a8a8a8;letter-spacing:.02em}
-.lang{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none}
-.lang svg{width:16px;height:16px;stroke:#9a9a9a;fill:none;stroke-width:1.8}
-.brand .lang select{width:auto;padding:5px 8px;font-size:12.5px;border-radius:7px;background:#111;color:#fff;border:1px solid #333}
-.layout{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
-.layout>main,.layout>aside{min-width:0}
-@media (min-width:760px){
-  .app{padding:0 20px 40px}
-  header.brand{margin:0 0 20px;padding:22px 0 18px}
-  .brand-in{padding:0 20px}
-  .layout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}
-  .side{position:sticky;top:12px}
-  .bar{display:none!important}
-}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
-.step-h{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:14px;font-weight:700;letter-spacing:.01em}
-.step-h .n{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
-.types{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px}
-.type{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink-2);transition:border-color .15s,background .15s,color .15s}
-.type svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.type:hover{border-color:var(--ink)}
-.type[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
-.field{margin-bottom:10px}
-.field label,.lbl{display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
-.field .hint{font-size:11.5px;color:var(--ink-3);margin-top:3px}
-input[type=text],input[type=url],input[type=email],input[type=tel],input[type=number],input[type=datetime-local],select,textarea{
-  width:100%;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:8px 10px;outline:none;min-width:0;font-weight:500}
-textarea{min-height:84px;resize:vertical}
-input:focus,select:focus,textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px var(--ring)}
-button:focus-visible,.tile:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.inline-btn{margin-top:6px;background:none;border:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-size:12px;font-weight:700;cursor:pointer;padding:0}
-.check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);margin:6px 0;cursor:pointer}
-.check input{accent-color:var(--accent);width:16px;height:16px}
-.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:9px;margin-bottom:12px;overflow-x:auto}
-.tabs button{flex:1;border:0;background:none;padding:7px 6px;border-radius:6px;font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer;white-space:nowrap;min-width:max-content;letter-spacing:.02em}
-.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
-.panel[hidden]{display:none}
-[hidden]{display:none!important}
-.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:12px}
-.tile{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--ink-2)}
-.tile:hover{border-color:var(--ink-3)}
-.tile .thumb{width:48px;height:48px;border-radius:5px;background:#fff;display:grid;place-items:center;overflow:hidden}
-.tile .thumb img,.tile .thumb canvas,.tile .thumb svg{width:44px;height:44px;display:block}
-.tile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1.5px var(--accent);color:var(--ink);font-weight:700}
-.tile>span:last-child{text-align:center;line-height:1.2;hyphens:manual;overflow-wrap:break-word;max-width:100%}
-.tile.my{padding:6px 4px;cursor:default}
-.my-main{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;width:100%}
-.my-main:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
-.my-main>span:last-child{text-align:center;line-height:1.2;overflow-wrap:break-word;max-width:100%}
-.my-acts{display:flex;gap:4px;justify-content:center}
-.my-acts button{width:28px;height:22px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink-2);display:grid;place-items:center;cursor:pointer;padding:0}
-.my-acts button:hover{border-color:var(--ink);color:var(--ink)}
-.my-acts svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.thumb.empty{border:1.5px dashed var(--line);background:var(--surface-2)!important;color:var(--ink-3);font-size:22px;font-weight:500}
-.tile.my input{width:100%;font-size:11px;padding:3px 4px;text-align:center;border-radius:5px}
-.tile:disabled{opacity:.55;cursor:default}
-.mini-hint{font-size:11.5px;color:var(--ink-3);margin:-4px 0 12px}
-.colors{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.color{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:7px;padding:5px 8px}
-.color input[type=color]{width:28px;height:28px;border:0;padding:0;background:none;cursor:pointer;flex:none}
-.color input[type=text]{border:0;padding:2px 0;font-family:ui-monospace,Menlo,monospace;font-size:12px;box-shadow:none!important}
-.sub{font-size:10.5px;font-weight:700;color:var(--ink);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.22em}
-.sub:first-child{margin-top:0}
-input[type=range]{width:100%;accent-color:var(--accent)}
-.range-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2)}
-.upload{border:1.5px dashed var(--line);border-radius:9px;padding:14px;text-align:center;cursor:pointer;color:var(--ink-2);font-size:12.5px;background:var(--surface-2)}
-.upload:hover{border-color:var(--ink);color:var(--ink)}
-.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
-.seg button{flex:1;border:0;background:var(--surface);padding:7px 6px;font-size:12px;font-weight:700;color:var(--ink-2);cursor:pointer}
-.seg button+button{border-left:1px solid var(--line)}
-.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-.preview-card{text-align:center}
-/* Riquadro di anteprima chiaro: il QR si vede come sulla slide (la scacchiera indica le zone trasparenti) */
-.preview{background:repeating-conic-gradient(#e9e9e9 0 25%, #ffffff 0 50%) 0 0/16px 16px;border-radius:8px;padding:14px;display:grid;place-items:center;min-height:220px;border:1px solid var(--line)}
-.preview img{max-width:100%;max-height:260px;display:block}
-.preview.dim img{opacity:.25;filter:grayscale(1)}
-.status{font-size:12px;color:var(--ink-3);margin:8px 0 0;min-height:18px}
-.warn{background:var(--warn-soft);color:var(--warn);border-radius:7px;padding:8px 10px;font-size:12px;margin-top:8px;text-align:left}
-.out{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 10px;text-align:left}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 12px;font-weight:700;font-size:12.5px;letter-spacing:.04em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-.btn:hover{border-color:var(--ink)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);width:100%;padding:12px;text-transform:uppercase;letter-spacing:.14em;font-size:12px}
-.btn.primary:hover{opacity:.88}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.recent{display:flex;gap:6px;flex-wrap:wrap}
-.recent button{width:46px;height:46px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:3px;cursor:pointer}
-.recent button img{width:100%;height:100%;display:block}
-.recent-empty{font-size:12px;color:var(--ink-3)}
-.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:8px 12px;display:flex;gap:10px;align-items:center;z-index:5}
-.bar img{width:52px;height:52px;border-radius:6px;background:#fff;border:1px solid var(--line);object-fit:contain;cursor:pointer}
-.bar .btn.primary{flex:1;width:auto}
-.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:10;max-width:90vw;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (prefers-reduced-motion:reduce){.toast,.type{transition:none}}
-.foot{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--ink-3);text-align:center;margin-top:6px}
-/* Arena sopra la call to action: 30% della larghezza del testo (70% più stretta) */
-.cta-wrap{display:inline-block;margin:4px 0 2px;text-align:center}
-.arena{display:block;width:30%;margin:0 auto 10px;aspect-ratio:2503/1747;background:var(--ink);-webkit-mask:url(assets/arena.svg) center/contain no-repeat;mask:url(assets/arena.svg) center/contain no-repeat}
-.cta-wrap .cta{display:inline-block}
-.cta{font-size:10px;font-weight:700;letter-spacing:.42em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding:2px 0 3px .42em}
-.cta:hover{opacity:.7}
-.cta:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
-
-/* ---------- Sezioni QR | Reference ---------- */
-.modes{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);padding:4px;border-radius:10px;margin:0 0 12px}
-.modes button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border:0;background:none;padding:9px 8px;border-radius:7px;font-size:11.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);cursor:pointer}
-.modes button svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.modes button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
-.modes button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-@media (min-width:760px){.modes{max-width:420px}}
-/* ---------- Reference ---------- */
-.ref-search{display:flex;gap:8px}
-.ref-search input{flex:1}
-.ref-search .btn{flex:none}
-.ref-err{color:var(--warn)!important}
-#refStatus:empty,#refBulkStatus:empty,#refListStatus:empty,#refTargetNote:empty{display:none}
-#refQrOpts .range-row{margin-top:10px}
-.ref-res{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px;margin-top:6px;cursor:pointer;font-size:12px;color:var(--ink-2)}
-.ref-res:hover{border-color:var(--ink)}
-.ref-res b{display:block;color:var(--ink);font-size:12.5px;line-height:1.3;margin-bottom:2px}
-.ref-res span{display:block;line-height:1.35}
-#refResults{margin-top:10px}
-details.ref-more{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
-details.ref-more summary,details.ref-abs summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-2)}
-details.ref-more textarea{margin-top:8px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
-.ref-empty{font-size:12.5px;color:var(--ink-3);margin:0}
-.ref-meta{font-size:13px}
-.ref-authors{color:var(--ink-2);font-size:12.5px;margin-bottom:4px}
-.ref-title{font-weight:700;font-size:14px;line-height:1.35;margin-bottom:8px}
-.ref-dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0 0 8px;font-size:12.5px}
-.ref-dl dt{color:var(--ink-3)}
-.ref-dl dd{margin:0}
-.ref-dim{color:var(--ink-3)}
-.ref-links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px}
-.ref-links a{color:var(--ink)}
-.ref-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.ref-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border-radius:20px;padding:3px 9px;border:1px solid var(--line);color:var(--ink-2);text-decoration:none}
-.ref-badge.b-ok{border-color:var(--ink);color:var(--ink)}
-.ref-badge.b-warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
-.ref-badge.b-bad{background:#b00020;color:#fff;border-color:#b00020}
-.ref-badge.b-dim{color:var(--ink-3)}
-.ref-warn-bad{background:#b00020;color:#fff}
-details.ref-abs{margin-top:10px}
-.ref-abs-text{font-size:12px;line-height:1.55;color:var(--ink-2);margin:8px 0}
-.ref-out{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:12.5px;line-height:1.45;background:var(--surface-2);margin-bottom:10px;overflow-wrap:anywhere}
-.ref-out.short{font-size:14px;font-weight:700}
-.seg.wrap{flex-wrap:wrap}
-.pt{position:relative;width:60px!important;height:40px!important;background:#fff!important;border:1px solid var(--line);display:block!important}
-.pt.pt-dark{background:#111!important;border-color:#555}
-.pt span{position:absolute;bottom:5px}
-.pt-txt{height:3px;border-radius:2px;bottom:7px!important}
-.pt-qr{background:repeating-conic-gradient(#000 0 25%,#fff 0 50%) 0 0/4px 4px;outline:1px solid #000}
-.pt-dark .pt-qr{outline-color:#fff}
-.pt-left .pt-qr{left:5px}.pt-left .pt-txt{left:22px}
-.pt-right .pt-qr{right:5px}.pt-right .pt-txt{right:22px}
-.pt-center .pt-qr{left:34px}.pt-center .pt-txt{left:10px}
-.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
-.ref-grid .field{margin-bottom:0}
-.ref-slide{aspect-ratio:16/9;background:#fff;border:1px solid var(--line);border-radius:6px;position:relative;margin:10px 0 12px;overflow:hidden}
-.ref-slide.dark{background:#111}
-.ref-slide-in{position:absolute;bottom:6%;left:4%;right:4%;display:flex;align-items:flex-end;gap:6px}
-.ref-slide.pos-right .ref-slide-in{justify-content:flex-end;text-align:right}
-.ref-slide.pos-center .ref-slide-in{justify-content:center}
-.ref-slide img{display:block;flex:none;background:#fff}
-.ref-slide span{line-height:1.2}
-.ref-list{display:flex;flex-direction:column;gap:6px}
-.ref-item{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:8px}
-.ref-num{flex:none;min-width:22px;height:22px;border-radius:11px;background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px}
-.ref-item-body{flex:1;min-width:0}
-.ref-item-short{font-size:12.5px;font-weight:700}
-.ref-item-title{font-size:11.5px;color:var(--ink-3);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.ref-item .ref-badges{margin-top:5px}
-.ref-item-acts{display:flex;gap:4px;flex:none}
-.ref-item-acts button{min-width:28px;height:26px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink-2);display:grid;place-items:center;cursor:pointer;padding:0 5px;font-size:11px;font-weight:700}
-.ref-item-acts button:hover{border-color:var(--ink);color:var(--ink)}
-.ref-item-acts button.confirm{background:#b00020;border-color:#b00020;color:#fff}
-.ref-item-acts svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ref-edit{border:1px solid var(--ink);border-radius:8px;padding:10px}
-.ref-edit-h{font-size:12px;font-weight:700;margin-bottom:8px;letter-spacing:.04em}
-.ref-edit textarea{min-height:48px}
-.ref-bib{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
-.ref-bib .btn{width:100%}
-</style>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=20261111">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261111">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="shared/ultraspeaker-lab.css?v=20261111">
+<link rel="stylesheet" href="css/app.css?v=20261111">
+<!-- Office.js: in PowerPoint collega il pannello alla presentazione; nel browser la pagina funziona anche senza -->
+<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+<script src="shared/ultraspeaker-lang.js?v=20261111"></script>
+<script src="qrcode.js?v=20261111"></script>
+<script src="i18n.js?v=20261111"></script>
 </head>
 <body>
-  <header class="brand"><div class="brand-in">
-    <div class="brand-row">
-      <a class="logo-link" id="logoLink" href="https://www.theultraspeaker.com" target="_blank" rel="noopener" title="www.theultraspeaker.com"><img class="lockup" src="assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab – www.theultraspeaker.com" width="3951" height="1504"></a>
-      <label class="lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><select id="langSel" data-i18n-aria="lbl.lang" aria-label="Lingua"></select></label>
+<div class="us-page us-page--wide">
+  <header class="us-header">
+    <div>
+      <a class="us-logo" id="logoLink" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg?v=20261111" alt="The Ultraspeaker QR Lab" width="158" height="60"></a>
+      <p class="us-subtitle"><span id="appSub" data-i18n="app.sub">Crea un QR code e inseriscilo nella slide</span><span id="refSub" data-i18n="ref.sub" hidden>Cita la letteratura e collegala al paper con un QR</span></p>
     </div>
-    <div class="brand-tool"><h1 class="sr-only">The Ultraspeaker QR Lab</h1><p id="appSub" data-i18n="app.sub">Crea un QR code e inseriscilo nella slide</p><p id="refSub" data-i18n="ref.sub" hidden>Cita la letteratura e collegala al paper con un QR</p></div>
-  </div></header>
-<div class="app">
-  <nav class="modes" role="tablist" data-i18n-aria="mode.aria" aria-label="Sezioni">
-    <button type="button" role="tab" data-mode="qr" id="modeQrTab" aria-controls="modeQr" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 17h4v4h-4"/></svg><span data-i18n="mode.qr">QR</span></button>
-    <button type="button" role="tab" data-mode="ref" id="modeRefTab" aria-controls="modeRef" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10M9 8h5"/></svg><span data-i18n="mode.ref">Reference</span></button>
+    <div class="us-header-tools">
+      <label class="us-lang">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <span class="us-sr" data-i18n="us.language">Lingua</span>
+        <select id="langSel"></select>
+      </label>
+      <a class="us-btn us-guide" id="usGuide" href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" aria-label="Guida d'utilizzo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-i18n="us.guide">Guida</span></a>
+    </div>
+  </header>
+  <h1 class="us-sr">The Ultraspeaker QR Lab</h1>
+
+  <nav class="us-tabs modes" role="tablist" data-i18n-aria="mode.aria" aria-label="Sezioni">
+    <button type="button" class="us-tab" role="tab" data-mode="qr" id="modeQrTab" aria-controls="modeQr" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 17h4v4h-4"/></svg><span data-i18n="mode.qr">QR</span></button>
+    <button type="button" class="us-tab" role="tab" data-mode="ref" id="modeRefTab" aria-controls="modeRef" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10M9 8h5"/></svg><span data-i18n="mode.ref">Reference</span></button>
   </nav>
 
   <div id="modeQr" role="tabpanel" aria-labelledby="modeQrTab">
   <div class="layout">
     <main>
-      <section class="card">
+      <section class="us-panel">
         <h2 class="step-h"><span class="n">1</span><span data-i18n="step1">Cosa deve aprire il QR?</span></h2>
         <div class="types" id="types" role="group" data-i18n-aria="types.aria" aria-label="Tipo di QR"></div>
       </section>
 
-      <section class="card">
+      <section class="us-panel">
         <h2 class="step-h"><span class="n">2</span><span id="contentTitle">Contenuto</span></h2>
         <div id="fields"></div>
       </section>
 
-      <section class="card">
+      <section class="us-panel" id="designCard">
         <h2 class="step-h"><span class="n">3</span><span data-i18n="step3">Design</span></h2>
-        <div class="tabs" role="tablist">
-          <button role="tab" data-tab="stile" aria-selected="true" data-i18n="tab.style">Stile</button>
-          <button role="tab" data-tab="colori" aria-selected="false" data-i18n="tab.colors">Colori</button>
-          <button role="tab" data-tab="logo" aria-selected="false" data-i18n="tab.logo">Logo</button>
-          <button role="tab" data-tab="cornice" aria-selected="false" data-i18n="tab.frame">Cornice</button>
-          <button role="tab" data-tab="avanzate" aria-selected="false" data-i18n="tab.adv">Avanzate</button>
+        <div class="us-tabs design-tabs" role="tablist">
+          <button type="button" class="us-tab" role="tab" data-tab="stile" aria-selected="true" data-i18n="tab.style">Stile</button>
+          <button type="button" class="us-tab" role="tab" data-tab="colori" aria-selected="false" data-i18n="tab.colors">Colori</button>
+          <button type="button" class="us-tab" role="tab" data-tab="logo" aria-selected="false" data-i18n="tab.logo">Logo</button>
+          <button type="button" class="us-tab" role="tab" data-tab="cornice" aria-selected="false" data-i18n="tab.frame">Cornice</button>
+          <button type="button" class="us-tab" role="tab" data-tab="avanzate" aria-selected="false" data-i18n="tab.adv">Avanzate</button>
         </div>
 
         <div class="panel" data-panel="stile">
-          <div class="sub" data-i18n="sub.presets">Modelli rapidi</div>
+          <p class="us-label" data-i18n="sub.presets">Modelli rapidi</p>
           <div class="tiles" id="presets"></div>
-          <div class="sub" data-i18n="sub.myPresets">I miei modelli</div>
+          <p class="us-label" data-i18n="sub.myPresets">I miei modelli</p>
           <div class="tiles" id="myPresets"></div>
           <p class="mini-hint" data-i18n="hint.myPresets"></p>
-          <div class="sub" data-i18n="sub.dots">Forma dei moduli</div>
+          <p class="us-label" data-i18n="sub.dots">Forma dei moduli</p>
           <div class="tiles" id="dotTypes"></div>
-          <div class="sub" data-i18n="sub.eyeOuter">Occhi – cornice esterna</div>
+          <p class="us-label" data-i18n="sub.eyeOuter">Occhi – cornice esterna</p>
           <div class="tiles" id="cornerSqTypes"></div>
-          <div class="sub" data-i18n="sub.eyeInner">Occhi – punto interno</div>
+          <p class="us-label" data-i18n="sub.eyeInner">Occhi – punto interno</p>
           <div class="tiles" id="cornerDotTypes"></div>
         </div>
 
         <div class="panel" data-panel="colori" hidden>
-          <div class="sub" data-i18n="sub.modules">Moduli</div>
+          <p class="us-label" data-i18n="sub.modules">Moduli</p>
           <div class="colors">
             <div><span class="lbl" data-i18n="lbl.color">Colore</span><div class="color" data-color="dotColor"></div></div>
             <div id="grad2Wrap" hidden><span class="lbl" data-i18n="lbl.color2">Secondo colore</span><div class="color" data-color="gradColor2"></div></div>
           </div>
           <label class="check"><input type="checkbox" id="useGradient"> <span data-i18n="chk.gradient">Usa sfumatura</span></label>
           <div id="gradOpts" hidden>
-            <div class="seg" id="gradType" style="margin-bottom:8px"><button data-v="linear" aria-pressed="true" data-i18n="grad.linear">Lineare</button><button data-v="radial" aria-pressed="false" data-i18n="grad.radial">Radiale</button></div>
+            <div class="seg" id="gradType"><button type="button" class="us-chip" data-v="linear" aria-pressed="true" data-i18n="grad.linear">Lineare</button><button type="button" class="us-chip" data-v="radial" aria-pressed="false" data-i18n="grad.radial">Radiale</button></div>
             <div class="range-row"><span data-i18n="lbl.angle">Angolo</span><span id="gradRotVal">45°</span></div>
             <input type="range" id="gradRot" min="0" max="360" step="15" value="45">
           </div>
-          <div class="sub" data-i18n="sub.eyes">Occhi</div>
+          <p class="us-label" data-i18n="sub.eyes">Occhi</p>
           <label class="check"><input type="checkbox" id="eyesSame" checked> <span data-i18n="chk.eyesSame">Stesso colore dei moduli</span></label>
           <div class="colors" id="eyeColors" hidden>
             <div><span class="lbl" data-i18n="lbl.eyeOuter">Cornice esterna</span><div class="color" data-color="cornerSqColor"></div></div>
             <div><span class="lbl" data-i18n="lbl.eyeInner">Punto interno</span><div class="color" data-color="cornerDotColor"></div></div>
           </div>
-          <div class="sub" data-i18n="sub.bg">Sfondo</div>
+          <p class="us-label" data-i18n="sub.bg">Sfondo</p>
           <div class="colors">
             <div><span class="lbl" data-i18n="lbl.bgColor">Colore sfondo</span><div class="color" data-color="bgColor"></div></div>
             <div style="display:flex;align-items:flex-end"><label class="check"><input type="checkbox" id="transparentBg"> <span data-i18n="chk.transparent">Trasparente</span></label></div>
@@ -306,12 +108,12 @@ details.ref-abs{margin-top:10px}
         </div>
 
         <div class="panel" data-panel="logo" hidden>
-          <div class="sub" data-i18n="sub.yourLogo">Il tuo logo</div>
-          <label class="upload" id="uploadBox">
+          <p class="us-label" data-i18n="sub.yourLogo">Il tuo logo</p>
+          <label class="upload us-spotlight" id="uploadBox">
             <input type="file" id="logoFile" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
             <span id="uploadText">Clicca per caricare un logo (PNG, JPG, SVG)</span>
           </label>
-          <div class="sub" data-i18n="sub.orIcon">Oppure un'icona</div>
+          <p class="us-label" data-i18n="sub.orIcon">Oppure un'icona</p>
           <div class="tiles" id="iconLogos"></div>
           <div id="logoOpts">
             <div class="range-row"><span data-i18n="lbl.logoSize">Dimensione logo</span><span id="logoSizeVal">30%</span></div>
@@ -319,15 +121,15 @@ details.ref-abs{margin-top:10px}
             <div class="range-row"><span data-i18n="lbl.logoMargin">Spazio attorno al logo</span><span id="logoMarginVal">6</span></div>
             <input type="range" id="logoMargin" min="0" max="30" step="1" value="6">
             <label class="check"><input type="checkbox" id="hideDots" checked> <span data-i18n="chk.hideDots">Nascondi i moduli dietro al logo</span></label>
-            <div class="hint" style="font-size:11.5px;color:var(--ink-3)" data-i18n="hint.logoEc">Con un logo la correzione d'errore passa automaticamente a “Max”, così il QR resta leggibile.</div>
+            <p class="hint" data-i18n="hint.logoEc">Con un logo la correzione d'errore passa automaticamente a “Max”, così il QR resta leggibile.</p>
           </div>
         </div>
 
         <div class="panel" data-panel="cornice" hidden>
-          <div class="sub" data-i18n="sub.frameStyle">Stile cornice</div>
+          <p class="us-label" data-i18n="sub.frameStyle">Stile cornice</p>
           <div class="tiles" id="frames"></div>
           <div id="frameOpts">
-            <div class="field"><label for="frameText" data-i18n="lbl.text">Testo</label><input type="text" id="frameText" maxlength="28" value="SCANSIONAMI"></div>
+            <div class="field"><label for="frameText" data-i18n="lbl.text">Testo</label><input type="text" class="us-field" id="frameText" maxlength="28" value="SCANSIONAMI"></div>
             <div class="colors">
               <div><span class="lbl" data-i18n="lbl.frameColor">Colore cornice</span><div class="color" data-color="frameColor"></div></div>
               <div><span class="lbl" data-i18n="lbl.textColor">Colore testo</span><div class="color" data-color="frameTextColor"></div></div>
@@ -336,41 +138,38 @@ details.ref-abs{margin-top:10px}
         </div>
 
         <div class="panel" data-panel="avanzate" hidden>
-          <div class="sub" data-i18n="sub.ec">Correzione d'errore</div>
-          <div class="seg" id="ecLevel"><button data-v="L" data-i18n="ec.L">Bassa</button><button data-v="M" data-i18n="ec.M">Media</button><button data-v="Q" data-i18n="ec.Q">Alta</button><button data-v="H" data-i18n="ec.H">Max</button></div>
-          <p class="hint" style="font-size:11.5px;color:var(--ink-3)" data-i18n="hint.ec">Più è alta, più il QR resiste a graffi, loghi e stampe imperfette, ma diventa più fitto.</p>
-          <div class="sub" data-i18n="sub.margin">Margine (zona di rispetto)</div>
+          <p class="us-label" data-i18n="sub.ec">Correzione d'errore</p>
+          <div class="seg" id="ecLevel"><button type="button" class="us-chip" data-v="L" data-i18n="ec.L">Bassa</button><button type="button" class="us-chip" data-v="M" data-i18n="ec.M">Media</button><button type="button" class="us-chip" data-v="Q" data-i18n="ec.Q">Alta</button><button type="button" class="us-chip" data-v="H" data-i18n="ec.H">Max</button></div>
+          <p class="hint" data-i18n="hint.ec">Più è alta, più il QR resiste a graffi, loghi e stampe imperfette, ma diventa più fitto.</p>
+          <p class="us-label" data-i18n="sub.margin">Margine (zona di rispetto)</p>
           <div class="range-row"><span data-i18n="lbl.margin">Margine</span><span id="marginVal">20</span></div>
           <input type="range" id="qrMargin" min="0" max="80" step="5" value="20">
-          <div class="sub" data-i18n="sub.reset">Ripristina</div>
-          <button class="btn" id="resetDesign" type="button" data-i18n="btn.reset">Ripristina design predefinito</button>
+          <p class="us-label" data-i18n="sub.reset">Ripristina</p>
+          <button class="us-btn" id="resetDesign" type="button" data-i18n="btn.reset">Ripristina design predefinito</button>
         </div>
       </section>
     </main>
 
     <aside class="side">
-      <section class="card preview-card" id="previewCard">
+      <section class="us-panel preview-card" id="previewCard">
         <div class="preview dim" id="preview"><img id="previewImg" alt="Anteprima QR code" data-i18n-alt="preview.alt"></div>
         <p class="status" id="status">Compila il contenuto per generare il QR</p>
         <div id="warnBox"></div>
         <div class="out">
-          <div id="formatBox"><span class="lbl" data-i18n="lbl.format">Formato</span><div class="seg" id="format"><button data-v="png" aria-pressed="true">PNG</button><button data-v="svg" aria-pressed="false" data-i18n="fmt.vector">Vettoriale</button></div></div>
-          <div><span class="lbl" id="widthLbl" data-i18n="lbl.width">Larghezza in slide</span><div style="display:flex;align-items:center;gap:6px"><input type="number" id="sizeCm" min="1" max="30" step="0.5" value="5"><span style="font-size:12px;color:var(--ink-3)">cm</span></div></div>
+          <div id="formatBox"><span class="lbl" data-i18n="lbl.format">Formato</span><div class="seg" id="format"><button type="button" class="us-chip" data-v="png" aria-pressed="true">PNG</button><button type="button" class="us-chip" data-v="svg" aria-pressed="false" data-i18n="fmt.vector">Vettoriale</button></div></div>
+          <div><label class="lbl" id="widthLbl" for="sizeCm" data-i18n="lbl.width">Larghezza in slide</label><div class="size-row"><input type="number" class="us-field" id="sizeCm" min="1" max="30" step="0.5" value="5"><span>cm</span></div></div>
         </div>
-        <button class="btn primary" id="insertBtn" type="button" disabled><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M12 8v6M9 11h6"/></svg><span id="insertLabel">Inserisci nella slide</span></button>
+        <button class="us-btn us-btn--primary us-btn--block" id="insertBtn" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M12 8v6M9 11h6"/></svg><span id="insertLabel">Inserisci nella slide</span></button>
         <div class="btns">
-          <button class="btn" id="dlPng" type="button" disabled><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="dlPngLabel">PNG</span></button>
-          <button class="btn" id="dlSvg" type="button" disabled><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="dlSvgLabel">SVG</span></button>
+          <button class="us-btn" id="dlPng" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="dlPngLabel">PNG</span></button>
+          <button class="us-btn" id="dlSvg" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="dlSvgLabel">SVG</span></button>
         </div>
         <p class="status" id="webHint" data-i18n="web.hint" hidden></p>
       </section>
-      <section class="card">
-        <div class="sub" style="margin-top:0" data-i18n="sub.recent">Recenti</div>
+      <section class="us-panel">
+        <p class="us-label" data-i18n="sub.recent">Recenti</p>
         <div class="recent" id="recent"></div>
       </section>
-      <div id="qrFootHost">
-      <div class="foot"><span class="cta-wrap"><span class="arena" aria-hidden="true"></span><a class="cta" id="ctaMail" href="mailto:info@theultraspeaker.com" title="info@theultraspeaker.com" data-i18n="cta.consult">Richiedi una consulenza</a></span><span data-i18n="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</span></div>
-      </div>
     </aside>
   </div>
   </div>
@@ -378,13 +177,13 @@ details.ref-abs{margin-top:10px}
   <div id="modeRef" role="tabpanel" aria-labelledby="modeRefTab" hidden>
   <div class="layout">
     <main>
-      <section class="card">
+      <section class="us-panel">
         <h2 class="step-h"><span class="n">1</span><span data-i18n="ref.step1">Trova il riferimento</span></h2>
         <div class="field">
           <label for="refQuery" data-i18n="ref.queryLbl">DOI, PMID, link oppure titolo / autore</label>
           <div class="ref-search">
-            <input type="text" id="refQuery" autocomplete="off" spellcheck="false" data-i18n-ph="ref.queryPh" placeholder="10.1016/j.jdent.2023.104420">
-            <button class="btn" type="button" id="refSearchBtn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span data-i18n="ref.search">Cerca</span></button>
+            <input type="text" class="us-field" id="refQuery" autocomplete="off" spellcheck="false" data-i18n-ph="ref.queryPh" placeholder="10.1016/j.jdent.2023.104420">
+            <button class="us-btn" type="button" id="refSearchBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span data-i18n="ref.search">Cerca</span></button>
           </div>
           <div class="hint" data-i18n="ref.queryHint">Esempi: 10.1016/j.jdent.2023.104420 · PMID 36608877 · un link di PubMed o doi.org · «implant survival Buser 2012»</div>
         </div>
@@ -392,23 +191,23 @@ details.ref-abs{margin-top:10px}
         <div id="refResults" hidden></div>
         <details class="ref-more">
           <summary data-i18n="ref.bulk.title">Importa un elenco di DOI o PMID</summary>
-          <textarea id="refBulk" rows="5" spellcheck="false" data-i18n-ph="ref.bulk.ph" placeholder="10.1016/j.jdent.2023.104420&#10;36608877"></textarea>
-          <button class="btn" type="button" id="refBulkBtn" style="margin-top:8px" data-i18n="ref.bulk.btn">Importa nella bibliografia</button>
+          <textarea class="us-field" id="refBulk" rows="5" spellcheck="false" data-i18n-ph="ref.bulk.ph" placeholder="10.1016/j.jdent.2023.104420&#10;36608877"></textarea>
+          <button class="us-btn" type="button" id="refBulkBtn" style="margin-top:8px" data-i18n="ref.bulk.btn">Importa nella bibliografia</button>
           <p class="status" id="refBulkStatus" role="status" aria-live="polite"></p>
         </details>
       </section>
 
-      <section class="card" id="refPreviewCard">
+      <section class="us-panel" id="refPreviewCard">
         <h2 class="step-h"><span class="n">2</span><span data-i18n="ref.step2">Anteprima</span></h2>
         <div id="refPreview"></div>
       </section>
 
-      <section class="card" id="refCiteCard" hidden>
+      <section class="us-panel" id="refCiteCard" hidden>
         <h2 class="step-h"><span class="n">3</span><span data-i18n="ref.step3">Citazione</span></h2>
         <span class="lbl" data-i18n="ref.styleLbl">Stile della bibliografia</span>
-        <div class="seg" id="refStyle" style="margin-bottom:10px"><button type="button" data-v="vancouver">Vancouver</button><button type="button" data-v="apa">APA 7</button><button type="button" data-v="ama">AMA</button><button type="button" data-v="harvard">Harvard</button></div>
+        <div class="seg" id="refStyle"><button type="button" class="us-chip" data-v="vancouver">Vancouver</button><button type="button" class="us-chip" data-v="apa">APA 7</button><button type="button" class="us-chip" data-v="ama">AMA</button><button type="button" class="us-chip" data-v="harvard">Harvard</button></div>
         <span class="lbl" data-i18n="ref.shortLbl">Citazione nella slide</span>
-        <div class="seg" id="refShort" style="margin-bottom:10px"><button type="button" data-v="authorJournal" data-i18n="ref.short.aj">Autore, rivista anno</button><button type="button" data-v="numeric" data-i18n="ref.short.num">Numerica [1]</button><button type="button" data-v="authorYear" data-i18n="ref.short.ay">Autore, anno</button></div>
+        <div class="seg" id="refShort"><button type="button" class="us-chip" data-v="authorJournal" data-i18n="ref.short.aj">Autore, rivista anno</button><button type="button" class="us-chip" data-v="numeric" data-i18n="ref.short.num">Numerica [1]</button><button type="button" class="us-chip" data-v="authorYear" data-i18n="ref.short.ay">Autore, anno</button><button type="button" class="us-chip" data-v="full" data-i18n="ref.short.full">Completa</button></div>
         <span class="lbl" data-i18n="ref.outShort">Nella slide</span>
         <div class="ref-out short" id="refShortOut"></div>
         <span class="lbl" data-i18n="ref.outFull">In bibliografia</span>
@@ -417,61 +216,89 @@ details.ref-abs{margin-top:10px}
     </main>
 
     <aside class="side">
-      <section class="card" id="refInsertCard" hidden>
+      <section class="us-panel" id="refInsertCard" hidden>
         <h2 class="step-h"><span class="n">4</span><span data-i18n="ref.step4">Inserimento nella slide</span></h2>
-        <div class="sub" data-i18n="ref.presetsLbl">Layout pronti</div>
+        <p class="us-label" data-i18n="ref.presetsLbl">Layout pronti</p>
         <div class="tiles" id="refPresets"></div>
         <div id="refSlidePv" class="ref-slide" aria-hidden="true"></div>
         <span class="lbl" data-i18n="ref.whatLbl">Cosa inserire</span>
-        <div class="seg" id="refWhat" style="margin-bottom:10px"><button type="button" data-v="both" data-i18n="ref.what.both">Citazione + QR</button><button type="button" data-v="text" data-i18n="ref.what.text">Solo citazione</button><button type="button" data-v="qr" data-i18n="ref.what.qr">Solo QR</button></div>
+        <div class="seg" id="refWhat"><button type="button" class="us-chip" data-v="both" data-i18n="ref.what.both">Citazione + QR</button><button type="button" class="us-chip" data-v="text" data-i18n="ref.what.text">Solo citazione</button><button type="button" class="us-chip" data-v="qr" data-i18n="ref.what.qr">Solo QR</button></div>
         <span class="lbl" data-i18n="ref.posLbl">Posizione in basso</span>
-        <div class="seg" id="refPos" style="margin-bottom:10px"><button type="button" data-v="left" data-i18n="ref.pos.left">Sinistra</button><button type="button" data-v="center" data-i18n="ref.pos.center">Centro</button><button type="button" data-v="right" data-i18n="ref.pos.right">Destra</button></div>
+        <div class="seg" id="refPos"><button type="button" class="us-chip" data-v="left" data-i18n="ref.pos.left">Sinistra</button><button type="button" class="us-chip" data-v="center" data-i18n="ref.pos.center">Centro</button><button type="button" class="us-chip" data-v="right" data-i18n="ref.pos.right">Destra</button></div>
         <div id="refTextOpts">
         <div class="ref-grid">
           <div class="field"><label for="refFont" data-i18n="ref.fontLbl">Font</label>
-            <select id="refFont"><option value="" data-i18n="ref.fontTheme">Font del tema</option><option>Champagne &amp; Limousines</option><option>Arial</option><option>Calibri</option><option>Helvetica Neue</option><option>Segoe UI</option><option>Georgia</option></select></div>
-          <div class="field"><label for="refSize" data-i18n="ref.sizeLbl">Dimensione (pt)</label><input type="number" id="refSize" min="8" max="60" step="1" value="16"></div>
+            <select class="us-field" id="refFont"><option value="" data-i18n="ref.fontTheme">Font del tema</option><option>Champagne &amp; Limousines</option><option>Arial</option><option>Calibri</option><option>Helvetica Neue</option><option>Segoe UI</option><option>Georgia</option></select></div>
+          <div class="field"><label for="refSize" data-i18n="ref.sizeLbl">Dimensione (pt)</label><input type="number" class="us-field" id="refSize" min="8" max="60" step="1" value="16"></div>
         </div>
         <span class="lbl" style="margin-top:10px" data-i18n="ref.colorLbl">Colore del testo</span>
         <div class="color" style="margin-bottom:10px"><input type="color" id="refColor" value="#7f7f7f" data-i18n-aria="color.pick"><input type="text" id="refColorHex" value="#7f7f7f" maxlength="7" data-i18n-aria="color.code"></div>
         </div>
         <div id="refQrOpts">
           <span class="lbl" data-i18n="ref.qrFmtLbl">Formato del QR</span>
-          <div class="seg" id="refQrFmt" style="margin-bottom:10px"><button type="button" data-v="svg" data-i18n="ref.fmt.svg">Vettoriale (SVG)</button><button type="button" data-v="png">PNG</button></div>
+          <div class="seg" id="refQrFmt"><button type="button" class="us-chip" data-v="svg" data-i18n="ref.fmt.svg">Vettoriale (SVG)</button><button type="button" class="us-chip" data-v="png">PNG</button></div>
           <span class="lbl" data-i18n="ref.targetLbl">Il QR apre</span>
-          <div class="seg" id="refTarget"><button type="button" data-v="doi" data-i18n="ref.target.doi">Il DOI (pagina dell'editore)</button><button type="button" data-v="oa" data-i18n="ref.target.oa">La versione open access</button></div>
+          <div class="seg" id="refTarget"><button type="button" class="us-chip" data-v="doi" data-i18n="ref.target.doi">Il DOI (pagina dell'editore)</button><button type="button" class="us-chip" data-v="oa" data-i18n="ref.target.oa">La versione open access</button></div>
           <p class="status" id="refTargetNote"></p>
           <div class="range-row"><span data-i18n="ref.qrSize">Lato del QR</span><span id="refQrCmVal">1,9 cm</span></div>
           <input type="range" id="refQrCm" min="1.2" max="4" step="0.1" value="1.9">
           <button type="button" class="inline-btn" id="refQrDesign" data-i18n="ref.qrDesign">Colori, forme e logo: personalizzali nella sezione QR</button>
         </div>
         <label class="check" id="refNotesWrap" hidden><input type="checkbox" id="refNotes"> <span data-i18n="ref.notesChk">Copia l'abstract PubMed per le note del relatore</span></label>
-        <button class="btn primary" id="refInsertBtn" type="button" style="margin-top:10px" disabled><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 14h6M16 12h2v2h-2z"/></svg><span id="refInsertLabel">Inserisci nella slide</span></button>
-        <button class="btn" id="refDlQr" type="button" style="width:100%;margin-top:8px" hidden><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="refDlQrLabel">Scarica il QR (PNG)</span></button>
+        <div class="ref-acts">
+          <button class="us-btn us-btn--primary" id="refInsertBtn" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 14h6M16 12h2v2h-2z"/></svg><span id="refInsertLabel">Inserisci nella slide</span></button>
+          <button class="us-btn" id="refAddBtn" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M12 10v6M9 13h6"/></svg><span data-i18n="ref.addBib">Aggiungi alla bibliografia</span></button>
+          <button class="us-btn us-btn--block" id="refDlQr" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="refDlQrLabel">Scarica il QR (PNG)</span></button>
+        </div>
       </section>
 
-      <section class="card">
-        <div class="sub" style="margin-top:0"><span data-i18n="ref.listTitle">Riferimenti della presentazione</span> <span id="refCount"></span></div>
+      <section class="us-panel">
+        <p class="us-label"><span data-i18n="ref.listTitle">Riferimenti della presentazione</span> <span id="refCount"></span></p>
+        <p class="hint" id="refListHint" data-i18n="ref.list.hint" hidden></p>
         <div class="ref-list" id="refList"></div>
         <div class="ref-bib" id="refBibBtns" hidden>
-          <button class="btn" type="button" id="refRenumBtn" style="margin-bottom:8px"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg><span data-i18n="ref.renum">Aggiorna numerazione e citazioni</span></button>
+          <button class="us-btn" type="button" id="refRenumBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg><span data-i18n="ref.renum">Aggiorna numerazione e citazioni</span></button>
           <label class="check"><input type="checkbox" id="refBibQr"> <span data-i18n="ref.bibQr">Piccolo QR accanto a ogni voce</span></label>
-          <button class="btn" type="button" id="refBibBtn"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg><span id="refBibBtnLabel">Genera le slide «Bibliografia»</span></button>
+          <button class="us-btn" type="button" id="refBibBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg><span id="refBibBtnLabel">Genera le slide «Bibliografia»</span></button>
+          <button class="us-btn" type="button" id="refPdfBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="ref.pdf.btn">Scarica PDF</span></button>
           <p class="status" id="refListStatus" role="status" aria-live="polite"></p>
         </div>
       </section>
-      <div id="refFootHost"></div>
     </aside>
   </div>
   </div>
+
+  <p class="static-note" id="staticNote" data-i18n="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</p>
+  <footer class="us-footer">
+    <a class="us-cta" id="usCta" href="mailto:info@theultraspeaker.com"><img src="assets/arena-white.svg" alt=""><span data-i18n="us.cta">Richiedi un consiglio</span></a>
+    <p class="us-links"><a href="support.html" target="_blank" rel="noopener" data-i18n="us.support">Supporto</a><a href="privacy.html" target="_blank" rel="noopener" data-i18n="us.privacy">Privacy</a><a href="terms.html" target="_blank" rel="noopener" data-i18n="us.terms">Condizioni d'uso</a><a href="GUIDA-INSTALLAZIONE.html" target="_blank" rel="noopener" data-i18n="us.install">Installazione</a></p>
+  </footer>
 </div>
+
+<!-- Bibliografia in PDF: dati della lecture e cosa mettere accanto a ogni voce -->
+<dialog class="bib-dialog" id="bibDialog" aria-labelledby="bibDlgTitle">
+  <form method="dialog" id="bibForm">
+    <h2 id="bibDlgTitle" data-i18n="ref.pdf.title">Bibliografia in PDF</h2>
+    <div class="field"><label for="bibTitle" data-i18n="ref.pdf.lecture">Titolo della lecture</label><input type="text" class="us-field" id="bibTitle" maxlength="160" required autocomplete="off"></div>
+    <div class="field"><label for="bibSpeaker"><span data-i18n="ref.pdf.speaker">Speaker</span> <span class="opt" data-i18n="optional">(facoltativo)</span></label><input type="text" class="us-field" id="bibSpeaker" maxlength="120" autocomplete="name"></div>
+    <div class="field"><label for="bibDate"><span data-i18n="ref.pdf.date">Data</span> <span class="opt" data-i18n="optional">(facoltativo)</span></label><input type="date" class="us-field" id="bibDate"></div>
+    <span class="lbl" data-i18n="ref.pdf.extra">Accanto a ogni voce</span>
+    <div class="seg" id="bibExtra"><button type="button" class="us-chip" data-v="text" data-i18n="ref.pdf.x.text">Solo testo</button><button type="button" class="us-chip" data-v="link" data-i18n="ref.pdf.x.link">Link</button><button type="button" class="us-chip" data-v="qr" data-i18n="ref.pdf.x.qr">QR</button><button type="button" class="us-chip" data-v="both" data-i18n="ref.pdf.x.both">Link + QR</button></div>
+    <p class="status" id="bibStatus" role="status" aria-live="polite"></p>
+    <div class="ref-acts">
+      <button type="button" class="us-btn" id="bibCancel" data-i18n="ref.cancel">Annulla</button>
+      <button type="submit" class="us-btn us-btn--primary" id="bibGo" data-i18n="ref.pdf.btn">Scarica PDF</button>
+    </div>
+  </form>
+</dialog>
 
 <div class="bar" id="bar">
   <img id="barImg" alt="Anteprima" title="Vai all'anteprima" data-i18n-alt="bar.alt" data-i18n-title="bar.title">
-  <button class="btn primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
+  <button class="us-btn us-btn--primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<script src="app.js?v=20261104a"></script>
-<script src="reference.js?v=20261104a"></script>
+<script src="app.js?v=20261111"></script>
+<script src="reference.js?v=20261111"></script>
+<script src="bib-pdf.js?v=20261111"></script>
 </body>
 </html>
