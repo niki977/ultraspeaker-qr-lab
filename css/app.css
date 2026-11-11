@@ -195,6 +195,9 @@ details.ref-abs{margin-top:10px}
 .ref-edit textarea.us-field{min-height:48px}
 .ref-bib{border-top:var(--us-divider);margin-top:12px;padding-top:10px;display:flex;flex-direction:column;gap:8px}
 .ref-bib .check{margin:0}
+/* pulsante in attesa della seconda conferma (Azzera la bibliografia) */
+.us-btn.is-crit{background:var(--us-crit-soft);border-color:var(--us-crit);color:var(--us-crit)}
+#bibExtra+.hint{margin:-4px 0 0}
 
 /* ---------- Finestra «Scarica PDF» della bibliografia ---------- */
 .bib-dialog{width:min(420px,calc(100vw - 32px));padding:18px;background:var(--us-backstage);color:var(--us-spotlight);border:var(--us-border);border-radius:var(--us-radius)}

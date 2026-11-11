@@ -3,7 +3,7 @@
    jsPDF e i font si caricano solo al primo uso, per non appesantire l'apertura del Lab. */
 (function () {
   "use strict";
-  const V = "?v=20261111";
+  const V = "?v=20261111b";
   const W = 210, H = 297, M = 20, BOTTOM = H - 26;
   const C = { black: "#000000", ash: "#8E8E8E", silver: "#D0D0D0" };
   const PT = 0.3528; // 1 pt in mm
@@ -45,8 +45,8 @@
     return assets;
   }
 
-  /* m = { title, speaker, date, label, powered, entries: [{ text, url, qr }] }
-     url: link cliccabile sotto la voce (se c'è); qr: PNG in data URL (se c'è) */
+  /* m = { title, speaker, date, label, powered, entries: [{ text, url, qr, qrUrl }] }
+     text: citazione (vuota se lo speaker l'ha esclusa); url: link cliccabile; qr: PNG in data URL */
   async function build(m) {
     const a = await prepare();
     const doc = new window.jspdf.jsPDF({ unit: "mm", format: "a4", compress: true });
@@ -88,21 +88,23 @@
     m.entries.forEach((e) => {
       const tw = W - 2 * M - (e.qr ? QR + 5 : 0);
       font("normal", 10, C.black);
-      const lines = doc.splitTextToSize(e.text, tw);
+      const lines = e.text ? doc.splitTextToSize(e.text, tw) : [];
       const textH = lines.length * lh(10, 1.6);
-      font("normal", 8.5, C.ash);
+      // senza citazione il link è la voce: stessa grandezza e colore del testo
+      const us = e.text ? 8.5 : 10, uc = e.text ? C.ash : C.black;
+      font("normal", us, uc);
       const urlLines = e.url ? doc.splitTextToSize(e.url, tw) : [];
-      const urlH = urlLines.length * lh(8.5, 1.6);
+      const urlH = urlLines.length * lh(us, 1.6);
       const h = Math.max(textH + urlH, e.qr ? QR : 0);
       if (y + h > BOTTOM) { doc.addPage(); footer(); y = 24; }
       let ty = y + 10 * PT; // linea di base della prima riga
       font("normal", 10, C.black);
-      doc.text(lines, M, ty);
+      if (lines.length) doc.text(lines, M, ty);
       ty += textH;
       if (e.url) {
-        font("normal", 8.5, C.ash);
+        font("normal", us, uc);
         doc.text(urlLines, M, ty);
-        doc.link(M, ty - 8.5 * PT, tw, urlH, { url: e.url });
+        doc.link(M, ty - us * PT, tw, urlH, { url: e.url });
       }
       if (e.qr) {
         doc.addImage(e.qr, "PNG", W - M - QR, y, QR, QR);

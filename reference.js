@@ -991,6 +991,26 @@
     box.addEventListener("pointercancel", end);
   }
 
+  // Azzera l'elenco dei riferimenti (le slide restano come sono): al primo clic chiede conferma per 4 secondi
+  let clearArmed = null;
+  function clearAll() {
+    const b = $("#refClearBtn");
+    if (!clearArmed) {
+      b.classList.add("is-crit"); $("#refClearLabel").textContent = t("ref.clearConfirm");
+      clearArmed = setTimeout(disarmClear, 4000);
+      return;
+    }
+    disarmClear();
+    DOC.refs = []; DOC.order = []; saveDoc();
+    editing = null; confirmDel = null;
+    renderPreview(); renderList();
+    L().toast(t("ref.toast.cleared"));
+  }
+  function disarmClear() {
+    clearTimeout(clearArmed); clearArmed = null;
+    $("#refClearBtn").classList.remove("is-crit"); $("#refClearLabel").textContent = t("ref.clear");
+  }
+
   // Aggiunge l'articolo in anteprima all'elenco senza toccare le slide
   function doAdd() {
     if (!cur) return;
@@ -1010,16 +1030,25 @@
     const d = Object.assign({}, L().design(), { frame: "none", logo: null, logoName: "" });
     return { refs: listed(), style: DOC.style, target: P.target, design: d };
   }
-  function setExtra(v) {
-    P.pdfExtra = v;
-    $$("#bibExtra button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === v));
+  // Testo, Link e QR si accendono e spengono uno per uno; almeno uno resta acceso
+  const PARTS = ["text", "link", "qr"];
+  const OLD_EXTRA = { text: ["text"], link: ["text", "link"], qr: ["text", "qr"], both: ["text", "link", "qr"] }; // scelta della prima 1.3
+  function partsOf(v) { const a = Array.isArray(v) ? v.filter((x) => PARTS.includes(x)) : OLD_EXTRA[v] || []; return a.length ? a : ["text"]; }
+  function setParts(list) {
+    P.pdfParts = PARTS.filter((x) => list.includes(x));
+    $$("#bibExtra button").forEach((b) => b.setAttribute("aria-pressed", P.pdfParts.includes(b.dataset.v)));
+  }
+  function togglePart(v) {
+    const on = P.pdfParts.includes(v);
+    if (on && P.pdfParts.length === 1) return; // l'ultimo acceso non si spegne
+    setParts(on ? P.pdfParts.filter((x) => x !== v) : P.pdfParts.concat(v));
   }
   function openPdfDialog(prefill) {
     const f = prefill || {};
     $("#bibTitle").value = f.title || "";
     $("#bibSpeaker").value = f.speaker != null ? f.speaker : L().store.get(SPEAKER_KEY, "");
     $("#bibDate").value = f.date || "";
-    setExtra(f.extra || P.pdfExtra || "text");
+    setParts(partsOf(f.parts || f.extra || P.pdfParts || P.pdfExtra));
     setMsg("#bibStatus", "");
     $("#bibGo").disabled = false;
     if (!L().isOffice() && window.QRBibPdf) window.QRBibPdf.prepare().catch(() => {});
@@ -1052,11 +1081,11 @@
     e.preventDefault();
     const title = $("#bibTitle").value.trim();
     if (!title) { setMsg("#bibStatus", t("ref.pdf.needTitle"), "err"); $("#bibTitle").focus(); return; }
-    const speaker = $("#bibSpeaker").value.trim(), date = $("#bibDate").value, extra = P.pdfExtra || "text";
+    const speaker = $("#bibSpeaker").value.trim(), date = $("#bibDate").value, parts = partsOf(P.pdfParts);
     L().store.set(SPEAKER_KEY, speaker); savePrefs();
     const src = pdfSource();
     if (L().isOffice()) {
-      const payload = { title, speaker, date, extra, style: src.style, target: src.target, design: src.design,
+      const payload = { title, speaker, date, parts, style: src.style, target: src.target, design: src.design,
         refs: src.refs.map((r) => { const o = {}; rawFields.forEach((k) => { if (r[k]) o[k] = r[k]; }); return o; }) };
       const url = new URL("index.html", location.href);
       url.search = "?lang=" + document.documentElement.lang;
@@ -1068,10 +1097,10 @@
     }
     const go = $("#bibGo"); go.disabled = true; setMsg("#bibStatus", t("ref.pdf.working"));
     try {
-      const withQr = extra === "qr" || extra === "both", withLink = extra === "link" || extra === "both";
+      const withText = parts.includes("text"), withQr = parts.includes("qr"), withLink = parts.includes("link");
       const target = (r) => (src.target === "oa" && r.oaUrl ? r.oaUrl : doiUrl(r));
       const entries = await Promise.all(src.refs.map(async (r) => {
-        const url = target(r), e = { text: formatFull(r, src.style), url: withLink ? url : "" };
+        const url = target(r), e = { text: withText ? formatFull(r, src.style) : "", url: withLink ? url : "" };
         if (withQr && url) {
           const out = L().buildSVG(url, src.design, src.design.ec || "M");
           e.qr = await L().svgToPng(out.svg, out.W, out.H, 300); e.qrUrl = url;
@@ -1174,7 +1203,8 @@
     $("#refInsertBtn").addEventListener("click", doInsert);
     $("#refAddBtn").addEventListener("click", doAdd);
     $("#refPdfBtn").addEventListener("click", () => { pdfData = null; openPdfDialog(); });
-    $$("#bibExtra button").forEach((b) => b.addEventListener("click", () => setExtra(b.dataset.v)));
+    $$("#bibExtra button").forEach((b) => b.addEventListener("click", () => togglePart(b.dataset.v)));
+    $("#refClearBtn").addEventListener("click", clearAll);
     $("#bibForm").addEventListener("submit", makePdf);
     $("#bibCancel").addEventListener("click", () => $("#bibDialog").close());
     $("#bibDialog").addEventListener("close", () => { pdfData = null; });

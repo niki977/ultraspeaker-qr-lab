@@ -143,7 +143,7 @@ for (const lang of LANGS) {
     await shot(p, join(dir, "07-list.png"), ["#refList", "#refBibBtns"]);
     await p.click("#refPdfBtn");
     await p.fill("#bibTitle", SAMPLE.lecture[lang]); await p.fill("#bibSpeaker", SAMPLE.speaker); await p.fill("#bibDate", "2026-12-05");
-    await p.click("#bibExtra [data-v=both]"); await p.$eval("#bibDate", (e) => e.blur()); await p.waitForTimeout(150);
+    await p.click("#bibExtra [data-v=link]"); await p.click("#bibExtra [data-v=qr]"); await p.$eval("#bibDate", (e) => e.blur()); await p.waitForTimeout(150);
     await shot(p, join(dir, "07-pdf.png"), ["#bibDialog"], 0);
     await p.context().close();
   }

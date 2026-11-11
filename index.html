@@ -9,23 +9,23 @@
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-title" content="QR Lab">
 <meta name="application-name" content="QR Lab">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=20261111">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261111">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261111b">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=20261111b">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261111b">
 <link rel="manifest" href="site.webmanifest">
-<link rel="stylesheet" href="shared/ultraspeaker-lab.css?v=20261111">
-<link rel="stylesheet" href="css/app.css?v=20261111">
+<link rel="stylesheet" href="shared/ultraspeaker-lab.css?v=20261111b">
+<link rel="stylesheet" href="css/app.css?v=20261111b">
 <!-- Office.js: in PowerPoint collega il pannello alla presentazione; nel browser la pagina funziona anche senza -->
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-<script src="shared/ultraspeaker-lang.js?v=20261111"></script>
-<script src="qrcode.js?v=20261111"></script>
-<script src="i18n.js?v=20261111"></script>
+<script src="shared/ultraspeaker-lang.js?v=20261111b"></script>
+<script src="qrcode.js?v=20261111b"></script>
+<script src="i18n.js?v=20261111b"></script>
 </head>
 <body>
 <div class="us-page us-page--wide">
   <header class="us-header">
     <div>
-      <a class="us-logo" id="logoLink" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg?v=20261111" alt="The Ultraspeaker QR Lab" width="158" height="60"></a>
+      <a class="us-logo" id="logoLink" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg?v=20261111b" alt="The Ultraspeaker QR Lab" width="158" height="60"></a>
       <p class="us-subtitle"><span id="appSub" data-i18n="app.sub">Crea un QR code e inseriscilo nella slide</span><span id="refSub" data-i18n="ref.sub" hidden>Cita la letteratura e collegala al paper con un QR</span></p>
     </div>
     <div class="us-header-tools">
@@ -261,6 +261,7 @@
           <label class="check"><input type="checkbox" id="refBibQr"> <span data-i18n="ref.bibQr">Piccolo QR accanto a ogni voce</span></label>
           <button class="us-btn" type="button" id="refBibBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg><span id="refBibBtnLabel">Genera le slide «Bibliografia»</span></button>
           <button class="us-btn" type="button" id="refPdfBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="ref.pdf.btn">Scarica PDF</span></button>
+          <button class="us-btn" type="button" id="refClearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg><span id="refClearLabel" data-i18n="ref.clear">Azzera la bibliografia</span></button>
           <p class="status" id="refListStatus" role="status" aria-live="polite"></p>
         </div>
       </section>
@@ -282,8 +283,9 @@
     <div class="field"><label for="bibTitle" data-i18n="ref.pdf.lecture">Titolo della lecture</label><input type="text" class="us-field" id="bibTitle" maxlength="160" required autocomplete="off"></div>
     <div class="field"><label for="bibSpeaker"><span data-i18n="ref.pdf.speaker">Speaker</span> <span class="opt" data-i18n="optional">(facoltativo)</span></label><input type="text" class="us-field" id="bibSpeaker" maxlength="120" autocomplete="name"></div>
     <div class="field"><label for="bibDate"><span data-i18n="ref.pdf.date">Data</span> <span class="opt" data-i18n="optional">(facoltativo)</span></label><input type="date" class="us-field" id="bibDate"></div>
-    <span class="lbl" data-i18n="ref.pdf.extra">Accanto a ogni voce</span>
-    <div class="seg" id="bibExtra"><button type="button" class="us-chip" data-v="text" data-i18n="ref.pdf.x.text">Solo testo</button><button type="button" class="us-chip" data-v="link" data-i18n="ref.pdf.x.link">Link</button><button type="button" class="us-chip" data-v="qr" data-i18n="ref.pdf.x.qr">QR</button><button type="button" class="us-chip" data-v="both" data-i18n="ref.pdf.x.both">Link + QR</button></div>
+    <span class="lbl" id="bibExtraLbl" data-i18n="ref.pdf.extra">In ogni voce</span>
+    <div class="seg" id="bibExtra" role="group" aria-labelledby="bibExtraLbl" aria-describedby="bibExtraHint"><button type="button" class="us-chip" data-v="text" aria-pressed="true" data-i18n="ref.pdf.x.text">Testo</button><button type="button" class="us-chip" data-v="link" aria-pressed="false" data-i18n="ref.pdf.x.link">Link</button><button type="button" class="us-chip" data-v="qr" aria-pressed="false" data-i18n="ref.pdf.x.qr">QR</button></div>
+    <p class="hint" id="bibExtraHint" data-i18n="ref.pdf.extraHint">Accendi uno o più elementi.</p>
     <p class="status" id="bibStatus" role="status" aria-live="polite"></p>
     <div class="ref-acts">
       <button type="button" class="us-btn" id="bibCancel" data-i18n="ref.cancel">Annulla</button>
@@ -297,8 +299,8 @@
   <button class="us-btn us-btn--primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<script src="app.js?v=20261111"></script>
-<script src="reference.js?v=20261111"></script>
-<script src="bib-pdf.js?v=20261111"></script>
+<script src="app.js?v=20261111b"></script>
+<script src="reference.js?v=20261111b"></script>
+<script src="bib-pdf.js?v=20261111b"></script>
 </body>
 </html>
