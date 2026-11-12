@@ -1,21 +1,22 @@
 <!doctype html>
+<!-- Guida d'utilizzo dell'Image Lab (de). Stile: shared/guide/ultraspeaker-guide.css. PDF: node shared/guide/build-guide.mjs -->
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<title>The Ultraspeaker QR Lab · Bedienungsanleitung</title>
+<title>The Ultraspeaker Image Lab · Bedienungsanleitung</title>
 <link rel="stylesheet" href="../../shared/guide/ultraspeaker-guide.css">
-<style>@page{@bottom-left{content:"THE ULTRASPEAKER  ·  QR LAB  ·  ANLEITUNG";font:700 7pt "Champagne & Limousines",sans-serif;letter-spacing:.32em;color:#8E8E8E;vertical-align:top;padding-top:6mm}}</style>
+<style>@page{@bottom-left{content:"THE ULTRASPEAKER  ·  IMAGE LAB  ·  ANLEITUNG";font:700 7pt "Champagne & Limousines",sans-serif;letter-spacing:.32em;color:#8E8E8E;vertical-align:top;padding-top:6mm}}</style>
 </head>
 <body>
 
 <section class="g-cover">
   <img class="g-cover-shadow" src="../../shared/guide/the-shadow.jpg" alt="">
   <div class="g-cover-body">
-    <img class="g-cover-logo" src="../../assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab">
+    <img class="g-cover-logo" src="../../assets/logo-image-lab-white.svg" alt="The Ultraspeaker Image Lab">
     <p class="g-cover-kicker">Bedienungsanleitung</p>
-    <h1 class="g-cover-title">Vom Link zur Folie<br>in einer Minute</h1>
-    <p class="g-cover-sub">Erstellen Sie individuelle QR-Codes und wissenschaftliche Zitate mit QR-Code zum Artikel, fertig für Ihre Folien.</p>
-    <div class="g-cover-meta"><span>Version 1.3 · November 2026</span><span>theultraspeaker.com</span></div>
+    <h1 class="g-cover-title">Klare, gut lesbare Fotos<br>auf jeder Folie</h1>
+    <p class="g-cover-sub">Bearbeiten Sie Licht, Farbe, Zuschnitt und DuoTone Ihrer Fotos im Browser und bald auch direkt in PowerPoint.</p>
+    <div class="g-cover-meta"><span>Version 1.4 · November 2026</span><span>theultraspeaker.com</span></div>
   </div>
 </section>
 
@@ -23,198 +24,245 @@
   <p class="g-label">Inhalt</p>
   <h1>In dieser Anleitung</h1>
   <ol>
-    <li><span>01</span><span>Bevor Sie beginnen<small>Was QR Lab macht, wo Sie es finden, Web und PowerPoint</small></span></li>
-    <li><span>02</span><span>Die Oberfläche<small>Die Teile des Bildschirms, einer nach dem anderen</small></span></li>
-    <li><span>03</span><span>Ihr erster QR-Code<small>Vom Link zur fertigen Datei für die Folie</small></span></li>
-    <li><span>04</span><span>Weitere QR-Typen<small>Text, E-Mail, Telefon, WLAN, Kontakt und mehr</small></span></li>
-    <li><span>05</span><span>Das Design<small>Vorlagen, Formen, Farben, Logo und Rahmen</small></span></li>
-    <li><span>06</span><span>Wissenschaftliche Zitate<small>DOI, PMID oder Titel: das Zitat mit QR-Code zum Artikel</small></span></li>
-    <li><span>07</span><span>Das Literaturverzeichnis<small>Liste, Reihenfolge, Folien und PDF für das Publikum</small></span></li>
-    <li><span>08</span><span>In die Folie oder in eine Datei<small>Einfügen, PNG oder SVG herunterladen, Druckbreite</small></span></li>
-    <li><span>09</span><span>Tipps für Referenten<small>So funktioniert ein QR-Code im Saal</small></span></li>
-    <li><span>10</span><span>Häufige Fragen<small>Häufige Probleme, Voraussetzungen, Support</small></span></li>
+    <li><span>01</span><span>Bevor Sie beginnen<small>Was Image Lab kann, wo Sie es finden, Web und PowerPoint</small></span></li>
+    <li><span>02</span><span>Die Oberfläche<small>Die Bereiche des Bildschirms im Einzelnen</small></span></li>
+    <li><span>03</span><span>Ein Foto bearbeiten<small>Schnellstile, Licht und Farbe, Töne und Details</small></span></li>
+    <li><span>04</span><span>Histogramm, Tonwerte und Neutralpunkt<small>Schwarz, Mitteltöne, Weiß und Farbstiche</small></span></li>
+    <li><span>05</span><span>Qualität verbessern und DuoTone<small>Bereinigung mit einem Klick, Fotos in zwei oder drei Farben</small></span></li>
+    <li><span>06</span><span>Zuschnitt und Drehung<small>Formate für Folien, soziale Medien und Druck</small></span></li>
+    <li><span>07</span><span>Vergleichen und herunterladen<small>Vorher / Nachher, Zurücksetzen und die fertige Datei</small></span></li>
+    <li><span>08</span><span>In PowerPoint<small>Auf Folie anwenden und zum Original zurückkehren</small></span></li>
+    <li><span>09</span><span>Tipps für Speaker<small>Fotos, die am Beamer lesbar und über alle Folien einheitlich sind</small></span></li>
+    <li><span>10</span><span>Häufige Fragen<small>Typische Probleme und Lösungen</small></span></li>
   </ol>
 </section>
 
 <section class="g-chapter">
   <div class="g-chapter-head"><span class="g-chapter-num">01</span><h2 class="g-chapter-title">Bevor Sie beginnen</h2></div>
-  <p class="g-chapter-lead">QR Lab macht aus einem Link, einem Kontakt oder einem WLAN einen QR-Code im Stil Ihrer Folien und aus einem Fachartikel ein Zitat mit QR-Code zum Artikel.</p>
-  <div class="g-cols">
-    <div>
-      <p class="g-label">Im Browser</p>
-      <p>niki977.github.io/ultraspeaker-qr-lab, auf Computer und Telefon. QR-Codes werden als PNG oder SVG für PowerPoint, Keynote oder ein Dokument heruntergeladen; Zitate werden kopiert.</p>
-      <p class="g-label">In PowerPoint</p>
-      <p>Registerkarte <b>Start</b> → Gruppe <b>The Ultraspeaker</b> → <b>QR Lab</b>. Der Bereich öffnet sich rechts und fügt QR-Codes und Zitate in die ausgewählte Folie ein.</p>
-  <div class="g-note"><p class="g-label">Demnächst verfügbar</p><p>Der PowerPoint-Bereich wird gerade getestet und ist bald verfügbar. Diese Anleitung beschreibt ihn bereits vollständig.</p></div>
-    </div>
-  <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/de/01-panel.png" alt=""></div>
-    <figcaption>PowerPoint-Bereich</figcaption>
-  </figure>
+<p class="g-chapter-lead">Image Lab bearbeitet die Fotos auf Ihren Folien wie ein Bildbearbeitungsprogramm: Tonwerte, Licht, Farbe, Zuschnitt, Drehung und DuoTone, mit der Vorschau immer im Blick.</p>
+<div class="g-cols">
+  <div>
+    <p class="g-label">Im Browser</p>
+    <p>Öffnen Sie <b>niki977.github.io/ultraspeaker-image-lab</b> am Computer oder auf dem Handy. Sie laden ein Foto, bearbeiten es und laden es herunter: als JPG oder als PNG, wenn es transparente Bereiche hat.</p>
   </div>
-  <div class="g-note"><p class="g-label">Was auf dem Gerät bleibt</p><p>Sprache, Design, letzte QR-Codes, Vorlagen und Quellen bleiben im Browserspeicher; in PowerPoint bleiben die Quellen in der Datei. Das WLAN-Passwort wird nie gespeichert.</p></div>
+  <div>
+    <p class="g-label">In PowerPoint</p>
+    <p>Registerkarte <b>Start</b> → Gruppe <b>The Ultraspeaker</b> → <b>Image Lab</b>. Sie wählen ein Foto auf der Folie aus, und der Bereich ersetzt es durch die bearbeitete Version; das Original bleibt erhalten.</p>
+  </div>
+</div>
+<div class="g-note"><p class="g-label">Demnächst</p><p>Der Bereich für PowerPoint wird gerade getestet und ist bald verfügbar. Kapitel 08 beschreibt ihn bereits vollständig.</p></div>
+<div class="g-note"><p class="g-label">Datenschutz</p><p>Fotos werden auf Ihrem Gerät bearbeitet und nie an einen Server gesendet. Im Browser wird nur die gewählte Sprache gespeichert, die alle Labs von The Ultraspeaker teilen.</p></div>
+<table>
+  <tr><th>Was Sie brauchen</th><th>Details</th></tr>
+  <tr><td>Webversion</td><td>Einen aktuellen Browser (Chrome, Edge, Safari, Firefox), auch auf dem Handy</td></tr>
+  <tr><td>PowerPoint-Bereich</td><td>Microsoft 365: Windows 2601 oder neuer, Mac 16.105 oder neuer oder PowerPoint für das Web</td></tr>
+</table>
 </section>
 <section class="g-chapter">
   <div class="g-chapter-head"><span class="g-chapter-num">02</span><h2 class="g-chapter-title">Die Oberfläche</h2></div>
-  <p class="g-chapter-lead">Links die Schritte, rechts die Vorschau, immer sichtbar.</p>
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/de/01-web.png" alt=""><span class="g-pin" style="left:77.2%;top:4.2%">1</span><span class="g-pin" style="left:4.8%;top:20.7%">2</span><span class="g-pin" style="left:4.8%;top:35.3%">3</span><span class="g-pin" style="left:4.8%;top:62.7%">4</span><span class="g-pin" style="left:4.8%;top:82.8%">5</span><span class="g-pin" style="left:69.6%;top:32.5%">6</span><span class="g-pin" style="left:68%;top:82.9%">7</span></div>
-    <figcaption>Webversion · Computer</figcaption>
-  </figure>
-  <ol class="g-legend">
-    <li><span>1</span><span><b>Sprache und Anleitung.</b> Die gewählte Sprache gilt für alle Labs von The Ultraspeaker.</span></li>
-    <li><span>2</span><span><b>Bereiche.</b> <b>QR</b> für QR-Codes, <b>Literatur</b> für Zitate.</span></li>
-    <li><span>3</span><span><b>QR-Typ.</b> Was sich beim Scannen öffnet.</span></li>
-    <li><span>4</span><span><b>Inhalt.</b> Die Felder ändern sich je nach Typ.</span></li>
-    <li><span>5</span><span><b>Design.</b> Stil, Farben, Logo, Rahmen, erweiterte Optionen.</span></li>
-    <li><span>6</span><span><b>Vorschau.</b> Der QR-Code, wie er aussehen wird, mit Status und Hinweisen.</span></li>
-    <li><span>7</span><span><b>Download.</b> PNG oder SVG im Web, Einfügen in die Folie in PowerPoint.</span></li>
+<p class="g-chapter-lead">Oben bleibt die Vorschau stehen, während Sie durch die Einstellungen scrollen; unten liegen die Schaltflächen zum Vergleichen und Herunterladen.</p>
+<figure class="g-shot g-shot--half">
+  <div class="g-shot-frame"><img src="../img/de/overview.png" alt="">
+      <span class="g-pin" style="left:68.1%;top:3.6%">1</span>
+      <span class="g-pin" style="left:48.1%;top:34%">2</span>
+      <span class="g-pin" style="left:50.2%;top:60.8%">3</span>
+      <span class="g-pin" style="left:93.7%;top:25.2%">4</span>
+      <span class="g-pin" style="left:4.5%;top:67.8%">5</span>
+      <span class="g-pin" style="left:50%;top:81%">6</span>
+      <span class="g-pin" style="left:91.4%;top:96%">7</span></div>
+  <figcaption>Webversion · Computer</figcaption>
+</figure>
+<ol class="g-legend">
+  <li><span>1</span><span><b>Sprache und Anleitung.</b> Fünf Sprachen; „Anleitung“ öffnet dieses PDF.</span></li>
+  <li><span>2</span><span><b>Vorschau.</b> Zeigt jede Einstellung sofort. Ziehen Sie ein Foto hierher, um es zu laden.</span></li>
+  <li><span>3</span><span><b>Werkzeuge.</b> Rückgängig, Wiederholen, Zuschneiden, Drehen und Duo &amp; Tri Tone.</span></li>
+  <li><span>4</span><span><b>Zoom.</b> Ziehen Sie den Regler nach oben; auf dem Handy mit zwei Fingern aufziehen.</span></li>
+  <li><span>5</span><span><b>Eigenes Foto testen.</b> Öffnet ein Foto vom Computer oder Handy.</span></li>
+  <li><span>6</span><span><b>Histogramm.</b> Die Verteilung der Töne, von Schwarz links bis Weiß rechts.</span></li>
+  <li><span>7</span><span><b>Aktionen.</b> Zurücksetzen, Vorher / Nachher und Foto herunterladen.</span></li>
+</ol>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">03</span><h2 class="g-chapter-title">Ein Foto bearbeiten</h2></div>
+<p class="g-chapter-lead">Beginnen Sie mit einem Schnellstil und verfeinern Sie dann mit den Reglern, während Sie die Vorschau beobachten.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Wählen Sie einen Schnellstil.</b> <b>Bühne</b> erhöht Kontrast, Tiefen und Schärfe für den Beamer; <b>Verbessern</b> stellt die Tonwerte selbst ein; <b>Schwarzweiß</b> und <b>Warm</b> verändern den Charakter des Fotos.</div></li>
+    <li><div><b>Licht und Farbe.</b> <b>Belichtung</b> hellt alles auf oder dunkelt es ab, <b>Kontrast</b> trennt Lichter und Schatten, <b>Sättigung</b> dosiert die Farben.</div></li>
+    <li><div><b>Töne und Details.</b> <b>Lichter</b> holt einen ausgefressenen Himmel zurück, <b>Tiefen</b> öffnet dunkle Bereiche, <b>Schärfe</b> und <b>Rauschen reduzieren</b> wirken auf die Details.</div></li>
+    <li><div><b>Weißabgleich.</b> <b>Temperatur</b> reicht von kalt bis warm, <b>Tönung</b> von Grün bis Magenta.</div></li>
+    <li><div>Ein <b>Doppelklick</b> auf einen Regler setzt ihn auf null. <b>Rückgängig</b> und <b>Wiederholen</b> funktionieren auch mit ⌘Z / Strg+Z und ⇧⌘Z / Strg+Umschalt+Z.</div></li>
   </ol>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">03</span><h2 class="g-chapter-title">Ihr erster QR-Code</h2></div>
-  <p class="g-chapter-lead">Ein QR-Code zur Seite Ihres Kurses, für die letzte Folie Ihres Vortrags.</p>
-  <div class="g-cols">
-    <ol class="g-steps">
-      <li><div>Wählen Sie <b>Link</b> in Schritt 1.</div></li>
-      <li><div>Fügen Sie die Adresse in Schritt 2 ein. Die Vorschau aktualisiert sich beim Tippen.</div></li>
-      <li><div>Wählen Sie unter <b>Schnellvorlagen</b> <b><b>Ultraspeaker</b></b>: schwarz-weiß, am besten lesbar.</div></li>
-      <li><div>Stellen Sie die <b>Druckbreite</b> ein: 5 cm für eine Folie, 3 cm für ein A4-Poster.</div></li>
-      <li><div>Klicken Sie auf <b>PNG herunterladen</b>. In PowerPoint heißt die Schaltfläche <b>In Folie einfügen</b>.</div></li>
-    </ol>
   <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/de/03-preview.png" alt=""></div>
-    <figcaption>Vorschau und Download</figcaption>
+    <div class="g-shot-frame"><img src="../img/de/adjust.png" alt=""></div>
+    <figcaption>Stil „Bühne“ angewendet</figcaption>
   </figure>
-  </div>
+</div>
+<div class="g-note"><p class="g-label">Gut zu wissen</p><p>Schnellstile ändern nur Licht und Farbe: Zuschnitt, Drehung, „Qualität verbessern“ und DuoTone bleiben so, wie Sie sie eingestellt haben.</p></div>
 </section>
 <section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">04</span><h2 class="g-chapter-title">Weitere QR-Typen</h2></div>
-  <p class="g-chapter-lead">Elf Typen: Jeder baut den Inhalt im Format, das Telefone erkennen.</p>
-  <table>
-    <tr><th>Typ</th><th>Was beim Scannen passiert</th></tr><tr><td>Link</td><td>Öffnet eine Webseite.</td></tr><tr><td>Text</td><td>Zeigt einen kurzen Text.</td></tr><tr><td>E-Mail</td><td>Bereitet eine Nachricht mit Empfänger, Betreff und Text vor.</td></tr><tr><td>Telefon und SMS</td><td>Ruft an oder bereitet eine SMS vor.</td></tr><tr><td>WhatsApp</td><td>Öffnet einen Chat.</td></tr><tr><td>WLAN</td><td>Verbindet mit dem Netz mit Name, Sicherheit und Passwort.</td></tr><tr><td>Kontakt</td><td>Speichert eine Visitenkarte im Adressbuch.</td></tr><tr><td>Ort</td><td>Öffnet die Karte aus einer Adresse oder aus Koordinaten.</td></tr><tr><td>Termin</td><td>Fügt einen Termin zum Kalender hinzu.</td></tr><tr><td>Social Media</td><td>Öffnet ein Profil: Der Benutzername genügt.</td></tr>
-  </table>
-  <div class="g-cols">
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/de/04-wifi.png" alt=""></div>
-    <figcaption>Typ WLAN</figcaption>
+  <div class="g-chapter-head"><span class="g-chapter-num">04</span><h2 class="g-chapter-title">Histogramm, Tonwerte und Neutralpunkt</h2></div>
+<p class="g-chapter-lead">Das Histogramm zeigt, wie viele Punkte des Fotos in jedem Ton liegen. Die drei Griffe darunter bestimmen, wo Schwarz beginnt, wo das mittlere Grau liegt und wo Weiß endet.</p>
+<div class="g-cols">
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/levels.png" alt=""></div>
+    <figcaption>Nach „Auto-Tonwerte“</figcaption>
   </figure>
-  <div class="g-note"><p class="g-label">WLAN</p><p>Das Passwort dient nur zum Erstellen des Codes: Es wird nie gespeichert, auch nicht bei den letzten QR-Codes.</p></div>
-  </div>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">05</span><h2 class="g-chapter-title">Das Design</h2></div>
-  <p class="g-chapter-lead">Das Design ändert das Aussehen, nicht den Inhalt: Testen Sie den Scan immer mit einem Telefon.</p>
   <ol class="g-steps">
-      <li><div><b><b>Stil</b></b>: <b>Schnellvorlagen</b> wendet einen vollständigen Stil an; <b>Meine Vorlagen</b> speichert das Design in zwei eigenen Vorlagen, dazu die zwei zuletzt verwendeten.</div></li>
-      <li><div><b><b>Stil</b></b>: Wählen Sie die Form der Module und der Augen (äußerer Rahmen und innerer Punkt).</div></li>
-      <li><div><b><b>Farben</b></b>: Modulfarbe, Verlauf, Augenfarbe, Hintergrund oder transparent. Bei geringem Kontrast erscheint ein Hinweis.</div></li>
-      <li><div><b><b>Logo</b></b>: Laden Sie Ihr Logo hoch (PNG, JPG, SVG) oder wählen Sie ein Symbol. Die Fehlerkorrektur wechselt automatisch auf <b>Max</b>.</div></li>
-      <li><div><b><b>Rahmen</b></b>: ein Rahmen mit Aufforderung, zum Beispiel „SCANNE MICH“.</div></li>
-      <li><div><b><b>Erweitert</b></b>: Fehlerkorrektur, Rand und Zurücksetzen auf das Standarddesign.</div></li>
-    </ol>
-  <div class="g-cols">
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/de/05-style.png" alt=""></div>
-    <figcaption>Stil: Schnellvorlagen und eigene Vorlagen</figcaption>
-  </figure>
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/de/05-logo.png" alt=""></div>
-    <figcaption>Logo: das Symbol von The Ultraspeaker in der Mitte</figcaption>
-  </figure>
-  </div>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">06</span><h2 class="g-chapter-title">Wissenschaftliche Zitate</h2></div>
-  <p class="g-chapter-lead">Im Bereich <b>Literatur</b> werden eine DOI, eine PMID oder einige Wörter des Titels zu einem Zitat mit QR-Code, der den Artikel öffnet.</p>
-  <ol class="g-steps">
-      <li><div>Wählen Sie oben <b>Literatur</b>.</div></li>
-      <li><div>Geben Sie eine DOI, eine PMID, einen PubMed- oder doi.org-Link oder Titel und Autor ein und klicken Sie auf <b>Suchen</b>.</div></li>
-      <li><div>Prüfen Sie die Vorschau: Autoren, Titel, Zeitschrift, Jahr. Hinweise melden zurückgezogene oder korrigierte Artikel, die Open-Access-Version und Duplikate.</div></li>
-      <li><div>Wählen Sie unter <b>Zitierstil des Literaturverzeichnisses</b> Vancouver, APA 7, AMA oder Harvard.</div></li>
-      <li><div>Wählen Sie unter <b>Zitat auf der Folie</b> das kurze, numerische oder Autor-Jahr-Format oder <b>Vollständig</b>: das ganze Zitat wie im Literaturverzeichnis, ohne Nummer.</div></li>
-    </ol>
-  <div class="g-cols">
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/de/06-search.png" alt=""><span class="g-pin" style="left:2.7%;top:22.2%">1</span><span class="g-pin" style="left:1.6%;top:64%">2</span></div>
-    <figcaption>Suche und Vorschau</figcaption>
-  </figure>
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/de/06-cite.png" alt=""></div>
-    <figcaption>Stil und Zitat auf der Folie</figcaption>
-  </figure>
-  </div>
-  <ol class="g-legend">
-    <li><span>1</span><span><b>Suche.</b> DOI, PMID, Link oder freier Text.</span></li>
-    <li><span>2</span><span><b>Vorschau.</b> Die Daten stammen von Crossref, PubMed und Unpaywall.</span></li>
+    <li><div><b>Lesen Sie das Histogramm.</b> Liegt alles links, ist das Foto dunkel; liegt alles rechts, ist es hell. „TIEFEN BESCHNITTEN“ und „LICHTER AUSGEFRESSEN“ warnen, wenn Details verloren gehen.</div></li>
+    <li><div><b>Klicken Sie auf Auto-Tonwerte.</b> Schwarz und Weiß rücken dorthin, wo die Bilddaten wirklich beginnen: Das Foto gewinnt Kontrast, ohne dass etwas ausfrisst.</div></li>
+    <li><div><b>Feinabstimmung von Hand.</b> Ziehen Sie <b>SCHWARZ</b> nach rechts für sattere Töne, <b>MITTELTÖNE</b> zum Aufhellen oder Abdunkeln der Grautöne, <b>WEISS</b> nach links für mehr Licht.</div></li>
+    <li><div><b>Prüfen Sie einen Kanal.</b> RGB, R, G, B und LUM zeigen alle Farben, eine einzelne Farbe oder die Helligkeit.</div></li>
   </ol>
-  <div class="g-note"><p class="g-label">Quellen</p><p>Crossref, PubMed (NCBI) und Unpaywall, direkt von Ihrem Gerät abgefragt. Die Hinweise sind eine Hilfe: Prüfen Sie wichtige Zitate immer an der Quelle.</p></div>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">07</span><h2 class="g-chapter-title">Das Literaturverzeichnis</h2></div>
-  <p class="g-chapter-lead">Jeder eingefügte oder hinzugefügte Artikel kommt in <b>Quellen dieser Präsentation</b>: Von dort entstehen Nummerierung, Schlussfolien und das PDF für das Publikum.</p>
+</div>
+<div class="g-cols">
   <ol class="g-steps">
-      <li><div><b>Hinzufügen ohne Einfügen.</b> <b>Zum Literaturverzeichnis hinzufügen</b> nimmt den Artikel in die Liste auf, ohne die Folien zu ändern.</div></li>
-      <li><div><b>Wiederverwenden.</b> Klicken Sie auf eine Quelle: Sie kehrt in die Vorschau zurück, bereit für eine weitere Folie.</div></li>
-      <li><div><b>Neu ordnen.</b> Ziehen Sie eine Quelle, um Reihenfolge und Nummerierung zu ändern: kopiertes Literaturverzeichnis, PDF, Schlussfolien und numerische Zitate auf den Folien folgen der neuen Reihenfolge. Auf dem Telefon die Punkte links festhalten.</div></li>
-      <li><div><b>Liste importieren.</b> Fügen Sie unter „<b>Liste von DOIs oder PMIDs importieren</b>“ eine DOI oder PMID pro Zeile ein.</div></li>
-      <li><div><b>Schlussfolien.</b> In PowerPoint nummeriert <b>Nummerierung und Zitate aktualisieren</b> nach der Reihenfolge auf den Folien; <b>Folien „Literatur“ erstellen</b> erstellt die Literaturfolien. Im Web kopiert <b>Literaturverzeichnis kopieren</b> es in die Zwischenablage.</div></li>
-    </ol>
-  <div class="g-note"><p class="g-label">Das PDF des Literaturverzeichnisses</p><p><b>PDF herunterladen</b> fragt nach dem <b>Titel des Vortrags</b> (Pflichtfeld), Referent und Datum sowie danach, was in jedem Eintrag stehen soll: Text, Link und QR werden einzeln eingeschaltet, mindestens eines bleibt an. „<b>Literaturverzeichnis leeren</b>“ leert die Liste mit zwei Klicks; die Folien bleiben unverändert. Das PDF hat weiße Seiten, eine Liste ohne Nummern in der gewählten Reihenfolge und „powered by The Ultraspeaker“ am Fuß. Auf dem Telefon wird es geteilt; aus dem PowerPoint-Bereich öffnet es sich im Browser.</p></div>
-  <div class="g-cols">
+    <li><div><b>Klicken Sie auf Neutralpunkt</b>, wenn das Foto einen Farbstich hat, zum Beispiel durch das gelbe Licht eines Saals.</div></li>
+    <li><div><b>Tippen Sie in der Vorschau</b> auf eine Stelle, die grau oder weiß sein sollte: eine Wand, einen Kittel, ein Blatt Papier. Temperatur und Tönung stellen sich von selbst ein.</div></li>
+  </ol>
   <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/de/07-list.png" alt=""></div>
-    <figcaption>Liste der Quellen</figcaption>
+    <div class="g-shot-frame"><img src="../img/de/neutral.png" alt=""></div>
+    <figcaption>Neutralpunkt aktiv</figcaption>
   </figure>
-  <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/de/07-pdf.png" alt=""></div>
-    <figcaption>Literaturverzeichnis als PDF</figcaption>
-  </figure>
-  </div>
+</div>
 </section>
 <section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">08</span><h2 class="g-chapter-title">In die Folie oder in eine Datei</h2></div>
-  <p class="g-chapter-lead">Derselbe QR-Code kommt auf die Folie, in Keynote oder in den Druck: Nur das Format ändert sich.</p>
-  <div class="g-cols">
-    <div>
-      <p class="g-label">Webversion</p>
-      <p><b>PNG herunterladen</b> erstellt ein Bild mit 300 dpi für die eingestellte <b>Druckbreite</b>; <b>SVG herunterladen (Vektor)</b> bleibt in jeder Größe scharf. Auf dem Telefon öffnet <b>Sichern oder teilen</b> das Teilen-Menü: Fotos, WhatsApp, Mail. Im Literaturbereich kopiert die Hauptschaltfläche das Zitat.</p>
-      <p class="g-label">PowerPoint</p>
-      <p>Wählen Sie PNG oder Vektor und die <b>Breite auf der Folie</b>, dann <b>In Folie einfügen</b>. Für Zitate wählen Sie ein Layout, was eingefügt wird (<b>Zitat + QR</b>, <b>Nur Zitat</b>, <b>Nur QR</b>), Position, Schrift und Farbe: Text und QR-Code werden unten auf der Folie gruppiert.</p>
-  <div class="g-note"><p class="g-label">Demnächst verfügbar</p><p>Der PowerPoint-Bereich wird gerade getestet und ist bald verfügbar. Diese Anleitung beschreibt ihn bereits vollständig.</p></div>
-    </div>
-  <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/de/08-phone.png" alt=""></div>
-    <figcaption>Telefon: Leiste unten</figcaption>
-  </figure>
+  <div class="g-chapter-head"><span class="g-chapter-num">05</span><h2 class="g-chapter-title">Qualität verbessern und DuoTone</h2></div>
+<p class="g-chapter-lead">„Qualität verbessern“ bereinigt Fotos, die bei wenig Licht entstanden sind; Duo &amp; Tri Tone färbt das Foto in den Farben Ihrer Präsentation.</p>
+<div class="g-cols">
+  <div>
+    <p class="g-label">Qualität verbessern</p>
+    <p>Klicken Sie auf <b>Qualität verbessern</b>: Image Lab schätzt das Rauschen des Fotos, reduziert es unter Erhalt der Kanten, schärft die Details und erhöht den lokalen Kontrast. Mit <b>Stärke</b> wählen Sie, wie weit es geht; die Bildgröße ändert sich nicht.</p>
   </div>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/quality.png" alt=""></div>
+  </figure>
+</div>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Öffnen Sie Duo &amp; Tri Tone</b> mit der Schaltfläche mit zwei Kreisen: DuoTone schaltet sich ein.</div></li>
+    <li><div><b>Wählen Sie DuoTone oder TriTone</b> und eine der acht Paletten.</div></li>
+    <li><div><b>Passen Sie die Farben an</b> für Tiefen, Mitteltöne (nur TriTone) und Lichter, mit der Farbauswahl, dem Hex-Code oder der Pipette, die die Farbe aus dem Originalfoto übernimmt.</div></li>
+    <li><div><b>Transparent</b> bei Tiefen oder Lichtern macht diesen Bereich transparent: Das Foto wird als PNG gespeichert, praktisch für ein Logo oder eine Silhouette auf farbigem Hintergrund.</div></li>
+    <li><div><b>Fertig</b> schließt das Feld; <b>Entfernen</b> nimmt den DuoTone zurück.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/duotone.png" alt=""></div>
+    <figcaption>TriTone, Palette „Ozean“</figcaption>
+  </figure>
+</div>
+<div class="g-note"><p class="g-label">Gut zu wissen</p><p>Mit DuoTone ist die Sättigung überflüssig und verschwindet; Temperatur und Tönung werden zu „Filter warm/kalt“ und „Filter grün/magenta“ und verschieben das Licht zwischen den Farben, wie die Filter der Schwarzweißfotografie.</p></div>
 </section>
 <section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">09</span><h2 class="g-chapter-title">Tipps für Referenten</h2></div>
-  <p class="g-chapter-lead">Ein QR-Code funktioniert nur, wenn das Publikum ihn vom Platz aus scannen kann.</p>
-  <div class="g-tip"><p class="g-label">Tipp für Referenten</p><p>Lassen Sie den QR-Code mindestens 10 Sekunden auf der Leinwand und laden Sie laut ein: „Scannen Sie den Code, um die Folien herunterzuladen.“ Ohne Einladung greift kaum jemand zum Telefon.</p></div>
-  <table>
-    <tr><th>Saal</th><th>Abstand zur letzten Reihe</th><th>Seitenlänge des QR-Codes</th></tr><tr><td>Kleiner Raum</td><td>bis 10 m</td><td>mindestens 1/6 der Folienhöhe</td></tr><tr><td>Kongresssaal</td><td>10–25 m</td><td>mindestens 1/4 der Höhe</td></tr><tr><td>Plenum</td><td>über 25 m</td><td>mindestens 1/3, allein auf der Folie</td></tr>
-  </table>
-  <div class="g-tip"><p class="g-label">Zitate</p><p>Setzen Sie das Zitat unten links, 14–16 pt, in Grau: lesbar, ohne Aufmerksamkeit zu stehlen. Das PDF des Literaturverzeichnisses, nach dem Vortrag verschickt, ist mehr wert als zehn Folien mit Quellen.</p></div>
+  <div class="g-chapter-head"><span class="g-chapter-num">06</span><h2 class="g-chapter-title">Zuschnitt und Drehung</h2></div>
+<p class="g-chapter-lead">Jedes Format legt nur das Seitenverhältnis fest: Das Foto behält alle Pixel des gewählten Bereichs.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Klicken Sie auf Zuschneiden</b> und wählen Sie das <b>Format</b>: Frei, Original, ein Seitenverhältnis, ein Format für soziale Medien, eine Folie oder einen Druck.</div></li>
+    <li><div><b>Verschieben Sie den Rahmen</b> durch Ziehen und ändern Sie seine Größe an den Ecken. Sie können die Vorschau vergrößern: Der Rahmen bleibt stehen, das Foto bewegt sich darunter.</div></li>
+    <li><div><b>Ausrichtung drehen</b> wechselt zwischen Quer- und Hochformat.</div></li>
+    <li><div><b>Zuschnitt anwenden</b> bestätigt; <b>Zuschnitt entfernen</b> kehrt zum ganzen Foto zurück.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/crop.png" alt=""></div>
+    <figcaption>Instagram · Hochformat — 4:5</figcaption>
+  </figure>
+</div>
+<table>
+  <tr><th>Wohin das Foto kommt</th><th>Format im Menü</th><th>Seitenverhältnis</th></tr>
+  <tr><td>Folie im Vollbild</td><td>Folie 16:9</td><td>16:9</td></tr>
+  <tr><td>Quadratischer Beitrag</td><td>Instagram · post</td><td>1:1</td></tr>
+  <tr><td>Beitrag im Hochformat</td><td>Instagram · Hochformat</td><td>4:5</td></tr>
+  <tr><td>Storys, Reels, WhatsApp-Status</td><td>Instagram / Facebook · Storys und Reels</td><td>9:16</td></tr>
+  <tr><td>Beitrag mit Link</td><td>Facebook · post, LinkedIn · post</td><td>1,91:1</td></tr>
+  <tr><td>Fotoabzug</td><td>Foto 10 × 15 cm</td><td>2:3</td></tr>
+</table>
+<p>Sie brauchen eine genaue Größe in Pixeln oder Zentimetern? Wählen Sie <b>Eigene Größe…</b>: Nur dieses Format bringt das Foto auf genau diese Größe.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Klicken Sie auf Drehen.</b> Die Schaltflächen drehen um 90° nach links, 90° nach rechts oder um 180°.</div></li>
+    <li><div><b>Begradigen</b> richtet einen schiefen Horizont bis ±45° aus, mit dem Regler, dem Zahlenfeld oder den Pfeilen: 0,5° pro Klick, 0,1° mit Umschalt.</div></li>
+    <li><div>Ein Raster erscheint, und das Foto wird nur so weit vergrößert, dass keine leeren Ecken bleiben. <b>Fertig</b> schließt das Feld.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/rotate.png" alt=""></div>
+    <figcaption>Begradigen 4,5°</figcaption>
+  </figure>
+</div>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">07</span><h2 class="g-chapter-title">Vergleichen und herunterladen</h2></div>
+<p class="g-chapter-lead">Vergleichen Sie das Ergebnis vor dem Herunterladen mit dem Ausgangsfoto.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Vorher / Nachher</b> zeigt das Originalfoto mit der Beschriftung „ORIGINAL“; ein weiterer Klick kehrt zum Ergebnis zurück.</div></li>
+    <li><div><b>Zurücksetzen</b> entfernt alle Einstellungen, auch den Zuschnitt.</div></li>
+    <li><div><b>Foto herunterladen</b> speichert die bearbeitete Version: JPG in hoher Qualität oder PNG, wenn es transparente Bereiche gibt.</div></li>
+    <li><div>Auf dem Handy heißt die Schaltfläche <b>Sichern oder teilen</b>: Wählen Sie „Bild sichern“, um es in Fotos zu speichern, oder senden Sie es per WhatsApp, Nachrichten oder Mail.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/before-after.png" alt=""></div>
+    <figcaption>Handy · Vorher / Nachher</figcaption>
+  </figure>
+</div>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">08</span><h2 class="g-chapter-title">In PowerPoint</h2></div>
+<div class="g-note"><p class="g-label">Demnächst</p><p>Der Bereich für PowerPoint wird gerade getestet und ist bald verfügbar. Nutzen Sie bis dahin die Webversion und fügen Sie das heruntergeladene Foto in die Folie ein.</p></div>
+<p class="g-chapter-lead">Im Bereich gibt es dieselben Einstellungen wie in der Webversion; nur der letzte Schritt ist anders: Das Foto kommt zurück auf die Folie.</p>
+<div class="g-cols">
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/de/panel.png" alt="">
+      <span class="g-pin" style="left:2%;top:12.6%">1</span>
+      <span class="g-pin" style="left:45.7%;top:31.7%">2</span>
+      <span class="g-pin" style="left:91.9%;top:94.2%">3</span></div>
+    <figcaption>Bereich · Foto ausgewählt</figcaption>
+  </figure>
+  <ol class="g-steps">
+    <li><div><b>Wählen Sie ein Foto</b> auf der Folie aus und öffnen Sie <b>Start → Image Lab</b>. Die Zeile unter dem Logo (1) zeigt „Bild ausgewählt“.</div></li>
+    <li><div><b>Bearbeiten Sie das Foto</b> anhand der Vorschau (2): PowerPoint erlaubt Add-ins nicht, Pixel live zu ändern, daher bleibt die Folie bis Schritt 3 unverändert.</div></li>
+    <li><div><b>Klicken Sie auf Auf Folie anwenden</b> (3). Das bearbeitete Foto ersetzt das Original mit derselben Position, Größe und Drehung; nach einem Zuschnitt bleibt es im selben Bereich zentriert.</div></li>
+    <li><div><b>Um es sich anders zu überlegen</b>, wählen Sie das Foto erneut aus: Der Bereich beginnt beim Original mit den gespeicherten Einstellungen. <b>Original</b> stellt nach einer Bestätigung das Ausgangsfoto wieder her.</div></li>
+  </ol>
+</div>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">09</span><h2 class="g-chapter-title">Tipps für Speaker</h2></div>
+<p class="g-chapter-lead">Ein Beamer drückt die Tiefen zusammen und lässt Farben verblassen: Ein Foto, das auf Ihrem Bildschirm perfekt aussieht, kann im Saal grau wirken.</p>
+<div class="g-tip">
+  <p class="g-label">Tipp für Speaker</p>
+  <p>Beginnen Sie bei klinischen Fotos mit <b>Bühne</b> und prüfen Sie das Histogramm: Wichtige Details sollten weder im ersten noch im letzten Zehntel liegen. Ist der Saal hell, stellen Sie <b>Tiefen</b> auf +25 % bis +40 %.</p>
+</div>
+<div class="g-tip">
+  <p class="g-label">Tipp für Speaker</p>
+  <p>Verwenden Sie für alle Fotos einer Serie dieselben Einstellungen, zum Beispiel vor und nach einer Behandlung: derselbe Stil, dieselbe Temperatur, derselbe Zuschnitt. Das Publikum soll das klinische Ergebnis sehen, nicht ein anderes Licht.</p>
+</div>
+<table>
+  <tr><th>Verwendung</th><th>Zuschnitt</th><th>Mindestbreite</th></tr>
+  <tr><td>Foto im Vollbild</td><td>Folie 16:9</td><td>1920 px</td></tr>
+  <tr><td>Foto auf einer halben Folie</td><td>3:2 oder 4:5</td><td>1000 px</td></tr>
+  <tr><td>Zwei Fotos nebeneinander (vorher / nachher)</td><td>dasselbe Seitenverhältnis für beide</td><td>je 960 px</td></tr>
+</table>
 </section>
 <section class="g-chapter">
   <div class="g-chapter-head"><span class="g-chapter-num">10</span><h2 class="g-chapter-title">Häufige Fragen</h2></div>
-  <dl class="g-faq">
-    <dt>Läuft der QR-Code ab?</dt>
-    <dd>Nein. Er ist statisch: Er enthält den Inhalt direkt und funktioniert für immer, ohne Tracking.</dd>
-    <dt>Das Telefon liest den QR-Code nicht.</dt>
-    <dd>Erhöhen Sie den Kontrast, verkleinern Sie das Logo, wählen Sie einen gefüllten inneren Punkt oder vergrößern Sie den QR-Code.</dd>
-    <dt>Die Quelle wird nicht gefunden.</dt>
-    <dd>Prüfen Sie DOI oder PMID. Gerade erschienene Artikel sind eventuell noch nicht in PubMed: Versuchen Sie es mit der DOI.</dd>
-    <dt>Wo bleiben die Quellen?</dt>
-    <dd>In PowerPoint in der .pptx-Datei; im Web im verwendeten Browser.</dd>
-    <dt>Ich sehe QR Lab nicht in der Registerkarte Start.</dt>
-    <dd>Folgen Sie der Seite „Installation“ der Website und öffnen Sie PowerPoint erneut.</dd>
-    <dt>Voraussetzungen</dt>
-    <dd>Webversion: ein aktueller Browser. Automatische Platzierung, Nummerierung und Literaturfolien: ein aktuelles PowerPoint für Microsoft 365. Die Suche erfordert Internet.</dd>
-  </dl>
-  <div class="g-note"><p class="g-label">Support</p><p>Schreiben Sie an info@theultraspeaker.com und nennen Sie Computer und PowerPoint-Version.</p></div>
+<dl class="g-faq">
+  <dt>Verringert der Zuschnitt die Auflösung?</dt>
+  <dd>Nein. Die Formate für soziale Medien, Folien und Druck legen nur das Seitenverhältnis fest. Nur „Eigene Größe…“ bringt das Foto auf eine genaue Größe: Ist sie größer als der gewählte Bereich, weist ein Hinweis darauf hin, dass das Foto an Schärfe verliert.</dd>
+  <dt>Warum ist das heruntergeladene Foto ein PNG?</dt>
+  <dd>Weil Sie im DuoTone „Transparent“ eingeschaltet haben. Beim Teilen vom Handy kann die Transparenz schwarz oder weiß werden.</dd>
+  <dt>Die Folie ändert sich nicht, während ich die Regler bewege.</dt>
+  <dd>Das ist normal: PowerPoint aktualisiert die Folie erst mit „Auf Folie anwenden“. Die Vorschau im Bereich zeigt das Ergebnis sofort.</dd>
+  <dt>Wo bleibt das Originalfoto in PowerPoint?</dt>
+  <dd>Auf derselben Folie, ausgeblendet: Sie sehen es unter <b>Start → Anordnen → Auswahlbereich</b>. Löschen Sie es nicht, wenn Sie die Einstellungen später ändern möchten.</dd>
+  <dt>Der Bereich meldet „PowerPoint aktualisieren“.</dt>
+  <dd>Sie brauchen ein aktuelles Microsoft 365: Windows 2601 oder neuer, Mac 16.105 oder neuer oder PowerPoint für das Web. PowerPoint für iPad wird nicht unterstützt.</dd>
+  <dt>Werden meine Fotos ins Internet hochgeladen?</dt>
+  <dd>Nein. Die Bearbeitung erfolgt auf Ihrem Gerät, im Browser oder im Bereich.</dd>
+  <dt>Wie ändere ich die Sprache?</dt>
+  <dd>Über das Menü oben rechts. Die Auswahl gilt auch für die anderen Labs von The Ultraspeaker.</dd>
+</dl>
+<div class="g-note"><p class="g-label">Support</p><p>Schreiben Sie an info@theultraspeaker.com und geben Sie an, ob Sie die Webversion oder PowerPoint (Mac, Windows oder Web) nutzen; fügen Sie nach Möglichkeit einen Screenshot bei.</p></div>
 </section>
 
 <section class="g-back">

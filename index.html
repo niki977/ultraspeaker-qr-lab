@@ -3,304 +3,258 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Ultraspeaker QR Lab</title>
-<meta name="description" content="Create custom QR codes and scientific citations with a QR to the paper, ready for your slides.">
+<title>The Ultraspeaker Image Lab</title>
+<meta name="description" content="Adjust the photos on your slides like in a photo editor: histogram, levels, light and colour, crop, rotation and DuoTone. The original always stays in the presentation.">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
-<meta name="apple-mobile-web-app-title" content="QR Lab">
-<meta name="application-name" content="QR Lab">
+<meta name="apple-mobile-web-app-title" content="Image Lab">
+<meta name="application-name" content="Image Lab">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261112">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=20261112">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261112">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/image-lab-icon-32.png?v=20261112">
+<link rel="apple-touch-icon" href="assets/image-lab-icon-180.png?v=20261112">
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="shared/ultraspeaker-lab.css?v=20261112">
 <link rel="stylesheet" href="css/app.css?v=20261112">
-<!-- Office.js: in PowerPoint collega il pannello alla presentazione; nel browser la pagina funziona anche senza -->
+<!-- Office.js: in PowerPoint collega il pannello alla presentazione; se non si carica, parte la versione web -->
 <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 <script src="shared/ultraspeaker-lang.js?v=20261112"></script>
-<script src="qrcode.js?v=20261112"></script>
-<script src="i18n.js?v=20261112"></script>
 </head>
 <body>
-<div class="us-page us-page--wide">
+<div class="app us-page us-page--narrow">
   <header class="us-header">
     <div>
-      <a class="us-logo" id="logoLink" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg?v=20261112" alt="The Ultraspeaker QR Lab" width="158" height="60"></a>
-      <p class="us-subtitle"><span id="appSub" data-i18n="app.sub">Crea un QR code e inseriscilo nella slide</span><span id="refSub" data-i18n="ref.sub" hidden>Cita la letteratura e collegala al paper con un QR</span></p>
+      <a class="us-logo ext" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/logo-image-lab-white.svg?v=20261112" alt="The Ultraspeaker Image Lab" width="167" height="60"></a>
+      <p class="us-subtitle" id="status"><i class="us-dot"></i><span id="statusText"></span></p>
     </div>
     <div class="us-header-tools">
       <label class="us-lang">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
-        <span class="us-sr" data-i18n="us.language">Lingua</span>
-        <select id="langSel"></select>
+        <span class="us-sr" data-i18n="lang"></span><select id="lang"></select>
       </label>
-      <a class="us-btn us-guide" id="usGuide" href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" aria-label="Guida d'utilizzo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-i18n="us.guide">Guida</span></a>
+      <!-- Su telefono e nel pannello si vede solo l'icona: il nome resta in aria-label -->
+      <a class="us-btn us-guide" id="usGuide" href="guide/image-lab-guide-en.pdf" target="_blank" rel="noopener" data-i18n-aria="us.guide.title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-i18n="us.guide"></span></a>
     </div>
   </header>
-  <h1 class="us-sr">The Ultraspeaker QR Lab</h1>
 
-  <nav class="us-tabs modes" role="tablist" data-i18n-aria="mode.aria" aria-label="Sezioni">
-    <button type="button" class="us-tab" role="tab" data-mode="qr" id="modeQrTab" aria-controls="modeQr" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 17h4v4h-4"/></svg><span data-i18n="mode.qr">QR</span></button>
-    <button type="button" class="us-tab" role="tab" data-mode="ref" id="modeRefTab" aria-controls="modeRef" aria-selected="false" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10M9 8h5"/></svg><span data-i18n="mode.ref">Reference</span></button>
-  </nav>
+  <!-- Nessuna immagine / versione non supportata / caricamento -->
+  <section class="empty us-spotlight" id="empty">
+    <img src="assets/image-lab-logetto.svg" alt="">
+    <h2 id="emptyTitle"></h2>
+    <p id="emptyText"></p>
+  </section>
+  <section class="empty us-spotlight" id="loading" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p data-i18n="status.loading"></p>
+  </section>
 
-  <div id="modeQr" role="tabpanel" aria-labelledby="modeQrTab">
-  <div class="layout">
-    <main>
-      <section class="us-panel">
-        <h2 class="step-h"><span class="n">1</span><span data-i18n="step1">Cosa deve aprire il QR?</span></h2>
-        <div class="types" id="types" role="group" data-i18n-aria="types.aria" aria-label="Tipo di QR"></div>
-      </section>
-
-      <section class="us-panel">
-        <h2 class="step-h"><span class="n">2</span><span id="contentTitle">Contenuto</span></h2>
-        <div id="fields"></div>
-      </section>
-
-      <section class="us-panel" id="designCard">
-        <h2 class="step-h"><span class="n">3</span><span data-i18n="step3">Design</span></h2>
-        <div class="us-tabs design-tabs" role="tablist">
-          <button type="button" class="us-tab" role="tab" data-tab="stile" aria-selected="true" data-i18n="tab.style">Stile</button>
-          <button type="button" class="us-tab" role="tab" data-tab="colori" aria-selected="false" data-i18n="tab.colors">Colori</button>
-          <button type="button" class="us-tab" role="tab" data-tab="logo" aria-selected="false" data-i18n="tab.logo">Logo</button>
-          <button type="button" class="us-tab" role="tab" data-tab="cornice" aria-selected="false" data-i18n="tab.frame">Cornice</button>
-          <button type="button" class="us-tab" role="tab" data-tab="avanzate" aria-selected="false" data-i18n="tab.adv">Avanzate</button>
-        </div>
-
-        <div class="panel" data-panel="stile">
-          <p class="us-label" data-i18n="sub.presets">Modelli rapidi</p>
-          <div class="tiles" id="presets"></div>
-          <p class="us-label" data-i18n="sub.myPresets">I miei modelli</p>
-          <div class="tiles" id="myPresets"></div>
-          <p class="mini-hint" data-i18n="hint.myPresets"></p>
-          <p class="us-label" data-i18n="sub.dots">Forma dei moduli</p>
-          <div class="tiles" id="dotTypes"></div>
-          <p class="us-label" data-i18n="sub.eyeOuter">Occhi – cornice esterna</p>
-          <div class="tiles" id="cornerSqTypes"></div>
-          <p class="us-label" data-i18n="sub.eyeInner">Occhi – punto interno</p>
-          <div class="tiles" id="cornerDotTypes"></div>
-        </div>
-
-        <div class="panel" data-panel="colori" hidden>
-          <p class="us-label" data-i18n="sub.modules">Moduli</p>
-          <div class="colors">
-            <div><span class="lbl" data-i18n="lbl.color">Colore</span><div class="color" data-color="dotColor"></div></div>
-            <div id="grad2Wrap" hidden><span class="lbl" data-i18n="lbl.color2">Secondo colore</span><div class="color" data-color="gradColor2"></div></div>
-          </div>
-          <label class="check"><input type="checkbox" id="useGradient"> <span data-i18n="chk.gradient">Usa sfumatura</span></label>
-          <div id="gradOpts" hidden>
-            <div class="seg" id="gradType"><button type="button" class="us-chip" data-v="linear" aria-pressed="true" data-i18n="grad.linear">Lineare</button><button type="button" class="us-chip" data-v="radial" aria-pressed="false" data-i18n="grad.radial">Radiale</button></div>
-            <div class="range-row"><span data-i18n="lbl.angle">Angolo</span><span id="gradRotVal">45°</span></div>
-            <input type="range" id="gradRot" min="0" max="360" step="15" value="45">
-          </div>
-          <p class="us-label" data-i18n="sub.eyes">Occhi</p>
-          <label class="check"><input type="checkbox" id="eyesSame" checked> <span data-i18n="chk.eyesSame">Stesso colore dei moduli</span></label>
-          <div class="colors" id="eyeColors" hidden>
-            <div><span class="lbl" data-i18n="lbl.eyeOuter">Cornice esterna</span><div class="color" data-color="cornerSqColor"></div></div>
-            <div><span class="lbl" data-i18n="lbl.eyeInner">Punto interno</span><div class="color" data-color="cornerDotColor"></div></div>
-          </div>
-          <p class="us-label" data-i18n="sub.bg">Sfondo</p>
-          <div class="colors">
-            <div><span class="lbl" data-i18n="lbl.bgColor">Colore sfondo</span><div class="color" data-color="bgColor"></div></div>
-            <div style="display:flex;align-items:flex-end"><label class="check"><input type="checkbox" id="transparentBg"> <span data-i18n="chk.transparent">Trasparente</span></label></div>
-          </div>
-          <div id="contrastWarn"></div>
-        </div>
-
-        <div class="panel" data-panel="logo" hidden>
-          <p class="us-label" data-i18n="sub.yourLogo">Il tuo logo</p>
-          <label class="upload us-spotlight" id="uploadBox">
-            <input type="file" id="logoFile" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
-            <span id="uploadText">Clicca per caricare un logo (PNG, JPG, SVG)</span>
-          </label>
-          <p class="us-label" data-i18n="sub.orIcon">Oppure un'icona</p>
-          <div class="tiles" id="iconLogos"></div>
-          <div id="logoOpts">
-            <div class="range-row"><span data-i18n="lbl.logoSize">Dimensione logo</span><span id="logoSizeVal">30%</span></div>
-            <input type="range" id="logoSize" min="0.15" max="0.45" step="0.01" value="0.3">
-            <div class="range-row"><span data-i18n="lbl.logoMargin">Spazio attorno al logo</span><span id="logoMarginVal">6</span></div>
-            <input type="range" id="logoMargin" min="0" max="30" step="1" value="6">
-            <label class="check"><input type="checkbox" id="hideDots" checked> <span data-i18n="chk.hideDots">Nascondi i moduli dietro al logo</span></label>
-            <p class="hint" data-i18n="hint.logoEc">Con un logo la correzione d'errore passa automaticamente a “Max”, così il QR resta leggibile.</p>
+  <!-- Editor -->
+  <main class="scroll" id="editor" hidden>
+    <div class="pin">
+      <div class="pvrow">
+        <div class="preview" id="preview">
+          <canvas id="pv" data-i18n-aria="preview" role="img"></canvas>
+          <div class="badge-orig" data-i18n="original"></div>
+          <div class="rotgrid" id="rotGrid" hidden></div>
+          <div class="cropbox" id="cropBox" hidden>
+            <span class="ch nw" data-h="nw"></span><span class="ch ne" data-h="ne"></span><span class="ch sw" data-h="sw"></span><span class="ch se" data-h="se"></span>
           </div>
         </div>
-
-        <div class="panel" data-panel="cornice" hidden>
-          <p class="us-label" data-i18n="sub.frameStyle">Stile cornice</p>
-          <div class="tiles" id="frames"></div>
-          <div id="frameOpts">
-            <div class="field"><label for="frameText" data-i18n="lbl.text">Testo</label><input type="text" class="us-field" id="frameText" maxlength="28" value="SCANSIONAMI"></div>
-            <div class="colors">
-              <div><span class="lbl" data-i18n="lbl.frameColor">Colore cornice</span><div class="color" data-color="frameColor"></div></div>
-              <div><span class="lbl" data-i18n="lbl.textColor">Colore testo</span><div class="color" data-color="frameTextColor"></div></div>
-            </div>
-          </div>
+        <div class="zoombar" id="zoombar" role="slider" tabindex="0" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-i18n-aria="zoom">
+          <div class="ztrack"><div class="zfill" id="zfill"></div><div class="zthumb" id="zthumb"></div></div>
         </div>
-
-        <div class="panel" data-panel="avanzate" hidden>
-          <p class="us-label" data-i18n="sub.ec">Correzione d'errore</p>
-          <div class="seg" id="ecLevel"><button type="button" class="us-chip" data-v="L" data-i18n="ec.L">Bassa</button><button type="button" class="us-chip" data-v="M" data-i18n="ec.M">Media</button><button type="button" class="us-chip" data-v="Q" data-i18n="ec.Q">Alta</button><button type="button" class="us-chip" data-v="H" data-i18n="ec.H">Max</button></div>
-          <p class="hint" data-i18n="hint.ec">Più è alta, più il QR resiste a graffi, loghi e stampe imperfette, ma diventa più fitto.</p>
-          <p class="us-label" data-i18n="sub.margin">Margine (zona di rispetto)</p>
-          <div class="range-row"><span data-i18n="lbl.margin">Margine</span><span id="marginVal">20</span></div>
-          <input type="range" id="qrMargin" min="0" max="80" step="5" value="20">
-          <p class="us-label" data-i18n="sub.reset">Ripristina</p>
-          <button class="us-btn" id="resetDesign" type="button" data-i18n="btn.reset">Ripristina design predefinito</button>
-        </div>
-      </section>
-    </main>
-
-    <aside class="side">
-      <section class="us-panel preview-card" id="previewCard">
-        <div class="preview dim" id="preview"><img id="previewImg" alt="Anteprima QR code" data-i18n-alt="preview.alt"></div>
-        <p class="status" id="status">Compila il contenuto per generare il QR</p>
-        <div id="warnBox"></div>
-        <div class="out">
-          <div id="formatBox"><span class="lbl" data-i18n="lbl.format">Formato</span><div class="seg" id="format"><button type="button" class="us-chip" data-v="png" aria-pressed="true">PNG</button><button type="button" class="us-chip" data-v="svg" aria-pressed="false" data-i18n="fmt.vector">Vettoriale</button></div></div>
-          <div><label class="lbl" id="widthLbl" for="sizeCm" data-i18n="lbl.width">Larghezza in slide</label><div class="size-row"><input type="number" class="us-field" id="sizeCm" min="1" max="30" step="0.5" value="5"><span>cm</span></div></div>
-        </div>
-        <button class="us-btn us-btn--primary us-btn--block" id="insertBtn" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M12 8v6M9 11h6"/></svg><span id="insertLabel">Inserisci nella slide</span></button>
-        <div class="btns">
-          <button class="us-btn" id="dlPng" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="dlPngLabel">PNG</span></button>
-          <button class="us-btn" id="dlSvg" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="dlSvgLabel">SVG</span></button>
-        </div>
-        <p class="status" id="webHint" data-i18n="web.hint" hidden></p>
-      </section>
-      <section class="us-panel">
-        <p class="us-label" data-i18n="sub.recent">Recenti</p>
-        <div class="recent" id="recent"></div>
-      </section>
-    </aside>
-  </div>
-  </div>
-
-  <div id="modeRef" role="tabpanel" aria-labelledby="modeRefTab" hidden>
-  <div class="layout">
-    <main>
-      <section class="us-panel">
-        <h2 class="step-h"><span class="n">1</span><span data-i18n="ref.step1">Trova il riferimento</span></h2>
-        <div class="field">
-          <label for="refQuery" data-i18n="ref.queryLbl">DOI, PMID, link oppure titolo / autore</label>
-          <div class="ref-search">
-            <input type="text" class="us-field" id="refQuery" autocomplete="off" spellcheck="false" data-i18n-ph="ref.queryPh" placeholder="10.1016/j.jdent.2023.104420">
-            <button class="us-btn" type="button" id="refSearchBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span data-i18n="ref.search">Cerca</span></button>
-          </div>
-          <div class="hint" data-i18n="ref.queryHint">Esempi: 10.1016/j.jdent.2023.104420 · PMID 36608877 · un link di PubMed o doi.org · «implant survival Buser 2012»</div>
-        </div>
-        <p class="status" id="refStatus" role="status" aria-live="polite"></p>
-        <div id="refResults" hidden></div>
-        <details class="ref-more">
-          <summary data-i18n="ref.bulk.title">Importa un elenco di DOI o PMID</summary>
-          <textarea class="us-field" id="refBulk" rows="5" spellcheck="false" data-i18n-ph="ref.bulk.ph" placeholder="10.1016/j.jdent.2023.104420&#10;36608877"></textarea>
-          <button class="us-btn" type="button" id="refBulkBtn" style="margin-top:8px" data-i18n="ref.bulk.btn">Importa nella bibliografia</button>
-          <p class="status" id="refBulkStatus" role="status" aria-live="polite"></p>
-        </details>
-      </section>
-
-      <section class="us-panel" id="refPreviewCard">
-        <h2 class="step-h"><span class="n">2</span><span data-i18n="ref.step2">Anteprima</span></h2>
-        <div id="refPreview"></div>
-      </section>
-
-      <section class="us-panel" id="refCiteCard" hidden>
-        <h2 class="step-h"><span class="n">3</span><span data-i18n="ref.step3">Citazione</span></h2>
-        <span class="lbl" data-i18n="ref.styleLbl">Stile della bibliografia</span>
-        <div class="seg" id="refStyle"><button type="button" class="us-chip" data-v="vancouver">Vancouver</button><button type="button" class="us-chip" data-v="apa">APA 7</button><button type="button" class="us-chip" data-v="ama">AMA</button><button type="button" class="us-chip" data-v="harvard">Harvard</button></div>
-        <span class="lbl" data-i18n="ref.shortLbl">Citazione nella slide</span>
-        <div class="seg" id="refShort"><button type="button" class="us-chip" data-v="authorJournal" data-i18n="ref.short.aj">Autore, rivista anno</button><button type="button" class="us-chip" data-v="numeric" data-i18n="ref.short.num">Numerica [1]</button><button type="button" class="us-chip" data-v="authorYear" data-i18n="ref.short.ay">Autore, anno</button><button type="button" class="us-chip" data-v="full" data-i18n="ref.short.full">Completa</button></div>
-        <span class="lbl" data-i18n="ref.outShort">Nella slide</span>
-        <div class="ref-out short" id="refShortOut"></div>
-        <span class="lbl" data-i18n="ref.outFull">In bibliografia</span>
-        <div class="ref-out" id="refFullOut"></div>
-      </section>
-    </main>
-
-    <aside class="side">
-      <section class="us-panel" id="refInsertCard" hidden>
-        <h2 class="step-h"><span class="n">4</span><span data-i18n="ref.step4">Inserimento nella slide</span></h2>
-        <p class="us-label" data-i18n="ref.presetsLbl">Layout pronti</p>
-        <div class="tiles" id="refPresets"></div>
-        <div id="refSlidePv" class="ref-slide" aria-hidden="true"></div>
-        <span class="lbl" data-i18n="ref.whatLbl">Cosa inserire</span>
-        <div class="seg" id="refWhat"><button type="button" class="us-chip" data-v="both" data-i18n="ref.what.both">Citazione + QR</button><button type="button" class="us-chip" data-v="text" data-i18n="ref.what.text">Solo citazione</button><button type="button" class="us-chip" data-v="qr" data-i18n="ref.what.qr">Solo QR</button></div>
-        <span class="lbl" data-i18n="ref.posLbl">Posizione in basso</span>
-        <div class="seg" id="refPos"><button type="button" class="us-chip" data-v="left" data-i18n="ref.pos.left">Sinistra</button><button type="button" class="us-chip" data-v="center" data-i18n="ref.pos.center">Centro</button><button type="button" class="us-chip" data-v="right" data-i18n="ref.pos.right">Destra</button></div>
-        <div id="refTextOpts">
-        <div class="ref-grid">
-          <div class="field"><label for="refFont" data-i18n="ref.fontLbl">Font</label>
-            <select class="us-field" id="refFont"><option value="" data-i18n="ref.fontTheme">Font del tema</option><option>Champagne &amp; Limousines</option><option>Arial</option><option>Calibri</option><option>Helvetica Neue</option><option>Segoe UI</option><option>Georgia</option></select></div>
-          <div class="field"><label for="refSize" data-i18n="ref.sizeLbl">Dimensione (pt)</label><input type="number" class="us-field" id="refSize" min="8" max="60" step="1" value="16"></div>
-        </div>
-        <span class="lbl" style="margin-top:10px" data-i18n="ref.colorLbl">Colore del testo</span>
-        <div class="color" style="margin-bottom:10px"><input type="color" id="refColor" value="#7f7f7f" data-i18n-aria="color.pick"><input type="text" id="refColorHex" value="#7f7f7f" maxlength="7" data-i18n-aria="color.code"></div>
-        </div>
-        <div id="refQrOpts">
-          <span class="lbl" data-i18n="ref.qrFmtLbl">Formato del QR</span>
-          <div class="seg" id="refQrFmt"><button type="button" class="us-chip" data-v="svg" data-i18n="ref.fmt.svg">Vettoriale (SVG)</button><button type="button" class="us-chip" data-v="png">PNG</button></div>
-          <span class="lbl" data-i18n="ref.targetLbl">Il QR apre</span>
-          <div class="seg" id="refTarget"><button type="button" class="us-chip" data-v="doi" data-i18n="ref.target.doi">Il DOI (pagina dell'editore)</button><button type="button" class="us-chip" data-v="oa" data-i18n="ref.target.oa">La versione open access</button></div>
-          <p class="status" id="refTargetNote"></p>
-          <div class="range-row"><span data-i18n="ref.qrSize">Lato del QR</span><span id="refQrCmVal">1,9 cm</span></div>
-          <input type="range" id="refQrCm" min="1.2" max="4" step="0.1" value="1.9">
-          <button type="button" class="inline-btn" id="refQrDesign" data-i18n="ref.qrDesign">Colori, forme e logo: personalizzali nella sezione QR</button>
-        </div>
-        <label class="check" id="refNotesWrap" hidden><input type="checkbox" id="refNotes"> <span data-i18n="ref.notesChk">Copia l'abstract PubMed per le note del relatore</span></label>
-        <div class="ref-acts">
-          <button class="us-btn us-btn--primary" id="refInsertBtn" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 14h6M16 12h2v2h-2z"/></svg><span id="refInsertLabel">Inserisci nella slide</span></button>
-          <button class="us-btn" id="refAddBtn" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M12 10v6M9 13h6"/></svg><span data-i18n="ref.addBib">Aggiungi alla bibliografia</span></button>
-          <button class="us-btn us-btn--block" id="refDlQr" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span id="refDlQrLabel">Scarica il QR (PNG)</span></button>
-        </div>
-      </section>
-
-      <section class="us-panel">
-        <p class="us-label"><span data-i18n="ref.listTitle">Riferimenti della presentazione</span> <span id="refCount"></span></p>
-        <p class="hint" id="refListHint" data-i18n="ref.list.hint" hidden></p>
-        <div class="ref-list" id="refList"></div>
-        <div class="ref-bib" id="refBibBtns" hidden>
-          <button class="us-btn" type="button" id="refRenumBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg><span data-i18n="ref.renum">Aggiorna numerazione e citazioni</span></button>
-          <label class="check"><input type="checkbox" id="refBibQr"> <span data-i18n="ref.bibQr">Piccolo QR accanto a ogni voce</span></label>
-          <button class="us-btn" type="button" id="refBibBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg><span id="refBibBtnLabel">Genera le slide «Bibliografia»</span></button>
-          <button class="us-btn" type="button" id="refPdfBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span data-i18n="ref.pdf.btn">Scarica PDF</span></button>
-          <button class="us-btn" type="button" id="refClearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg><span id="refClearLabel" data-i18n="ref.clear">Azzera la bibliografia</span></button>
-          <p class="status" id="refListStatus" role="status" aria-live="polite"></p>
-        </div>
-      </section>
-    </aside>
-  </div>
-  </div>
-
-  <p class="static-note" id="staticNote" data-i18n="foot">QR statici: funzionano per sempre, senza scadenze né tracciamento.</p>
-  <footer class="us-footer">
-    <a class="us-cta" id="usCta" href="mailto:info@theultraspeaker.com"><img src="assets/arena-white.svg" alt=""><span data-i18n="us.cta">Richiedi un consiglio</span></a>
-    <p class="us-links"><a href="support.html" target="_blank" rel="noopener" data-i18n="us.support">Supporto</a><a href="privacy.html" target="_blank" rel="noopener" data-i18n="us.privacy">Privacy</a><a href="terms.html" target="_blank" rel="noopener" data-i18n="us.terms">Condizioni d'uso</a><a href="GUIDA-INSTALLAZIONE.html" target="_blank" rel="noopener" data-i18n="us.install">Installazione</a></p>
-  </footer>
-</div>
-
-<!-- Bibliografia in PDF: dati della lecture e cosa mettere accanto a ogni voce -->
-<dialog class="bib-dialog" id="bibDialog" aria-labelledby="bibDlgTitle">
-  <form method="dialog" id="bibForm">
-    <h2 id="bibDlgTitle" data-i18n="ref.pdf.title">Bibliografia in PDF</h2>
-    <div class="field"><label for="bibTitle" data-i18n="ref.pdf.lecture">Titolo della lecture</label><input type="text" class="us-field" id="bibTitle" maxlength="160" required autocomplete="off"></div>
-    <div class="field"><label for="bibSpeaker"><span data-i18n="ref.pdf.speaker">Speaker</span> <span class="opt" data-i18n="optional">(facoltativo)</span></label><input type="text" class="us-field" id="bibSpeaker" maxlength="120" autocomplete="name"></div>
-    <div class="field"><label for="bibDate"><span data-i18n="ref.pdf.date">Data</span> <span class="opt" data-i18n="optional">(facoltativo)</span></label><input type="date" class="us-field" id="bibDate"></div>
-    <span class="lbl" id="bibExtraLbl" data-i18n="ref.pdf.extra">In ogni voce</span>
-    <div class="seg" id="bibExtra" role="group" aria-labelledby="bibExtraLbl" aria-describedby="bibExtraHint"><button type="button" class="us-chip" data-v="text" aria-pressed="true" data-i18n="ref.pdf.x.text">Testo</button><button type="button" class="us-chip" data-v="link" aria-pressed="false" data-i18n="ref.pdf.x.link">Link</button><button type="button" class="us-chip" data-v="qr" aria-pressed="false" data-i18n="ref.pdf.x.qr">QR</button></div>
-    <p class="hint" id="bibExtraHint" data-i18n="ref.pdf.extraHint">Accendi uno o più elementi.</p>
-    <p class="status" id="bibStatus" role="status" aria-live="polite"></p>
-    <div class="ref-acts">
-      <button type="button" class="us-btn" id="bibCancel" data-i18n="ref.cancel">Annulla</button>
-      <button type="submit" class="us-btn us-btn--primary" id="bibGo" data-i18n="ref.pdf.btn">Scarica PDF</button>
+      </div>
+      <div class="tools">
+        <button type="button" class="us-btn us-btn--icon" id="undoBtn" data-i18n-aria="undo" data-i18n-title="undo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+        <button type="button" class="us-btn us-btn--icon" id="redoBtn" data-i18n-aria="redo" data-i18n-title="redo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+        <button type="button" class="us-btn" id="cropBtn" aria-pressed="false" data-i18n-title="crop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><span data-i18n="crop"></span></button>
+        <button type="button" class="us-btn" id="rotBtn" aria-pressed="false" aria-controls="rotPanel" data-i18n-title="rotate"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg><span data-i18n="rotate"></span></button>
+        <button type="button" class="us-btn us-btn--icon" id="duoBtn" aria-pressed="false" aria-controls="duoPanel" data-i18n-title="duo.tool" data-i18n-aria="duo.tool"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg></button>
+        <span class="zhint" id="zoomHint"></span>
+        <button type="button" class="us-btn zoom-lbl" id="zoomLbl" data-i18n-title="fitTitle"></button>
+      </div>
     </div>
-  </form>
-</dialog>
 
-<div class="bar" id="bar">
-  <img id="barImg" alt="Anteprima" title="Vai all'anteprima" data-i18n-alt="bar.alt" data-i18n-title="bar.title">
-  <button class="us-btn us-btn--primary" id="barInsert" type="button" disabled>Inserisci nella slide</button>
+    <section class="us-panel tool-panel" id="duoPanel" hidden>
+      <div class="duohead">
+        <div class="us-label" id="duoTitle"></div>
+        <button type="button" class="us-chip" id="duoOn" aria-pressed="false"></button>
+      </div>
+      <div class="us-tabs" role="tablist" data-i18n-aria="duo">
+        <button type="button" class="us-tab" role="tab" id="duoM2" aria-selected="true">DuoTone</button>
+        <button type="button" class="us-tab" role="tab" id="duoM3" aria-selected="false">TriTone</button>
+      </div>
+      <div class="dpre" id="duoPresets"></div>
+      <div class="dcols">
+        <div class="dcol" id="dRowS">
+          <div class="dlab"><span data-i18n="duo.shadows"></span><label class="tchk"><input type="checkbox" id="dTrS"><span data-i18n="duo.transparent"></span></label></div>
+          <div class="dctl">
+            <input type="color" class="cpick" id="dcS" data-i18n-aria="duo.shadows">
+            <input type="text" class="us-field hex" id="dhS" maxlength="7" spellcheck="false" autocomplete="off" data-i18n-aria="duo.shadows">
+            <button type="button" class="us-btn us-btn--icon" id="dpS" data-i18n-aria="duo.pick" data-i18n-title="duo.pick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6M17 7l-9.5 9.5L4 20l3.5-3.5L17 7z"/></svg></button>
+          </div>
+        </div>
+        <div class="dcol" id="dRowM">
+          <div class="dlab"><span data-i18n="duo.mids"></span></div>
+          <div class="dctl">
+            <input type="color" class="cpick" id="dcM" data-i18n-aria="duo.mids">
+            <input type="text" class="us-field hex" id="dhM" maxlength="7" spellcheck="false" autocomplete="off" data-i18n-aria="duo.mids">
+            <button type="button" class="us-btn us-btn--icon" id="dpM" data-i18n-aria="duo.pick" data-i18n-title="duo.pick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6M17 7l-9.5 9.5L4 20l3.5-3.5L17 7z"/></svg></button>
+          </div>
+        </div>
+        <div class="dswap"><button type="button" class="us-btn" id="duoSwap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg><span data-i18n="duo.swap"></span></button></div>
+        <div class="dcol" id="dRowH">
+          <div class="dlab"><span data-i18n="duo.lights"></span><label class="tchk"><input type="checkbox" id="dTrH"><span data-i18n="duo.transparent"></span></label></div>
+          <div class="dctl">
+            <input type="color" class="cpick" id="dcH" data-i18n-aria="duo.lights">
+            <input type="text" class="us-field hex" id="dhH" maxlength="7" spellcheck="false" autocomplete="off" data-i18n-aria="duo.lights">
+            <button type="button" class="us-btn us-btn--icon" id="dpH" data-i18n-aria="duo.pick" data-i18n-title="duo.pick"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6M17 7l-9.5 9.5L4 20l3.5-3.5L17 7z"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="srow" id="dMidRow"><label for="dMid" data-i18n="duo.mid"></label><input id="dMid" class="sl" type="range" min="5" max="95" step="1"><output for="dMid" id="dMidOut"></output></div>
+      <div class="srow"><label for="dAmt" data-i18n="duo.amount"></label><input id="dAmt" class="sl" type="range" min="0" max="100" step="1"><output for="dAmt" id="dAmtOut"></output></div>
+      <div class="us-note" id="duoPickHint" data-i18n="duo.pickHint" hidden></div>
+      <p class="note" data-i18n="duo.note"></p>
+      <p class="us-note us-note--warn" id="duoTrNote" data-i18n="duo.trNote" hidden></p>
+      <div class="row">
+        <button type="button" class="us-btn" id="duoRemove" data-i18n="duo.remove"></button>
+        <span class="push"></span>
+        <button type="button" class="us-btn us-btn--primary" id="duoDone" data-i18n="rot.done"></button>
+      </div>
+    </section>
+    <section class="us-panel tool-panel" id="rotPanel" hidden>
+      <div class="us-label" data-i18n="rot.title"></div>
+      <div class="chips">
+        <button type="button" class="us-chip ic" id="rotL" data-i18n-aria="rot.left" data-i18n-title="rot.left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.34-5.66"/><path d="M4 4v5h5"/></svg>90°</button>
+        <button type="button" class="us-chip ic" id="rotR" data-i18n-aria="rot.right" data-i18n-title="rot.right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>90°</button>
+        <button type="button" class="us-chip ic" id="rot180" data-i18n-aria="rot.half" data-i18n-title="rot.half"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg>180°</button>
+      </div>
+      <div class="rotrow">
+        <label for="rotFine" data-i18n="rot.straighten"></label>
+        <input id="rotFine" class="sl bi" type="range" min="-45" max="45" step="0.1" value="0">
+        <div class="spin">
+          <input id="rotNum" class="us-field" type="number" min="-45" max="45" step="0.1" value="0" inputmode="decimal" data-i18n-aria="rot.straighten">
+          <span class="deg">°</span>
+          <div class="arrows">
+            <button type="button" id="rotUp" data-i18n-aria="rot.up" data-i18n-title="rot.up"><svg viewBox="0 0 12 8" aria-hidden="true"><path d="M2 6.5L6 2.5l4 4"/></svg></button>
+            <button type="button" id="rotDown" data-i18n-aria="rot.down" data-i18n-title="rot.down"><svg viewBox="0 0 12 8" aria-hidden="true"><path d="M2 1.5l4 4 4-4"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="note" id="rotInfo"></p>
+      <p class="note" data-i18n="rot.hint"></p>
+      <div class="row">
+        <button type="button" class="us-btn" id="rotReset" data-i18n="rot.reset"></button>
+        <span class="push"></span>
+        <button type="button" class="us-btn us-btn--primary" id="rotDone" data-i18n="rot.done"></button>
+      </div>
+    </section>
+    <section class="us-panel tool-panel" id="cropPanel" hidden>
+      <div class="us-label" data-i18n="crop.title"></div>
+      <label class="fld"><span data-i18n="crop.format"></span><select id="cropFmt" class="us-field"></select></label>
+      <div class="cust" id="cropCustom" hidden>
+        <label class="fld"><span data-i18n="crop.width"></span><input id="cW" class="us-field" type="number" min="1" step="any" inputmode="decimal"></label>
+        <span class="x">×</span>
+        <label class="fld"><span data-i18n="crop.height"></span><input id="cH" class="us-field" type="number" min="1" step="any" inputmode="decimal"></label>
+        <label class="fld"><span data-i18n="crop.unit"></span><select id="cU" class="us-field"><option value="px">px</option><option value="cm">cm</option></select></label>
+        <label class="fld" id="cDpiWrap" hidden><span data-i18n="crop.dpi"></span><input id="cDpi" class="us-field" type="number" min="72" max="1200" step="1" value="300" inputmode="numeric"></label>
+      </div>
+      <div class="row">
+        <button type="button" class="us-btn" id="cropSwap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="11" height="13" rx="1.5"/><path d="M12 3h4a4 4 0 0 1 4 4v4"/><path d="M17 8l3 3 3-3"/></svg><span data-i18n="crop.swap"></span></button>
+      </div>
+      <p class="note" id="cropInfo"></p>
+      <p class="us-note us-note--warn" id="cropWarn" hidden></p>
+      <p class="note" data-i18n="crop.hint"></p>
+      <div class="row">
+        <button type="button" class="us-btn" id="cropRemove" data-i18n="crop.remove"></button>
+        <span class="push"></span>
+        <button type="button" class="us-btn" id="cropCancel" data-i18n="crop.cancel"></button>
+        <button type="button" class="us-btn us-btn--primary" id="cropApply" data-i18n="crop.apply"></button>
+      </div>
+    </section>
+    <div class="row" id="loadRow" hidden>
+      <button type="button" class="us-btn" id="loadBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg><span data-i18n="loadPhoto"></span></button>
+      <span class="note" data-i18n="orDrop"></span>
+      <input type="file" id="fileIn" accept="image/*" hidden>
+    </div>
+
+    <section class="stack">
+      <div class="hist-head">
+        <div class="us-label" data-i18n="histogram"></div>
+        <div class="chips" role="group" data-i18n-aria="channel">
+          <button class="us-chip" type="button" data-ch="rgb" aria-pressed="true">RGB</button>
+          <button class="us-chip" type="button" data-ch="r" aria-pressed="false">R</button>
+          <button class="us-chip" type="button" data-ch="g" aria-pressed="false">G</button>
+          <button class="us-chip" type="button" data-ch="b" aria-pressed="false">B</button>
+          <button class="us-chip" type="button" data-ch="l" aria-pressed="false">LUM</button>
+        </div>
+      </div>
+      <div class="hist">
+        <canvas id="hist" data-i18n-aria="histogram" role="img"></canvas>
+        <div class="clip lo" id="clipLo" data-i18n="clipLo"></div>
+        <div class="clip hi" id="clipHi" data-i18n="clipHi"></div>
+      </div>
+      <div class="levels">
+        <div class="ramp"></div>
+        <div class="lvwrap">
+          <input class="lv b" id="lvB" type="range" min="0" max="255" step="1" value="0" data-i18n-aria="black">
+          <input class="lv w" id="lvW" type="range" min="0" max="255" step="1" value="255" data-i18n-aria="white">
+          <input class="lv m" id="lvM" type="range" min="0" max="255" step="1" value="128" data-i18n-aria="mid">
+        </div>
+        <div class="lvlabels" id="lvLabels">
+          <div class="lvl" id="lbB"><b></b><span data-i18n="black"></span></div>
+          <div class="lvl" id="lbM"><b></b><span data-i18n="mid"></span></div>
+          <div class="lvl" id="lbW"><b></b><span data-i18n="white"></span></div>
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="us-btn" id="autoLv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span data-i18n="autoLevels"></span></button>
+        <button type="button" class="us-btn" id="pickBtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6M17 7l-9.5 9.5L4 20l3.5-3.5L17 7z"/></svg><span data-i18n="neutral"></span></button>
+        <span class="push"></span>
+        <button type="button" class="us-btn us-btn--icon" id="resetLv" data-i18n-aria="resetLevels" data-i18n-title="resetLevels"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></button>
+      </div>
+      <div class="us-note" id="pickHint" data-i18n="pickHint" hidden></div>
+    </section>
+
+    <!-- Migliora qualità: pulizia automatica in un clic -->
+    <section class="stack">
+      <button type="button" class="us-btn us-btn--block" id="qBtn" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span data-i18n="quality"></span></button>
+      <p class="note" data-i18n="quality.desc"></p>
+      <div class="srow" id="qRow" hidden>
+        <label for="qAmt" data-i18n="quality.amount"></label>
+        <input id="qAmt" class="sl" type="range" min="1" max="100" step="1" value="60">
+        <output for="qAmt" id="qOut"></output>
+      </div>
+    </section>
+
+    <section class="stack">
+      <div class="us-label" data-i18n="quick"></div>
+      <div class="chips" id="presets"></div>
+    </section>
+
+    <div class="sep"></div>
+    <section id="sliders"></section>
+    <p class="note" id="note"></p>
+  </main>
+
+  <!-- Chiusura comune ai Lab: su telefono resta sopra la barra fissa delle azioni -->
+  <footer class="us-footer">
+    <a class="us-cta" id="usCta" href="mailto:info@theultraspeaker.com"><img src="assets/arena-white.svg?v=20261112" alt=""><span data-i18n="us.cta"></span></a>
+    <p class="us-links"><a href="support.html" target="_blank" rel="noopener" data-i18n="us.support"></a><a href="privacy.html" target="_blank" rel="noopener" data-i18n="us.privacy"></a><a href="terms.html" target="_blank" rel="noopener" data-i18n="us.terms"></a><a href="GUIDA-INSTALLAZIONE.html" target="_blank" rel="noopener" data-i18n="us.install"></a></p>
+  </footer>
+
+  <div class="foot" id="foot" hidden>
+    <button type="button" class="us-btn" id="resetAll" data-i18n="reset"></button>
+    <button type="button" class="us-btn" id="beforeBtn" aria-pressed="false" data-i18n="beforeAfter"></button>
+    <button type="button" class="us-btn" id="restoreBtn" hidden></button>
+    <button type="button" class="us-btn us-btn--primary" id="applyBtn"></button>
+  </div>
 </div>
-<div class="toast" id="toast" role="status"></div>
+<div class="drop" id="drop" hidden><img src="assets/image-lab-logetto.svg" alt=""><span data-i18n="dropHere"></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="i18n.js?v=20261112"></script>
+<script src="imaging.js?v=20261112"></script>
 <script src="app.js?v=20261112"></script>
-<script src="reference.js?v=20261112"></script>
-<script src="bib-pdf.js?v=20261112"></script>
 </body>
 </html>

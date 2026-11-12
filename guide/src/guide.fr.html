@@ -1,21 +1,22 @@
 <!doctype html>
+<!-- Guida d'utilizzo dell'Image Lab (fr). Stile: shared/guide/ultraspeaker-guide.css. PDF: node shared/guide/build-guide.mjs -->
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>The Ultraspeaker QR Lab · Guide d'utilisation</title>
+<title>The Ultraspeaker Image Lab · Guide d'utilisation</title>
 <link rel="stylesheet" href="../../shared/guide/ultraspeaker-guide.css">
-<style>@page{@bottom-left{content:"THE ULTRASPEAKER  ·  QR LAB  ·  GUIDE";font:700 7pt "Champagne & Limousines",sans-serif;letter-spacing:.32em;color:#8E8E8E;vertical-align:top;padding-top:6mm}}</style>
+<style>@page{@bottom-left{content:"THE ULTRASPEAKER  ·  IMAGE LAB  ·  GUIDE";font:700 7pt "Champagne & Limousines",sans-serif;letter-spacing:.32em;color:#8E8E8E;vertical-align:top;padding-top:6mm}}</style>
 </head>
 <body>
 
 <section class="g-cover">
   <img class="g-cover-shadow" src="../../shared/guide/the-shadow.jpg" alt="">
   <div class="g-cover-body">
-    <img class="g-cover-logo" src="../../assets/qr-lab-logo.svg" alt="The Ultraspeaker QR Lab">
+    <img class="g-cover-logo" src="../../assets/logo-image-lab-white.svg" alt="The Ultraspeaker Image Lab">
     <p class="g-cover-kicker">Guide d'utilisation</p>
-    <h1 class="g-cover-title">Du lien à la diapositive<br>en une minute</h1>
-    <p class="g-cover-sub">Créez des QR codes personnalisés et des citations scientifiques avec un QR vers l'article, prêts pour vos diapositives.</p>
-    <div class="g-cover-meta"><span>Version 1.3 · Novembre 2026</span><span>theultraspeaker.com</span></div>
+    <h1 class="g-cover-title">Des photos claires et lisibles<br>sur chaque diapositive</h1>
+    <p class="g-cover-sub">Réglez la lumière, la couleur, le recadrage et le DuoTone de vos photos dans le navigateur et, bientôt, directement dans PowerPoint.</p>
+    <div class="g-cover-meta"><span>Version 1.4 · Novembre 2026</span><span>theultraspeaker.com</span></div>
   </div>
 </section>
 
@@ -23,198 +24,245 @@
   <p class="g-label">Sommaire</p>
   <h1>Dans ce guide</h1>
   <ol>
-    <li><span>01</span><span>Avant de commencer<small>Ce que fait QR Lab, où le trouver, web et PowerPoint</small></span></li>
+    <li><span>01</span><span>Avant de commencer<small>Ce que fait Image Lab, où le trouver, web et PowerPoint</small></span></li>
     <li><span>02</span><span>L'interface<small>Les parties de l'écran, une par une</small></span></li>
-    <li><span>03</span><span>Votre premier QR<small>Du lien au fichier prêt pour la diapositive</small></span></li>
-    <li><span>04</span><span>Les autres types de QR<small>Texte, email, téléphone, Wi-Fi, contact et plus</small></span></li>
-    <li><span>05</span><span>Le design<small>Modèles, formes, couleurs, logo et cadre</small></span></li>
-    <li><span>06</span><span>Citations scientifiques<small>DOI, PMID ou titre : la citation avec le QR vers l'article</small></span></li>
-    <li><span>07</span><span>La bibliographie<small>Liste, ordre, diapositives et PDF pour le public</small></span></li>
-    <li><span>08</span><span>Dans la diapositive ou dans un fichier<small>Insérer, télécharger PNG ou SVG, largeur d'impression</small></span></li>
-    <li><span>09</span><span>Conseils d'orateur<small>Faire fonctionner un QR dans la salle</small></span></li>
-    <li><span>10</span><span>Questions fréquentes<small>Problèmes courants, prérequis, assistance</small></span></li>
+    <li><span>03</span><span>Régler une photo<small>Styles rapides, lumière et couleur, tons et détails</small></span></li>
+    <li><span>04</span><span>Histogramme, niveaux et point neutre<small>Noir, tons moyens, blanc et dominantes de couleur</small></span></li>
+    <li><span>05</span><span>Améliorer la qualité et DuoTone<small>Nettoyage en un clic, photos en deux ou trois couleurs</small></span></li>
+    <li><span>06</span><span>Recadrage et rotation<small>Formats pour diapositives, réseaux sociaux et impression</small></span></li>
+    <li><span>07</span><span>Comparer et télécharger<small>Avant / Après, Réinitialiser et le fichier final</small></span></li>
+    <li><span>08</span><span>Dans PowerPoint<small>Appliquer à la diapositive et revenir à l'original</small></span></li>
+    <li><span>09</span><span>Conseils de speaker<small>Des photos lisibles au projecteur, cohérentes d'une diapositive à l'autre</small></span></li>
+    <li><span>10</span><span>Questions fréquentes<small>Problèmes courants et solutions</small></span></li>
   </ol>
 </section>
 
 <section class="g-chapter">
   <div class="g-chapter-head"><span class="g-chapter-num">01</span><h2 class="g-chapter-title">Avant de commencer</h2></div>
-  <p class="g-chapter-lead">QR Lab transforme un lien, un contact ou un réseau Wi-Fi en QR code au style de vos diapositives, et un article scientifique en citation avec un QR vers l'article.</p>
-  <div class="g-cols">
-    <div>
-      <p class="g-label">Dans le navigateur</p>
-      <p>niki977.github.io/ultraspeaker-qr-lab, sur ordinateur et téléphone. Les QR se téléchargent en PNG ou SVG pour PowerPoint, Keynote ou un document ; les citations se copient.</p>
-      <p class="g-label">Dans PowerPoint</p>
-      <p>Onglet <b>Accueil</b> → groupe <b>The Ultraspeaker</b> → <b>QR Lab</b>. Le volet s'ouvre à droite et insère QR et citations dans la diapositive sélectionnée.</p>
-  <div class="g-note"><p class="g-label">Bientôt disponible</p><p>Le volet PowerPoint est en test et sera disponible prochainement. Ce guide le décrit déjà entièrement.</p></div>
-    </div>
-  <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/fr/01-panel.png" alt=""></div>
-    <figcaption>Volet PowerPoint</figcaption>
-  </figure>
+<p class="g-chapter-lead">Image Lab règle les photos de vos diapositives comme un logiciel de retouche : niveaux, lumière, couleur, recadrage, rotation et DuoTone, avec l'aperçu toujours sous les yeux.</p>
+<div class="g-cols">
+  <div>
+    <p class="g-label">Dans le navigateur</p>
+    <p>Ouvrez <b>niki977.github.io/ultraspeaker-image-lab</b> sur ordinateur ou téléphone. Vous chargez une photo, vous la réglez et vous la téléchargez : en JPG, ou en PNG si elle a des parties transparentes.</p>
   </div>
-  <div class="g-note"><p class="g-label">Ce qui reste sur l'appareil</p><p>Langue, design, QR récents, modèles et références restent dans la mémoire du navigateur ; dans PowerPoint, les références restent dans le fichier. Le mot de passe Wi-Fi n'est jamais enregistré.</p></div>
+  <div>
+    <p class="g-label">Dans PowerPoint</p>
+    <p>Onglet <b>Accueil</b> → groupe <b>The Ultraspeaker</b> → <b>Image Lab</b>. Vous sélectionnez une photo sur la diapositive et le volet la remplace par la version réglée, en conservant l'original.</p>
+  </div>
+</div>
+<div class="g-note"><p class="g-label">Bientôt disponible</p><p>Le volet pour PowerPoint est en phase de test et sera bientôt disponible. Le chapitre 08 le décrit déjà en entier.</p></div>
+<div class="g-note"><p class="g-label">Confidentialité</p><p>Les photos sont traitées sur votre appareil et ne sont jamais envoyées à un serveur. Le navigateur ne garde que la langue choisie, commune à tous les Labs The Ultraspeaker.</p></div>
+<table>
+  <tr><th>Ce qu'il vous faut</th><th>Détails</th></tr>
+  <tr><td>Version web</td><td>Un navigateur à jour (Chrome, Edge, Safari, Firefox), aussi sur téléphone</td></tr>
+  <tr><td>Volet PowerPoint</td><td>Microsoft 365 : Windows 2601 ou ultérieur, Mac 16.105 ou ultérieur, ou PowerPoint pour le web</td></tr>
+</table>
 </section>
 <section class="g-chapter">
   <div class="g-chapter-head"><span class="g-chapter-num">02</span><h2 class="g-chapter-title">L'interface</h2></div>
-  <p class="g-chapter-lead">Les étapes à gauche, l'aperçu toujours visible à droite.</p>
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/fr/01-web.png" alt=""><span class="g-pin" style="left:78.7%;top:4.2%">1</span><span class="g-pin" style="left:4.8%;top:20.7%">2</span><span class="g-pin" style="left:4.8%;top:35.3%">3</span><span class="g-pin" style="left:4.8%;top:62.7%">4</span><span class="g-pin" style="left:4.8%;top:82.8%">5</span><span class="g-pin" style="left:69.6%;top:32.5%">6</span><span class="g-pin" style="left:68%;top:82.9%">7</span></div>
-    <figcaption>Version web · ordinateur</figcaption>
-  </figure>
-  <ol class="g-legend">
-    <li><span>1</span><span><b>Langue et Guide.</b> La langue choisie vaut pour tous les Lab The Ultraspeaker.</span></li>
-    <li><span>2</span><span><b>Sections.</b> <b>QR</b> pour les QR codes, <b>Références</b> pour les citations.</span></li>
-    <li><span>3</span><span><b>Type de QR.</b> Ce qui s'ouvre quand on le scanne.</span></li>
-    <li><span>4</span><span><b>Contenu.</b> Les champs changent selon le type.</span></li>
-    <li><span>5</span><span><b>Design.</b> Style, couleurs, logo, cadre, options avancées.</span></li>
-    <li><span>6</span><span><b>Aperçu.</b> Le QR tel qu'il apparaîtra, avec l'état et les avertissements.</span></li>
-    <li><span>7</span><span><b>Téléchargement.</b> PNG ou SVG sur le web, insertion dans la diapositive dans PowerPoint.</span></li>
+<p class="g-chapter-lead">En haut, l'aperçu reste fixe pendant que vous parcourez les réglages ; en bas, les boutons pour comparer et télécharger.</p>
+<figure class="g-shot g-shot--half">
+  <div class="g-shot-frame"><img src="../img/fr/overview.png" alt="">
+      <span class="g-pin" style="left:70.2%;top:3.6%">1</span>
+      <span class="g-pin" style="left:48.1%;top:34%">2</span>
+      <span class="g-pin" style="left:47.7%;top:60.8%">3</span>
+      <span class="g-pin" style="left:93.7%;top:25.2%">4</span>
+      <span class="g-pin" style="left:4.4%;top:67.8%">5</span>
+      <span class="g-pin" style="left:50%;top:81%">6</span>
+      <span class="g-pin" style="left:91.4%;top:96%">7</span></div>
+  <figcaption>Version web · ordinateur</figcaption>
+</figure>
+<ol class="g-legend">
+  <li><span>1</span><span><b>Langue et guide.</b> Cinq langues ; « Guide » ouvre ce PDF.</span></li>
+  <li><span>2</span><span><b>Aperçu.</b> Affiche immédiatement chaque réglage. Faites glisser une photo ici pour la charger.</span></li>
+  <li><span>3</span><span><b>Outils.</b> Annuler, Rétablir, Recadrer, Pivoter et Duo &amp; Tri Tone.</span></li>
+  <li><span>4</span><span><b>Zoom.</b> Faites glisser le curseur vers le haut ; sur téléphone, pincez avec deux doigts.</span></li>
+  <li><span>5</span><span><b>Essayer avec votre photo.</b> Ouvre une photo de l'ordinateur ou du téléphone.</span></li>
+  <li><span>6</span><span><b>Histogramme.</b> La répartition des tons, du noir à gauche au blanc à droite.</span></li>
+  <li><span>7</span><span><b>Actions.</b> Réinitialiser, Avant / Après et Télécharger la photo.</span></li>
+</ol>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">03</span><h2 class="g-chapter-title">Régler une photo</h2></div>
+<p class="g-chapter-lead">Partez d'un style rapide, puis affinez avec les curseurs en regardant l'aperçu.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Choisissez un style rapide.</b> <b>Scène</b> augmente le contraste, les ombres et la netteté pour le projecteur ; <b>Améliorer</b> règle les niveaux tout seul ; <b>Noir et blanc</b> et <b>Chaud</b> changent le caractère de la photo.</div></li>
+    <li><div><b>Lumière et couleur.</b> <b>Exposition</b> éclaircit ou assombrit l'ensemble, <b>Contraste</b> sépare lumières et ombres, <b>Saturation</b> dose les couleurs.</div></li>
+    <li><div><b>Tons et détails.</b> <b>Hautes lumières</b> récupère un ciel brûlé, <b>Ombres</b> ouvre les zones sombres, <b>Netteté</b> et <b>Réduire le bruit</b> travaillent sur les détails.</div></li>
+    <li><div><b>Balance des blancs.</b> <b>Température</b> va du froid au chaud, <b>Teinte</b> du vert au magenta.</div></li>
+    <li><div>Un <b>double-clic</b> sur un curseur le remet à zéro. <b>Annuler</b> et <b>Rétablir</b> fonctionnent aussi avec ⌘Z / Ctrl+Z et ⇧⌘Z / Ctrl+Maj+Z.</div></li>
   </ol>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">03</span><h2 class="g-chapter-title">Votre premier QR</h2></div>
-  <p class="g-chapter-lead">Un QR vers la page de votre formation, pour la dernière diapositive de votre intervention.</p>
-  <div class="g-cols">
-    <ol class="g-steps">
-      <li><div>Choisissez <b>Lien</b> à l'étape 1.</div></li>
-      <li><div>Collez l'adresse à l'étape 2. L'aperçu se met à jour pendant la saisie.</div></li>
-      <li><div>Dans <b>Modèles rapides</b>, choisissez <b><b>Ultraspeaker</b></b> : noir et blanc, le plus lisible.</div></li>
-      <li><div>Réglez <b>Largeur d&#x27;impression</b> : 5 cm pour une diapositive, 3 cm pour un poster A4.</div></li>
-      <li><div>Cliquez sur <b>Télécharger PNG</b>. Dans PowerPoint, le bouton est <b>Insérer dans la diapositive</b>.</div></li>
-    </ol>
   <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/fr/03-preview.png" alt=""></div>
-    <figcaption>Aperçu et téléchargement</figcaption>
+    <div class="g-shot-frame"><img src="../img/fr/adjust.png" alt=""></div>
+    <figcaption>Style « Scène » appliqué</figcaption>
   </figure>
-  </div>
+</div>
+<div class="g-note"><p class="g-label">Bon à savoir</p><p>Les styles rapides ne changent que la lumière et la couleur : recadrage, rotation, « Améliorer la qualité » et DuoTone restent comme vous les avez réglés.</p></div>
 </section>
 <section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">04</span><h2 class="g-chapter-title">Les autres types de QR</h2></div>
-  <p class="g-chapter-lead">Onze types : chacun compose le contenu au format reconnu par le téléphone.</p>
-  <table>
-    <tr><th>Type</th><th>Ce qui se passe quand on le scanne</th></tr><tr><td>Lien</td><td>Ouvre une page web.</td></tr><tr><td>Texte</td><td>Affiche un texte court.</td></tr><tr><td>Email</td><td>Prépare un message avec destinataire, objet et texte.</td></tr><tr><td>Téléphone et SMS</td><td>Appelle ou prépare un SMS.</td></tr><tr><td>WhatsApp</td><td>Ouvre une conversation.</td></tr><tr><td>Wi-Fi</td><td>Connecte au réseau avec nom, sécurité et mot de passe.</td></tr><tr><td>Contact</td><td>Enregistre une carte de visite dans le carnet d'adresses.</td></tr><tr><td>Position</td><td>Ouvre la carte à partir d'une adresse ou de coordonnées.</td></tr><tr><td>Événement</td><td>Ajoute un événement à l'agenda.</td></tr><tr><td>Réseaux sociaux</td><td>Ouvre un profil : le nom d'utilisateur suffit.</td></tr>
-  </table>
-  <div class="g-cols">
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/fr/04-wifi.png" alt=""></div>
-    <figcaption>Type Wi-Fi</figcaption>
+  <div class="g-chapter-head"><span class="g-chapter-num">04</span><h2 class="g-chapter-title">Histogramme, niveaux et point neutre</h2></div>
+<p class="g-chapter-lead">L'histogramme montre combien de points de la photo se trouvent dans chaque ton. Les trois poignées en dessous décident où commence le noir, où se situe le gris moyen et où finit le blanc.</p>
+<div class="g-cols">
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/levels.png" alt=""></div>
+    <figcaption>Après « Niveaux auto »</figcaption>
   </figure>
-  <div class="g-note"><p class="g-label">Wi-Fi</p><p>Le mot de passe sert seulement à créer le code : il n'est jamais enregistré, pas même dans les QR récents.</p></div>
-  </div>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">05</span><h2 class="g-chapter-title">Le design</h2></div>
-  <p class="g-chapter-lead">Le design change l'apparence, pas le contenu : testez toujours le scan avec un téléphone.</p>
   <ol class="g-steps">
-      <li><div><b><b>Style</b></b> : <b>Modèles rapides</b> applique un style complet ; <b>Mes modèles</b> enregistre le design dans deux modèles personnels, plus les deux derniers utilisés.</div></li>
-      <li><div><b><b>Style</b></b> : choisissez la forme des modules et des yeux (cadre extérieur et point intérieur).</div></li>
-      <li><div><b><b>Couleurs</b></b> : couleur des modules, dégradé, couleur des yeux, fond ou transparent. Un avertissement apparaît si le contraste est faible.</div></li>
-      <li><div><b><b>Logo</b></b> : chargez votre logo (PNG, JPG, SVG) ou choisissez une icône. La correction d'erreur passe seule à <b>Max</b>.</div></li>
-      <li><div><b><b>Cadre</b></b> : un cadre avec une invitation, par exemple « SCANNEZ-MOI ».</div></li>
-      <li><div><b><b>Avancé</b></b> : correction d'erreur, marge et retour au design par défaut.</div></li>
-    </ol>
-  <div class="g-cols">
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/fr/05-style.png" alt=""></div>
-    <figcaption>Style : modèles rapides et personnels</figcaption>
-  </figure>
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/fr/05-logo.png" alt=""></div>
-    <figcaption>Logo : le symbole The Ultraspeaker au centre</figcaption>
-  </figure>
-  </div>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">06</span><h2 class="g-chapter-title">Citations scientifiques</h2></div>
-  <p class="g-chapter-lead">Dans la section <b>Références</b>, un DOI, un PMID ou quelques mots du titre deviennent une citation avec un QR qui ouvre l'article.</p>
-  <ol class="g-steps">
-      <li><div>Choisissez <b>Références</b> en haut.</div></li>
-      <li><div>Saisissez un DOI, un PMID, un lien PubMed ou doi.org, ou le titre et l'auteur, puis cliquez sur <b>Rechercher</b>.</div></li>
-      <li><div>Vérifiez l'aperçu : auteurs, titre, revue, année. Les avertissements signalent les articles rétractés ou corrigés, la version en accès libre et les doublons.</div></li>
-      <li><div>Dans <b>Style de la bibliographie</b>, choisissez Vancouver, APA 7, AMA ou Harvard.</div></li>
-      <li><div>Dans <b>Citation sur la diapositive</b>, choisissez le format court, numérique, auteur-année ou <b>Complète</b> : la citation entière, comme dans la bibliographie, sans numéro.</div></li>
-    </ol>
-  <div class="g-cols">
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/fr/06-search.png" alt=""><span class="g-pin" style="left:2.7%;top:22.2%">1</span><span class="g-pin" style="left:1.6%;top:64%">2</span></div>
-    <figcaption>Recherche et aperçu</figcaption>
-  </figure>
-  <figure class="g-shot">
-    <div class="g-shot-frame"><img src="../img/fr/06-cite.png" alt=""></div>
-    <figcaption>Style et citation sur la diapositive</figcaption>
-  </figure>
-  </div>
-  <ol class="g-legend">
-    <li><span>1</span><span><b>Recherche.</b> DOI, PMID, lien ou texte libre.</span></li>
-    <li><span>2</span><span><b>Aperçu.</b> Les données viennent de Crossref, PubMed et Unpaywall.</span></li>
+    <li><div><b>Lisez l'histogramme.</b> S'il est tout à gauche, la photo est sombre ; s'il est tout à droite, elle est claire. « OMBRES BOUCHÉES » et « HAUTES LUMIÈRES BRÛLÉES » signalent une perte de détails.</div></li>
+    <li><div><b>Cliquez sur Niveaux auto.</b> Le noir et le blanc se placent là où commencent vraiment les données : la photo gagne en contraste sans rien brûler.</div></li>
+    <li><div><b>Affinez à la main.</b> Faites glisser <b>NOIR</b> vers la droite pour des tons plus denses, <b>TONS MOYENS</b> pour éclaircir ou assombrir les gris, <b>BLANC</b> vers la gauche pour plus de lumière.</div></li>
+    <li><div><b>Vérifiez un canal.</b> RGB, R, G, B et LUM affichent toutes les couleurs, une seule couleur ou la luminance.</div></li>
   </ol>
-  <div class="g-note"><p class="g-label">Sources</p><p>Crossref, PubMed (NCBI) et Unpaywall, interrogés directement depuis votre appareil. Les avertissements sont une aide : vérifiez toujours les citations importantes à la source.</p></div>
-</section>
-<section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">07</span><h2 class="g-chapter-title">La bibliographie</h2></div>
-  <p class="g-chapter-lead">Chaque article inséré ou ajouté entre dans <b>Références de la présentation</b> : la numérotation, les diapositives finales et le PDF pour le public partent de là.</p>
+</div>
+<div class="g-cols">
   <ol class="g-steps">
-      <li><div><b>Ajouter sans insérer.</b> <b>Ajouter à la bibliographie</b> place l'article dans la liste sans modifier les diapositives.</div></li>
-      <li><div><b>Réutiliser.</b> Cliquez sur une référence : elle revient dans l'aperçu, prête pour une autre diapositive.</div></li>
-      <li><div><b>Réordonner.</b> Faites glisser une référence pour changer l'ordre et la numérotation : la bibliographie copiée, le PDF, les diapositives finales et les citations numériques suivent le nouvel ordre. Sur téléphone, saisissez les points à gauche.</div></li>
-      <li><div><b>Importer une liste.</b> Dans « <b>Importer une liste de DOI ou PMID</b> », collez un DOI ou PMID par ligne.</div></li>
-      <li><div><b>Diapositives finales.</b> Dans PowerPoint, <b>Mettre à jour numérotation et citations</b> renumérote selon l'ordre des diapositives ; <b>Créer les diapositives « Bibliographie »</b> crée les diapositives de bibliographie. Sur le web, <b>Copier la bibliographie</b> la copie dans le presse-papiers.</div></li>
-    </ol>
-  <div class="g-note"><p class="g-label">Le PDF de la bibliographie</p><p><b>Télécharger le PDF</b> demande le <b>Titre de la conférence</b> (obligatoire), l'intervenant et la date, et ce qu'il faut placer dans chaque entrée : Texte, Lien et QR s'activent un par un, au moins un reste actif. « <b>Vider la bibliographie</b> » vide la liste en deux clics ; les diapositives ne changent pas. Le PDF a des pages blanches, une liste sans numéros dans l'ordre choisi et « powered by The Ultraspeaker » en bas. Sur téléphone, il se partage ; depuis le volet PowerPoint, il s'ouvre dans le navigateur.</p></div>
-  <div class="g-cols">
+    <li><div><b>Cliquez sur Point neutre</b> quand la photo a une dominante, par exemple la lumière jaune d'une salle.</div></li>
+    <li><div><b>Touchez l'aperçu</b> sur un point qui devrait être gris ou blanc : un mur, une blouse, une feuille. Température et Teinte se règlent toutes seules.</div></li>
+  </ol>
   <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/fr/07-list.png" alt=""></div>
-    <figcaption>Liste des références</figcaption>
+    <div class="g-shot-frame"><img src="../img/fr/neutral.png" alt=""></div>
+    <figcaption>Point neutre actif</figcaption>
   </figure>
-  <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/fr/07-pdf.png" alt=""></div>
-    <figcaption>Bibliographie en PDF</figcaption>
-  </figure>
-  </div>
+</div>
 </section>
 <section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">08</span><h2 class="g-chapter-title">Dans la diapositive ou dans un fichier</h2></div>
-  <p class="g-chapter-lead">Le même QR va sur la diapositive, dans Keynote ou à l'impression : seul le format change.</p>
-  <div class="g-cols">
-    <div>
-      <p class="g-label">Version web</p>
-      <p><b>Télécharger PNG</b> crée une image à 300 dpi pour la <b>Largeur d&#x27;impression</b> indiquée ; <b>Télécharger SVG (vectoriel)</b> reste net à toutes les tailles. Sur téléphone, <b>Enregistrer ou partager</b> ouvre le menu de partage : Photos, WhatsApp, Mail. Dans Références, le bouton principal copie la citation.</p>
-      <p class="g-label">PowerPoint</p>
-      <p>Choisissez PNG ou Vectoriel et la <b>Largeur sur la diapositive</b>, puis <b>Insérer dans la diapositive</b>. Pour les citations, choisissez une mise en page, ce qu'il faut insérer (<b>Citation + QR</b>, <b>Citation seule</b>, <b>QR seul</b>), la position, la police et la couleur : texte et QR sont groupés en bas de la diapositive.</p>
-  <div class="g-note"><p class="g-label">Bientôt disponible</p><p>Le volet PowerPoint est en test et sera disponible prochainement. Ce guide le décrit déjà entièrement.</p></div>
-    </div>
-  <figure class="g-shot g-shot--panel">
-    <div class="g-shot-frame"><img src="../img/fr/08-phone.png" alt=""></div>
-    <figcaption>Téléphone : barre en bas</figcaption>
-  </figure>
+  <div class="g-chapter-head"><span class="g-chapter-num">05</span><h2 class="g-chapter-title">Améliorer la qualité et DuoTone</h2></div>
+<p class="g-chapter-lead">« Améliorer la qualité » nettoie les photos prises en faible lumière ; Duo &amp; Tri Tone recolore la photo avec les couleurs de votre présentation.</p>
+<div class="g-cols">
+  <div>
+    <p class="g-label">Améliorer la qualité</p>
+    <p>Cliquez sur <b>Améliorer la qualité</b> : Image Lab estime le bruit de la photo, le réduit en respectant les contours, accentue les détails et augmente le contraste local. Avec <b>Intensité</b>, vous choisissez jusqu'où aller ; la taille de la photo ne change pas.</p>
   </div>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/quality.png" alt=""></div>
+  </figure>
+</div>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Ouvrez Duo &amp; Tri Tone</b> avec le bouton à deux cercles : le DuoTone s'active.</div></li>
+    <li><div><b>Choisissez DuoTone ou TriTone</b> et l'une des huit palettes.</div></li>
+    <li><div><b>Personnalisez les couleurs</b> des Ombres, des Tons moyens (TriTone uniquement) et des Hautes lumières avec le sélecteur, le code hexadécimal ou la pipette, qui prend la couleur dans la photo originale.</div></li>
+    <li><div><b>Transparent</b> sur Ombres ou Hautes lumières rend cette partie transparente : la photo est enregistrée en PNG, pratique pour un logo ou une silhouette sur un fond coloré.</div></li>
+    <li><div><b>OK</b> ferme le panneau ; <b>Retirer</b> supprime le DuoTone.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/duotone.png" alt=""></div>
+    <figcaption>TriTone, palette « Océan »</figcaption>
+  </figure>
+</div>
+<div class="g-note"><p class="g-label">Bon à savoir</p><p>Avec le DuoTone, la saturation ne sert plus et disparaît ; Température et Teinte deviennent « Filtre chaud/froid » et « Filtre vert/magenta » et déplacent la lumière entre les couleurs, comme les filtres du noir et blanc.</p></div>
 </section>
 <section class="g-chapter">
-  <div class="g-chapter-head"><span class="g-chapter-num">09</span><h2 class="g-chapter-title">Conseils d'orateur</h2></div>
-  <p class="g-chapter-lead">Un QR ne fonctionne que si le public peut le scanner depuis sa place.</p>
-  <div class="g-tip"><p class="g-label">Conseil d'orateur</p><p>Laissez le QR à l'écran au moins 10 secondes et invitez à voix haute : « Scannez le code pour télécharger les diapositives ». Sans invitation, presque personne ne sort son téléphone.</p></div>
-  <table>
-    <tr><th>Salle</th><th>Distance du dernier rang</th><th>Côté du QR à l'écran</th></tr><tr><td>Petite salle</td><td>jusqu'à 10 m</td><td>au moins 1/6 de la hauteur de la diapositive</td></tr><tr><td>Salle de congrès</td><td>10–25 m</td><td>au moins 1/4 de la hauteur</td></tr><tr><td>Plénière</td><td>plus de 25 m</td><td>au moins 1/3, seul sur la diapositive</td></tr>
-  </table>
-  <div class="g-tip"><p class="g-label">Citations</p><p>Placez la citation en bas à gauche, 14–16 pt, en gris : lisible sans détourner l'attention. Le PDF de la bibliographie, envoyé après l'intervention, vaut plus que dix diapositives de références.</p></div>
+  <div class="g-chapter-head"><span class="g-chapter-num">06</span><h2 class="g-chapter-title">Recadrage et rotation</h2></div>
+<p class="g-chapter-lead">Chaque format fixe seulement les proportions : la photo garde tous ses pixels.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Cliquez sur Recadrer</b> et choisissez le <b>Format</b> : Libre, Original, proportions, réseaux sociaux, diapositive ou impression.</div></li>
+    <li><div><b>Déplacez le cadre</b> en le faisant glisser et redimensionnez-le par les coins. Avec le zoom, le cadre reste fixe.</div></li>
+    <li><div><b>Pivoter l'orientation</b> passe du paysage au portrait.</div></li>
+    <li><div><b>Appliquer le recadrage</b> confirme ; <b>Supprimer le recadrage</b> revient à la photo entière.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/crop.png" alt=""></div>
+    <figcaption>Instagram · portrait — 4:5</figcaption>
+  </figure>
+</div>
+<table>
+  <tr><th>Où va la photo</th><th>Format dans le menu</th><th>Proportions</th></tr>
+  <tr><td>Diapositive plein écran</td><td>Diapositive 16:9</td><td>16:9</td></tr>
+  <tr><td>Publication carrée</td><td>Instagram · post</td><td>1:1</td></tr>
+  <tr><td>Publication verticale</td><td>Instagram · portrait</td><td>4:5</td></tr>
+  <tr><td>Stories, Reels, Statut WhatsApp</td><td>Instagram / Facebook · Stories et Reels</td><td>9:16</td></tr>
+  <tr><td>Publication avec lien</td><td>Facebook · post, LinkedIn · post</td><td>1,91:1</td></tr>
+  <tr><td>Tirage photo</td><td>Photo 10 × 15 cm</td><td>2:3</td></tr>
+</table>
+<p>Besoin d'une taille exacte en pixels ou en centimètres ? Choisissez <b>Taille personnalisée…</b> : c'est le seul format qui amène la photo à cette taille.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Cliquez sur Pivoter.</b> Les boutons font tourner la photo de 90° à gauche, de 90° à droite ou de 180°.</div></li>
+    <li><div><b>Redresser</b> corrige un horizon de travers jusqu'à ±45° avec le curseur, le champ numérique ou les flèches : 0,5° par clic, 0,1° avec Maj.</div></li>
+    <li><div>Une grille apparaît et la photo s'agrandit juste assez pour ne laisser aucun coin vide. <b>OK</b> ferme le panneau.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/rotate.png" alt=""></div>
+    <figcaption>Redresser 4,5°</figcaption>
+  </figure>
+</div>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">07</span><h2 class="g-chapter-title">Comparer et télécharger</h2></div>
+<p class="g-chapter-lead">Avant de télécharger, comparez le résultat avec la photo de départ.</p>
+<div class="g-cols">
+  <ol class="g-steps">
+    <li><div><b>Avant / Après</b> affiche la photo originale, avec l'étiquette « ORIGINAL » ; un autre clic revient au résultat.</div></li>
+    <li><div><b>Réinitialiser</b> supprime tous les réglages, recadrage compris.</div></li>
+    <li><div><b>Télécharger la photo</b> enregistre la version réglée : JPG de haute qualité, ou PNG s'il y a des parties transparentes.</div></li>
+    <li><div>Sur téléphone, le bouton devient <b>Enregistrer ou partager</b> : choisissez « Enregistrer l'image » pour l'ajouter à Photos, ou envoyez-la par WhatsApp, Messages ou Mail.</div></li>
+  </ol>
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/before-after.png" alt=""></div>
+    <figcaption>Téléphone · Avant / Après</figcaption>
+  </figure>
+</div>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">08</span><h2 class="g-chapter-title">Dans PowerPoint</h2></div>
+<div class="g-note"><p class="g-label">Bientôt disponible</p><p>Le volet pour PowerPoint est en phase de test et sera bientôt disponible. En attendant, utilisez la version web et insérez la photo téléchargée dans la diapositive.</p></div>
+<p class="g-chapter-lead">Dans le volet, les réglages sont les mêmes que dans la version web ; seule la dernière étape change : la photo revient sur la diapositive.</p>
+<div class="g-cols">
+  <figure class="g-shot g-shot--panel">
+    <div class="g-shot-frame"><img src="../img/fr/panel.png" alt="">
+      <span class="g-pin" style="left:2%;top:12.6%">1</span>
+      <span class="g-pin" style="left:45.7%;top:31.7%">2</span>
+      <span class="g-pin" style="left:91.9%;top:94.2%">3</span></div>
+    <figcaption>Volet · photo sélectionnée</figcaption>
+  </figure>
+  <ol class="g-steps">
+    <li><div><b>Sélectionnez une photo</b> sur la diapositive et ouvrez <b>Accueil → Image Lab</b>. La ligne sous le logo (1) indique « Image sélectionnée ».</div></li>
+    <li><div><b>Réglez la photo</b> en regardant l'aperçu (2) : PowerPoint ne permet pas de modifier les pixels en direct, la diapositive reste donc telle quelle jusqu'à l'étape 3.</div></li>
+    <li><div><b>Cliquez sur Appliquer à la diapositive</b> (3). La photo réglée remplace l'original, avec la même position, la même taille et la même rotation ; après un recadrage, elle reste centrée dans le même espace.</div></li>
+    <li><div><b>Pour changer d'avis</b>, sélectionnez de nouveau la photo : le volet repart de l'original avec les réglages enregistrés. <b>Original</b>, après confirmation, remet la photo de départ.</div></li>
+  </ol>
+</div>
+</section>
+<section class="g-chapter">
+  <div class="g-chapter-head"><span class="g-chapter-num">09</span><h2 class="g-chapter-title">Conseils de speaker</h2></div>
+<p class="g-chapter-lead">Un projecteur écrase les ombres et ternit les couleurs : une photo parfaite sur votre écran peut devenir grise dans la salle.</p>
+<div class="g-tip">
+  <p class="g-label">Conseil de speaker</p>
+  <p>Pour les photos cliniques, partez de <b>Scène</b> et vérifiez l'histogramme : les détails importants ne doivent se trouver ni dans le premier ni dans le dernier dixième. Si la salle est lumineuse, réglez <b>Ombres</b> entre +25 % et +40 %.</p>
+</div>
+<div class="g-tip">
+  <p class="g-label">Conseil de speaker</p>
+  <p>Utilisez les mêmes réglages pour toutes les photos d'une séquence, par exemple avant et après un traitement : même style, même température, même recadrage. Le public doit remarquer le résultat clinique, pas une lumière différente.</p>
+</div>
+<table>
+  <tr><th>Usage</th><th>Recadrage</th><th>Largeur minimale</th></tr>
+  <tr><td>Photo plein écran</td><td>Diapositive 16:9</td><td>1920 px</td></tr>
+  <tr><td>Photo sur une demi-diapositive</td><td>3:2 ou 4:5</td><td>1000 px</td></tr>
+  <tr><td>Deux photos côte à côte (avant / après)</td><td>les mêmes proportions pour les deux</td><td>960 px chacune</td></tr>
+</table>
 </section>
 <section class="g-chapter">
   <div class="g-chapter-head"><span class="g-chapter-num">10</span><h2 class="g-chapter-title">Questions fréquentes</h2></div>
-  <dl class="g-faq">
-    <dt>Le QR expire-t-il ?</dt>
-    <dd>Non. Il est statique : il contient directement le contenu et fonctionne pour toujours, sans suivi.</dd>
-    <dt>Le téléphone ne lit pas le QR.</dt>
-    <dd>Augmentez le contraste, réduisez le logo, choisissez un point intérieur plein ou agrandissez le QR.</dd>
-    <dt>La référence est introuvable.</dt>
-    <dd>Vérifiez le DOI ou le PMID. Les articles tout juste publiés peuvent ne pas être encore sur PubMed : essayez avec le DOI.</dd>
-    <dt>Où sont gardées les références ?</dt>
-    <dd>Dans PowerPoint, dans le fichier .pptx ; sur le web, dans le navigateur utilisé.</dd>
-    <dt>Je ne vois pas QR Lab dans l'onglet Accueil.</dt>
-    <dd>Suivez la page « Installation » du site, puis rouvrez PowerPoint.</dd>
-    <dt>Prérequis</dt>
-    <dd>Version web : un navigateur récent. Placement automatique, numérotation et diapositives de bibliographie : PowerPoint pour Microsoft 365 à jour. La recherche nécessite internet.</dd>
-  </dl>
-  <div class="g-note"><p class="g-label">Assistance</p><p>Écrivez à info@theultraspeaker.com en indiquant l'ordinateur et la version de PowerPoint.</p></div>
+<dl class="g-faq">
+  <dt>Le recadrage réduit-il la résolution ?</dt>
+  <dd>Non. Les formats réseaux sociaux, diapositive et impression fixent seulement les proportions. Seule « Taille personnalisée… » amène la photo à une taille exacte : si elle est plus grande que la zone choisie, un avertissement vous indique qu'elle perdra en netteté.</dd>
+  <dt>Pourquoi la photo téléchargée est-elle un PNG ?</dt>
+  <dd>Parce que vous avez activé « Transparent » dans le DuoTone. En partageant depuis un téléphone, la transparence peut devenir noire ou blanche.</dd>
+  <dt>La diapositive ne change pas quand je bouge les curseurs.</dt>
+  <dd>C'est normal : PowerPoint met à jour la diapositive seulement avec « Appliquer à la diapositive ». L'aperçu du volet montre le résultat immédiatement.</dd>
+  <dt>Où va la photo originale dans PowerPoint ?</dt>
+  <dd>Elle reste sur la même diapositive, masquée : vous la voyez dans <b>Accueil → Organiser → Volet Sélection</b>. Ne la supprimez pas si vous voulez modifier les réglages plus tard.</dd>
+  <dt>Le volet indique « Mettez PowerPoint à jour ».</dt>
+  <dd>Il faut Microsoft 365 à jour : Windows 2601 ou ultérieur, Mac 16.105 ou ultérieur, ou PowerPoint pour le web. PowerPoint pour iPad n'est pas pris en charge.</dd>
+  <dt>Mes photos sont-elles envoyées sur internet ?</dt>
+  <dd>Non. Le traitement se fait sur votre appareil, dans le navigateur ou dans le volet.</dd>
+  <dt>Comment changer de langue ?</dt>
+  <dd>Avec le menu en haut à droite. Le choix vaut aussi pour les autres Labs The Ultraspeaker.</dd>
+</dl>
+<div class="g-note"><p class="g-label">Assistance</p><p>Écrivez à info@theultraspeaker.com en précisant si vous utilisez la version web ou PowerPoint (Mac, Windows ou web) et, si possible, joignez une capture d'écran.</p></div>
 </section>
 
 <section class="g-back">

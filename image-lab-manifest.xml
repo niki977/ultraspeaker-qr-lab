@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The Ultraspeaker Image Lab – manifest per PowerPoint (linea guida §8).
+     Tutti gli indirizzi puntano a https://niki977.github.io/ultraspeaker-image-lab/ ; l'Id non cambia mai. -->
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="TaskPaneApp">
+  <Id>4373274f-b974-43d3-aa72-b60dd865039a</Id>
+  <Version>1.4.0.0</Version>
+  <ProviderName>The Ultraspeaker</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="The Ultraspeaker Image Lab">
+    <Override Locale="it-IT" Value="The Ultraspeaker Image Lab"/>
+    <Override Locale="es-ES" Value="The Ultraspeaker Image Lab"/>
+    <Override Locale="fr-FR" Value="The Ultraspeaker Image Lab"/>
+    <Override Locale="de-DE" Value="The Ultraspeaker Image Lab"/>
+  </DisplayName>
+  <Description DefaultValue="Adjust slide photos with a histogram, levels, light and colour, crop, rotation and DuoTone. The original stays in the presentation.">
+    <Override Locale="it-IT" Value="Regola le foto delle slide con istogramma, livelli, luce e colore, ritaglio, rotazione e DuoTone. L'originale resta nella presentazione."/>
+    <Override Locale="es-ES" Value="Ajusta las fotos de las diapositivas con histograma, niveles, luz y color, recorte, rotación y DuoTone. El original se conserva en la presentación."/>
+    <Override Locale="fr-FR" Value="Réglez les photos des diapositives avec histogramme, niveaux, lumière et couleur, recadrage, rotation et DuoTone. L'original reste dans la présentation."/>
+    <Override Locale="de-DE" Value="Bearbeiten Sie Fotos auf Folien mit Histogramm, Tonwerten, Licht und Farbe, Zuschnitt, Drehung und DuoTone. Das Original bleibt in der Präsentation."/>
+  </Description>
+  <IconUrl DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/assets/image-lab-icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/assets/image-lab-icon-128.png"/>
+  <SupportUrl DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/support.html"/>
+  <AppDomains>
+    <AppDomain>https://niki977.github.io</AppDomain>
+    <AppDomain>https://www.theultraspeaker.com</AppDomain>
+  </AppDomains>
+  <Hosts>
+    <Host Name="Presentation"/>
+  </Hosts>
+  <!-- Il pannello legge le foto della slide con PowerPointApi 1.10 e inserisce la versione regolata come immagine -->
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="PowerPointApi" MinVersion="1.10"/>
+      <Set Name="ImageCoercion" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/index.html"/>
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Presentation">
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title"/>
+            <Description resid="GetStarted.Description"/>
+            <LearnMoreUrl resid="Guide.Url"/>
+          </GetStarted>
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="Ultraspeaker.ImageLab.Group">
+                <Label resid="Group.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16"/>
+                  <bt:Image size="32" resid="Icon.32"/>
+                  <bt:Image size="80" resid="Icon.80"/>
+                </Icon>
+                <Control xsi:type="Button" id="Ultraspeaker.ImageLab.Button">
+                  <Label resid="Button.Label"/>
+                  <Supertip>
+                    <Title resid="Button.Label"/>
+                    <Description resid="Button.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>UltraspeakerImageLab</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16" DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/assets/image-lab-icon-16.png"/>
+        <bt:Image id="Icon.32" DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/assets/image-lab-icon-32.png"/>
+        <bt:Image id="Icon.80" DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/assets/image-lab-icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/index.html"/>
+        <bt:Url id="Guide.Url" DefaultValue="https://niki977.github.io/ultraspeaker-image-lab/GUIDA-INSTALLAZIONE.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="Group.Label" DefaultValue="The Ultraspeaker">
+          <bt:Override Locale="it-IT" Value="The Ultraspeaker"/>
+          <bt:Override Locale="es-ES" Value="The Ultraspeaker"/>
+          <bt:Override Locale="fr-FR" Value="The Ultraspeaker"/>
+          <bt:Override Locale="de-DE" Value="The Ultraspeaker"/>
+        </bt:String>
+        <bt:String id="Button.Label" DefaultValue="Image Lab">
+          <bt:Override Locale="it-IT" Value="Image Lab"/>
+          <bt:Override Locale="es-ES" Value="Image Lab"/>
+          <bt:Override Locale="fr-FR" Value="Image Lab"/>
+          <bt:Override Locale="de-DE" Value="Image Lab"/>
+        </bt:String>
+        <bt:String id="GetStarted.Title" DefaultValue="The Ultraspeaker Image Lab is ready">
+          <bt:Override Locale="it-IT" Value="The Ultraspeaker Image Lab è pronto"/>
+          <bt:Override Locale="es-ES" Value="The Ultraspeaker Image Lab está listo"/>
+          <bt:Override Locale="fr-FR" Value="The Ultraspeaker Image Lab est prêt"/>
+          <bt:Override Locale="de-DE" Value="The Ultraspeaker Image Lab ist bereit"/>
+        </bt:String>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="Button.Tooltip" DefaultValue="Adjust the selected photo with a histogram, levels, crop and DuoTone.">
+          <bt:Override Locale="it-IT" Value="Regola la foto selezionata con istogramma, livelli, ritaglio e DuoTone."/>
+          <bt:Override Locale="es-ES" Value="Ajusta la foto seleccionada con histograma, niveles, recorte y DuoTone."/>
+          <bt:Override Locale="fr-FR" Value="Réglez la photo sélectionnée avec histogramme, niveaux, recadrage et DuoTone."/>
+          <bt:Override Locale="de-DE" Value="Bearbeiten Sie das ausgewählte Foto mit Histogramm, Tonwerten, Zuschnitt und DuoTone."/>
+        </bt:String>
+        <bt:String id="GetStarted.Description" DefaultValue="Open Image Lab from the Home tab, select a photo on the slide and adjust it.">
+          <bt:Override Locale="it-IT" Value="Apri Image Lab dalla scheda Home, seleziona una foto nella slide e regolala."/>
+          <bt:Override Locale="es-ES" Value="Abre Image Lab desde la pestaña Inicio, selecciona una foto en la diapositiva y ajústala."/>
+          <bt:Override Locale="fr-FR" Value="Ouvrez Image Lab depuis l'onglet Accueil, sélectionnez une photo sur la diapositive et réglez-la."/>
+          <bt:Override Locale="de-DE" Value="Öffnen Sie Image Lab über die Registerkarte Start, wählen Sie ein Foto auf der Folie aus und bearbeiten Sie es."/>
+        </bt:String>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>
