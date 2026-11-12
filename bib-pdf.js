@@ -3,7 +3,7 @@
    jsPDF e i font si caricano solo al primo uso, per non appesantire l'apertura del Lab. */
 (function () {
   "use strict";
-  const V = "?v=20261111b";
+  const V = "?v=20261112";
   const W = 210, H = 297, M = 20, BOTTOM = H - 26;
   const C = { black: "#000000", ash: "#8E8E8E", silver: "#D0D0D0" };
   const PT = 0.3528; // 1 pt in mm

@@ -303,11 +303,16 @@
   const PREF_KEY = "ultraspeaker.qr.refPrefs";
   const SPEAKER_KEY = "ultraspeaker.qr.speaker";
   const docSettings = () => { try { return L().isOffice() && Office.context.document.settings ? Office.context.document.settings : null; } catch (e) { return null; } };
-  const emptyDoc = () => ({ refs: [], order: [], style: "vancouver", shortFmt: "authorJournal" });
+  const emptyDoc = () => ({ refs: [], style: "vancouver", shortFmt: "authorJournal" });
   let DOC = emptyDoc();
   function loadDoc() {
     const ds = docSettings();
     DOC = Object.assign(emptyDoc(), (ds ? ds.get(DOC_KEY) : L().store.get(LOCAL_KEY, null)) || {});
+    if (Array.isArray(DOC.order)) { // ordine salvato a parte dalla prima 1.3: ora è l'ordine dei riferimenti
+      const pos = (r) => { const i = DOC.order.indexOf(r.id); return i < 0 ? 1e9 : i; };
+      DOC.refs.sort((a, b) => pos(a) - pos(b));
+      delete DOC.order;
+    }
   }
   let saveT;
   function saveDoc() {
@@ -318,15 +323,8 @@
     saveT = setTimeout(() => ds.saveAsync(() => {}), 300);
   }
   const numOf = (ref) => DOC.refs.indexOf(ref) + 1;
-  // Ordine dell'elenco e del PDF: all'inizio quello di aggiunta, poi quello scelto trascinando.
-  // La numerazione delle slide resta quella di DOC.refs (ordine di comparsa).
-  function listed() {
-    const by = new Map(DOC.refs.map((r) => [r.id, r]));
-    const ord = (DOC.order || []).filter((id) => by.has(id));
-    DOC.refs.forEach((r) => { if (!ord.includes(r.id)) ord.push(r.id); });
-    DOC.order = ord;
-    return ord.map((id) => by.get(id));
-  }
+  // L'ordine dell'elenco è la numerazione: lo cambiano il trascinamento e «Aggiorna numerazione»
+  const listed = () => DOC.refs;
   const normTitle = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
   function sameRef(a, b) {
     if (a === b) return false;
@@ -519,15 +517,22 @@
       const rest = DOC.refs.filter((r) => !present.includes(r));
       DOC.refs = present.concat(rest);
       DOC.refs.forEach((r) => { r.onSlides = present.includes(r); });
-      found.filter((f) => f.kind === "txt").forEach((f) => {
-        const r = DOC.refs.find((x) => x.id === f.id);
-        if (r) f.shape.textFrame.textRange.text = formatShort(r, f.fmt || "authorJournal", numOf(r));
-      });
+      setSlideTexts(found);
       await ctx.sync();
       res.found = present.length;
     });
     saveDoc();
     return res;
+  }
+  // Riscrive le citazioni nelle slide con i numeri attuali
+  function setSlideTexts(found) {
+    found.filter((f) => f.kind === "txt").forEach((f) => {
+      const r = DOC.refs.find((x) => x.id === f.id);
+      if (r) f.shape.textFrame.textRange.text = formatShort(r, f.fmt || "authorJournal", numOf(r));
+    });
+  }
+  async function refreshSlideTexts() {
+    await PowerPoint.run(async (ctx) => { setSlideTexts(await scanSlides(ctx)); await ctx.sync(); });
   }
   async function deleteFromSlides(id) {
     await PowerPoint.run(async (ctx) => {
@@ -935,13 +940,16 @@
     renderPreview(); if (cur.pmid) loadAbstract(cur);
     $("#refPreviewCard").scrollIntoView({ behavior: "smooth", block: "start" });
   }
+  // Sposta un riferimento: cambia la numerazione ovunque (elenco, bibliografia, PDF, citazioni numeriche)
   function moveTo(id, targetId, after) {
-    const ord = listed().map((r) => r.id).filter((x) => x !== id);
-    let i = ord.indexOf(targetId);
-    if (i < 0) return;
+    const r = DOC.refs.find((x) => x.id === id);
+    const rest = DOC.refs.filter((x) => x.id !== id);
+    let i = rest.findIndex((x) => x.id === targetId);
+    if (!r || i < 0) return;
     if (after) i++;
-    ord.splice(i, 0, id);
-    DOC.order = ord; saveDoc(); renderList();
+    rest.splice(i, 0, r);
+    DOC.refs = rest; saveDoc(); renderList(); renderCite();
+    if (L().isOffice() && fullApi()) refreshSlideTexts().catch(() => { /* le citazioni si aggiornano con «Aggiorna numerazione» */ });
   }
   function moveBy(id, step) {
     const ord = listed().map((r) => r.id), i = ord.indexOf(id), j = i + step;
@@ -1001,7 +1009,7 @@
       return;
     }
     disarmClear();
-    DOC.refs = []; DOC.order = []; saveDoc();
+    DOC.refs = []; saveDoc();
     editing = null; confirmDel = null;
     renderPreview(); renderList();
     L().toast(t("ref.toast.cleared"));

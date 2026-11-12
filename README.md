@@ -66,7 +66,7 @@ node shared/guide/build-guide.mjs   # genera guide/qr-lab-guide-<lingua>.pdf
 
 - **1.3.0 (novembre 2026):** uniformazione alla linea guida 1.3 (kit comune, pagina unica, scheda Home,
   lingua condivisa, chiavi `ultraspeaker.qr.*`, pagine di servizio nuove, guida PDF).
-  Reference: «Aggiungi alla bibliografia», citazione «Completa», elenco cliccabile e riordinabile,
+  Reference: «Aggiungi alla bibliografia», citazione «Completa», elenco cliccabile e riordinabile (l’ordine è la numerazione),
   bibliografia in PDF. Corretto lo spazio sotto «Il tuo logo».
 - **1.2.x (ottobre–novembre 2026):** sezione Reference, pubblicazione dello store preparata,
   collegamento con il Feedback Lab.
