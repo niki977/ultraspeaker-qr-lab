@@ -3,177 +3,292 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy · The Ultraspeaker Image Lab</title>
+<title>Privacy · The Ultraspeaker QR Lab</title>
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20261112">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/image-lab-icon-32.png?v=20261112">
-<link rel="apple-touch-icon" href="assets/image-lab-icon-180.png?v=20261112">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=20261112">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20261112">
 <link rel="stylesheet" href="shared/ultraspeaker-lab.css?v=20261112">
 <link rel="stylesheet" href="css/app.css?v=20261112">
 <script src="shared/ultraspeaker-lang.js?v=20261112"></script>
 <!-- Lingua letta prima del disegno della pagina, così compare subito il testo giusto -->
-<script>document.documentElement.lang = UltraspeakerLang.get("imagelab.lang");</script>
+<script>document.documentElement.lang = UltraspeakerLang.get("qrlab.lang");</script>
 </head>
 <body data-page="privacy">
 <div class="us-doc">
   <header class="us-header">
-    <a class="us-logo" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/logo-image-lab-white.svg?v=20261112" alt="The Ultraspeaker Image Lab" width="167" height="60"></a>
+    <a class="us-logo" href="https://www.theultraspeaker.com" target="_blank" rel="noopener"><img src="assets/qr-lab-logo.svg?v=20261112" alt="The Ultraspeaker QR Lab" width="158" height="60"></a>
     <div class="us-header-tools">
       <label class="us-lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="us-sr" data-t="language">Lingua</span><select id="lang"></select></label>
-      <a class="us-btn us-guide" id="usGuide" href="guide/image-lab-guide-it.pdf" target="_blank" rel="noopener" aria-label="Guida d'utilizzo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-t="guide">Guida</span></a>
+      <a class="us-btn us-guide" id="usGuide" href="guide/qr-lab-guide-it.pdf" target="_blank" rel="noopener" aria-label="Guida d'utilizzo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-t="guide">Guida</span></a>
     </div>
   </header>
   <nav class="us-doc-nav"><a href="support.html" data-nav="support">Supporto</a><a href="privacy.html" data-nav="privacy" aria-current="page">Privacy</a><a href="terms.html" data-nav="terms">Condizioni d'uso</a><a href="GUIDA-INSTALLAZIONE.html" data-nav="install">Installazione</a></nav>
 <main>
 <div data-lang="it" lang="it">
-<h1>Informativa sulla privacy – The Ultraspeaker Image Lab</h1>
-<p class="us-updated">Ultimo aggiornamento: 12 novembre 2026</p>
-<p><b>Titolare:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
+<h1>Informativa sulla privacy – The Ultraspeaker QR Lab</h1>
+<p class="us-updated">Ultimo aggiornamento: 11 novembre 2026</p>
+<p>Questa informativa spiega come <b>The Ultraspeaker QR Lab</b> (l'add-in per PowerPoint e la sua versione web, “l'app”), comprese la sezione QR e la sezione Reference, tratta le informazioni.</p>
+<p><b>Titolare:</b> Nicholas D. Charles (The Ultraspeaker). Contatto: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+
 <h2>In breve</h2>
-<p>The Ultraspeaker Image Lab <b>non raccoglie, non invia a noi e non vende dati personali</b>. Le foto vengono elaborate sul tuo dispositivo e non vengono mai inviate a server di The Ultraspeaker o di terzi. Non ci sono account, cookie, statistiche d'uso o pubblicità.</p>
-<h2>Cosa fa l'app con le tue foto</h2>
+<p>L'app <b>non raccoglie, non invia a noi e non vende dati personali</b>. Non ci sono account, statistiche di utilizzo, pubblicità o cookie. I QR code e le citazioni vengono creati sul tuo dispositivo. Per cercare i riferimenti scientifici l'app interroga tre servizi pubblici (Crossref, NCBI/PubMed e Unpaywall), inviando solo ciò che serve alla ricerca.</p>
+
+<h2>Cosa fa l'app con i tuoi contenuti</h2>
 <ul>
-<li><b>Versione web:</b> la foto che apri o trascini resta nel browser. La foto regolata si scarica sul dispositivo o, sul telefono, si passa al menu di condivisione del sistema solo quando lo scegli tu.</li>
-<li><b>Pannello di PowerPoint:</b> l'app legge la foto selezionata nella slide, la regola nel pannello e inserisce nella stessa slide la versione regolata. L'originale resta nella presentazione, nascosto, insieme alle regolazioni usate (salvate come etichette dell'immagine: <code>ULAB_ORIG</code>, <code>ULAB_PARAMS</code>, <code>ULAB_ROLE</code>). Tutto resta nel file, sotto il tuo controllo: chi riceve il file vede anche l'originale nascosto.</li>
+<li>Il testo che inserisci per un QR (indirizzi web, contatti, nomi di reti Wi‑Fi, eventi e simili) serve solo a disegnare il QR code sul tuo dispositivo.</li>
+<li>L'app legge il testo della slide solo quando clicchi “Usa il testo selezionato nella slide”, e modifica la presentazione solo quando inserisci un QR, una citazione o le slide della bibliografia.</li>
+<li>I loghi che carichi restano sul tuo dispositivo e vengono usati solo nel QR code che crei.</li>
 </ul>
-<h2>Informazioni salvate sul dispositivo</h2>
+
+<h2>Sezione Reference: servizi esterni interrogati</h2>
+<p>Quando cerchi un riferimento, il tuo dispositivo contatta direttamente questi servizi pubblici e gratuiti, senza passare da nostri server:</p>
 <ul>
-<li>Solo la lingua scelta, nella memoria locale del browser o di Office, con la chiave <code>ultraspeaker.lang</code>, comune a tutti i Lab The Ultraspeaker. Le versioni precedenti usavano <code>imagelab.lang</code>: al primo avvio il valore viene copiato nella chiave nuova e quella vecchia viene cancellata.</li>
-<li>Puoi cancellare questa informazione svuotando i dati del sito nel browser o la cache dei componenti aggiuntivi di Office.</li>
+<li><b>Crossref</b> (<code>api.crossref.org</code>): dati bibliografici a partire dal DOI, ricerca per titolo e informazioni su ritrattazioni e correzioni. Privacy: <a href="https://www.crossref.org/operations-and-sustainability/privacy/">Crossref</a>.</li>
+<li><b>NCBI E-utilities / PubMed</b> (<code>eutils.ncbi.nlm.nih.gov</code>, National Library of Medicine, USA): dati da PMID, ricerca su PubMed e abstract. Privacy: <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI / NLM</a>.</li>
+<li><b>Unpaywall</b> (<code>api.unpaywall.org</code>): link alla versione open access dell'articolo. Sito: <a href="https://unpaywall.org/">Unpaywall</a>.</li>
 </ul>
-<h2>Servizi di terze parti</h2>
+<p>A questi servizi vengono inviati <b>solo il DOI, il PMID o le parole di ricerca che scrivi</b>, insieme all'indirizzo di contatto dell'app (info@theultraspeaker.com) che i servizi chiedono a chi usa le loro API. <b>Non vengono inviati dati personali tuoi</b> né il contenuto delle tue slide. Come per qualsiasi pagina web, questi servizi ricevono l'indirizzo IP del tuo dispositivo per poter rispondere e lo trattano secondo le proprie informative.</p>
+<p>I QR delle citazioni aprono il DOI (doi.org), PubMed o la versione open access: quando qualcuno li scansiona, il sito di destinazione segue le proprie regole sulla privacy.</p>
+
+<h2>Informazioni salvate</h2>
 <ul>
-<li>I file dell'app sono ospitati su <b>GitHub Pages</b> (GitHub, Inc.). Come ogni sito web, riceve l'indirizzo IP del dispositivo per consegnare le pagine. Vedi <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
-<li>In PowerPoint l'app usa la libreria <b>Office.js</b>, caricata dai server Microsoft. Vedi <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
-<li>Non usiamo altri servizi esterni, sistemi di tracciamento o circuiti pubblicitari.</li>
+<li><b>Sul tuo dispositivo</b> (memoria locale del browser o di Office): impostazioni di design, lingua, ultimo contenuto inserito, QR recenti, modelli salvati e preferenze di inserimento delle citazioni. Nella versione web, anche l'elenco dei riferimenti.</li>
+<li><b>Nel file della presentazione</b>: l'elenco dei riferimenti citati (dati bibliografici pubblici come autori, titolo, rivista, DOI) e lo stile scelto, così che la bibliografia resti con il file. Chi riceve il file vede questi dati, come vede le slide.</li>
+<li><b>Nome dello speaker</b> della bibliografia in PDF, se lo scrivi, così la volta successiva è già compilato. Il PDF viene creato sul tuo dispositivo. Dal pannello di PowerPoint i dati della bibliografia passano al browser dentro l'indirizzo, dopo il segno #, che non viene inviato a nessun server.</li>
+<li><b>Chiavi usate</b> nella memoria del browser: <code>ultraspeaker.lang</code> (lingua, comune a tutti i Lab The Ultraspeaker) e <code>ultraspeaker.qr.*</code> (tutto il resto).</li>
+<li><b>Le password Wi‑Fi non vengono mai salvate</b>: restano solo finché l'app è aperta.</li>
 </ul>
+<p>Queste informazioni non vengono inviate a noi. Puoi cancellarle svuotando la cache del browser o di Office per l'app, ed eliminando i riferimenti dall'elenco della presentazione.</p>
+
+<h2>Altri servizi tecnici</h2>
+<ul>
+<li>I file dell'app sono ospitati su GitHub Pages (GitHub, Inc.), che può trattare dati tecnici come l'indirizzo IP per consegnarli. Vedi <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
+<li>In PowerPoint l'app usa la libreria Office JavaScript fornita da Microsoft. Vedi <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
+<li>Non usiamo altri servizi di terze parti, sistemi di tracciamento o circuiti pubblicitari.</li>
+</ul>
+
 <h2>I tuoi diritti</h2>
-<p>Poiché l'app non tratta dati personali, non abbiamo dati da consultare, correggere o cancellare. Per qualsiasi domanda scrivi a <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Puoi sempre rivolgerti al Garante per la protezione dei dati personali.</p>
+<p>Poiché non raccogliamo dati personali, non abbiamo dati da consultare, correggere o cancellare. Per qualsiasi domanda puoi scriverci; per i dati trattati dai servizi esterni puoi rivolgerti a loro tramite le informative indicate sopra.</p>
+
 <h2>Minori</h2>
 <p>L'app è pensata per un uso professionale e non è rivolta ai minori.</p>
+
 <h2>Modifiche</h2>
-<p>Se questa informativa cambia, aggiorniamo questa pagina e la data in alto.</p>
+<p>Se questa informativa cambia, aggiorneremo questa pagina e la data in alto.</p>
 </div>
 <div data-lang="en" lang="en">
-<h1>Privacy policy – The Ultraspeaker Image Lab</h1>
-<p class="us-updated">Last updated: 12 November 2026</p>
-<p><b>Owner:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
-<h2>Summary</h2>
-<p>The Ultraspeaker Image Lab <b>does not collect, send to us or sell any personal data</b>. Photos are processed on your device and are never sent to servers run by The Ultraspeaker or by third parties. There are no accounts, cookies, usage statistics or advertising.</p>
-<h2>What the app does with your photos</h2>
+<h1>Privacy Policy – The Ultraspeaker QR Lab</h1>
+<p class="us-updated">Last updated: 11 November 2026</p>
+<p>This policy explains how <b>The Ultraspeaker QR Lab</b> (the PowerPoint add-in and its web version, “the app”), including the QR section and the Reference section, handles information.</p>
+<p><b>Data controller:</b> Nicholas D. Charles (The Ultraspeaker). Contact: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+
+<h2>In short</h2>
+<p>The app <b>does not collect, send to us or sell personal data</b>. There are no accounts, no analytics, no advertising and no cookies. QR codes and citations are created on your device. To look up scientific references, the app queries three public services (Crossref, NCBI/PubMed and Unpaywall), sending only what the search needs.</p>
+
+<h2>What the app does with your content</h2>
 <ul>
-<li><b>Web version:</b> the photo you open or drop stays in your browser. The adjusted photo is downloaded to your device or, on a phone, passed to the system share menu only when you choose to.</li>
-<li><b>PowerPoint pane:</b> the app reads the photo selected on the slide, adjusts it in the pane and inserts the adjusted version on the same slide. The original stays in the presentation, hidden, together with the adjustments used (stored as tags on the image: <code>ULAB_ORIG</code>, <code>ULAB_PARAMS</code>, <code>ULAB_ROLE</code>). Everything stays in the file, under your control: anyone who receives the file can also see the hidden original.</li>
+<li>The text you type for a QR code (web addresses, contact details, Wi‑Fi names, events and similar) is used only to draw the QR code on your device.</li>
+<li>The app reads text from your slide only when you click “Use the text selected on the slide”, and changes your presentation only when you insert a QR code, a citation or the bibliography slides.</li>
+<li>Logos you upload stay on your device and are used only inside the QR code you create.</li>
 </ul>
-<h2>Information stored on your device</h2>
+
+<h2>Reference section: external services queried</h2>
+<p>When you look up a reference, your device contacts these free public services directly, without going through any server of ours:</p>
 <ul>
-<li>Only the language you choose, in the local storage of the browser or of Office, under the key <code>ultraspeaker.lang</code>, shared by all The Ultraspeaker Labs. Earlier versions used <code>imagelab.lang</code>: on first start the value is copied to the new key and the old one is deleted.</li>
-<li>You can remove this information by clearing the site data in your browser or the Office add-in cache.</li>
+<li><b>Crossref</b> (<code>api.crossref.org</code>): bibliographic data from the DOI, title search and information on retractions and corrections. Privacy: <a href="https://www.crossref.org/operations-and-sustainability/privacy/">Crossref</a>.</li>
+<li><b>NCBI E-utilities / PubMed</b> (<code>eutils.ncbi.nlm.nih.gov</code>, U.S. National Library of Medicine): data from the PMID, PubMed search and abstracts. Privacy: <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI / NLM</a>.</li>
+<li><b>Unpaywall</b> (<code>api.unpaywall.org</code>): link to the open access version of the article. Website: <a href="https://unpaywall.org/">Unpaywall</a>.</li>
 </ul>
-<h2>Third-party services</h2>
+<p>These services receive <b>only the DOI, PMID or search words you type</b>, together with the app's contact address (info@theultraspeaker.com), which they ask API users to provide. <b>None of your personal data</b> and none of your slide content is sent. As with any web page, these services receive your device's IP address in order to respond and handle it according to their own policies.</p>
+<p>Citation QR codes open the DOI (doi.org), PubMed or the open access version: when someone scans them, the destination website applies its own privacy rules.</p>
+
+<h2>Information stored</h2>
 <ul>
-<li>The app files are hosted on <b>GitHub Pages</b> (GitHub, Inc.). Like any website, it receives your device's IP address in order to deliver the pages. See <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
-<li>In PowerPoint the app uses the <b>Office.js</b> library, loaded from Microsoft servers. See <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
-<li>We use no other external services, tracking systems or advertising networks.</li>
+<li><b>On your device</b> (local storage of the browser or of Office): design settings, language, last content entered, recent QR codes, saved templates and citation insertion preferences. In the web version, also the list of references.</li>
+<li><b>In the presentation file</b>: the list of cited references (public bibliographic data such as authors, title, journal, DOI) and the chosen style, so that the bibliography stays with the file. Anyone who receives the file can see these data, just as they see the slides.</li>
+<li><b>Speaker name</b> for the PDF bibliography, if you enter it, so it is already filled in next time. The PDF is created on your device. From the PowerPoint panel the bibliography data reaches the browser inside the address, after the # sign, which is never sent to any server.</li>
+<li><b>Keys used</b> in browser storage: <code>ultraspeaker.lang</code> (language, shared by all The Ultraspeaker Labs) and <code>ultraspeaker.qr.*</code> (everything else).</li>
+<li><b>Wi‑Fi passwords are never saved</b>: they are kept only while the app is open.</li>
 </ul>
+<p>This information is not sent to us. You can delete it by clearing the browser or Office cache for the app, and by deleting references from the presentation's list.</p>
+
+<h2>Other technical services</h2>
+<ul>
+<li>The app's files are hosted on GitHub Pages (GitHub, Inc.), which may process technical data such as your IP address to deliver them. See <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
+<li>Inside PowerPoint, the app uses the Office JavaScript library provided by Microsoft. See <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
+<li>We do not use any other third-party service, tracker or advertising network.</li>
+</ul>
+
 <h2>Your rights</h2>
-<p>Because the app processes no personal data, we hold no data to access, correct or delete. For any question write to <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. You can always contact your data protection authority.</p>
+<p>Because we do not collect personal data, we have no data to access, correct or delete. You can write to us with any question; for data processed by the external services, contact them through the policies listed above.</p>
+
 <h2>Children</h2>
-<p>The app is designed for professional use and is not aimed at children.</p>
+<p>The app is designed for professional use and is not directed at children.</p>
+
 <h2>Changes</h2>
-<p>If this policy changes, we update this page and the date at the top.</p>
+<p>If this policy changes, we will update this page and the date at the top.</p>
 </div>
 <div data-lang="es" lang="es">
-<h1>Política de privacidad – The Ultraspeaker Image Lab</h1>
-<p class="us-updated">Última actualización: 12 de noviembre de 2026</p>
-<p><b>Titular:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
+<h1>Política de privacidad – The Ultraspeaker QR Lab</h1>
+<p class="us-updated">Última actualización: 11 de noviembre de 2026</p>
+<p>Esta política explica cómo <b>The Ultraspeaker QR Lab</b> (el complemento para PowerPoint y su versión web, “la app”), incluidas la sección QR y la sección Referencias, trata la información.</p>
+<p><b>Responsable del tratamiento:</b> Nicholas D. Charles (The Ultraspeaker). Contacto: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+
 <h2>En resumen</h2>
-<p>The Ultraspeaker Image Lab <b>no recoge, no nos envía ni vende datos personales</b>. Las fotos se procesan en tu dispositivo y nunca se envían a servidores de The Ultraspeaker ni de terceros. No hay cuentas, cookies, estadísticas de uso ni publicidad.</p>
-<h2>Qué hace la app con tus fotos</h2>
+<p>La app <b>no recopila, no nos envía y no vende datos personales</b>. No hay cuentas, estadísticas de uso, publicidad ni cookies. Los códigos QR y las citas se crean en tu dispositivo. Para buscar referencias científicas, la app consulta tres servicios públicos (Crossref, NCBI/PubMed y Unpaywall) y envía solo lo necesario para la búsqueda.</p>
+
+<h2>Qué hace la app con tu contenido</h2>
 <ul>
-<li><b>Versión web:</b> la foto que abres o arrastras se queda en el navegador. La foto ajustada se descarga en tu dispositivo o, en el móvil, pasa al menú de compartir del sistema solo cuando tú lo eliges.</li>
-<li><b>Panel de PowerPoint:</b> la app lee la foto seleccionada en la diapositiva, la ajusta en el panel e inserta la versión ajustada en la misma diapositiva. El original queda en la presentación, oculto, junto con los ajustes usados (guardados como etiquetas de la imagen: <code>ULAB_ORIG</code>, <code>ULAB_PARAMS</code>, <code>ULAB_ROLE</code>). Todo queda en el archivo, bajo tu control: quien recibe el archivo también ve el original oculto.</li>
+<li>El texto que escribes para un QR (direcciones web, datos de contacto, nombres de redes Wi‑Fi, eventos y similares) solo sirve para dibujar el código en tu dispositivo.</li>
+<li>La app lee el texto de la diapositiva solo cuando haces clic en “Usar el texto seleccionado en la diapositiva”, y modifica la presentación solo cuando insertas un QR, una cita o las diapositivas de bibliografía.</li>
+<li>Los logos que subes permanecen en tu dispositivo y solo se usan en el QR que creas.</li>
 </ul>
-<h2>Información guardada en el dispositivo</h2>
+
+<h2>Sección Referencias: servicios externos consultados</h2>
+<p>Cuando buscas una referencia, tu dispositivo contacta directamente con estos servicios públicos y gratuitos, sin pasar por servidores nuestros:</p>
 <ul>
-<li>Solo el idioma elegido, en la memoria local del navegador o de Office, con la clave <code>ultraspeaker.lang</code>, común a todos los Labs de The Ultraspeaker. Las versiones anteriores usaban <code>imagelab.lang</code>: en el primer inicio el valor se copia a la clave nueva y la antigua se borra.</li>
-<li>Puedes borrar esta información vaciando los datos del sitio en el navegador o la caché de complementos de Office.</li>
+<li><b>Crossref</b> (<code>api.crossref.org</code>): datos bibliográficos a partir del DOI, búsqueda por título e información sobre retractaciones y correcciones. Privacidad: <a href="https://www.crossref.org/operations-and-sustainability/privacy/">Crossref</a>.</li>
+<li><b>NCBI E-utilities / PubMed</b> (<code>eutils.ncbi.nlm.nih.gov</code>, National Library of Medicine, EE. UU.): datos a partir del PMID, búsqueda en PubMed y resúmenes. Privacidad: <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI / NLM</a>.</li>
+<li><b>Unpaywall</b> (<code>api.unpaywall.org</code>): enlace a la versión en acceso abierto del artículo. Sitio: <a href="https://unpaywall.org/">Unpaywall</a>.</li>
 </ul>
-<h2>Servicios de terceros</h2>
+<p>A estos servicios se envían <b>solo el DOI, el PMID o las palabras de búsqueda que escribes</b>, junto con la dirección de contacto de la app (info@theultraspeaker.com), que piden a quien usa sus API. <b>No se envía ningún dato personal tuyo</b> ni el contenido de tus diapositivas. Como con cualquier página web, estos servicios reciben la dirección IP de tu dispositivo para poder responder y la tratan según sus propias políticas.</p>
+<p>Los QR de las citas abren el DOI (doi.org), PubMed o la versión en acceso abierto: cuando alguien los escanea, el sitio de destino aplica sus propias normas de privacidad.</p>
+
+<h2>Información guardada</h2>
 <ul>
-<li>Los archivos de la app están alojados en <b>GitHub Pages</b> (GitHub, Inc.). Como cualquier sitio web, recibe la dirección IP del dispositivo para entregar las páginas. Consulta <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
-<li>En PowerPoint la app usa la biblioteca <b>Office.js</b>, cargada desde servidores de Microsoft. Consulta <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
-<li>No usamos otros servicios externos, sistemas de seguimiento ni redes publicitarias.</li>
+<li><b>En tu dispositivo</b> (almacenamiento local del navegador o de Office): ajustes de diseño, idioma, último contenido introducido, QR recientes, plantillas guardadas y preferencias de inserción de citas. En la versión web, también la lista de referencias.</li>
+<li><b>En el archivo de la presentación</b>: la lista de referencias citadas (datos bibliográficos públicos como autores, título, revista, DOI) y el estilo elegido, para que la bibliografía acompañe al archivo. Quien reciba el archivo puede ver estos datos, igual que ve las diapositivas.</li>
+<li><b>Nombre del ponente</b> de la bibliografía en PDF, si lo escribes, para que la próxima vez ya esté rellenado. El PDF se crea en tu dispositivo. Desde el panel de PowerPoint los datos de la bibliografía pasan al navegador dentro de la dirección, después del signo #, que no se envía a ningún servidor.</li>
+<li><b>Claves usadas</b> en la memoria del navegador: <code>ultraspeaker.lang</code> (idioma, común a todos los Lab The Ultraspeaker) y <code>ultraspeaker.qr.*</code> (todo lo demás).</li>
+<li><b>Las contraseñas Wi‑Fi nunca se guardan</b>: solo se conservan mientras la app está abierta.</li>
 </ul>
+<p>Esta información no se nos envía. Puedes borrarla vaciando la caché del navegador o de Office para la app y eliminando las referencias de la lista de la presentación.</p>
+
+<h2>Otros servicios técnicos</h2>
+<ul>
+<li>Los archivos de la app se alojan en GitHub Pages (GitHub, Inc.), que puede tratar datos técnicos como la dirección IP para entregarlos. Consulta <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
+<li>En PowerPoint, la app usa la biblioteca Office JavaScript proporcionada por Microsoft. Consulta <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
+<li>No utilizamos otros servicios de terceros, sistemas de seguimiento ni redes publicitarias.</li>
+</ul>
+
 <h2>Tus derechos</h2>
-<p>Como la app no trata datos personales, no tenemos datos que consultar, corregir o borrar. Para cualquier pregunta escribe a <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Siempre puedes dirigirte a tu autoridad de protección de datos.</p>
+<p>Como no recopilamos datos personales, no tenemos datos que consultar, corregir o eliminar. Puedes escribirnos con cualquier pregunta; para los datos tratados por los servicios externos, dirígete a ellos a través de las políticas indicadas.</p>
+
 <h2>Menores</h2>
-<p>La app está pensada para un uso profesional y no está dirigida a menores.</p>
+<p>La app está pensada para uso profesional y no se dirige a menores.</p>
+
 <h2>Cambios</h2>
-<p>Si esta política cambia, actualizamos esta página y la fecha de arriba.</p>
+<p>Si esta política cambia, actualizaremos esta página y la fecha de arriba.</p>
 </div>
 <div data-lang="fr" lang="fr">
-<h1>Politique de confidentialité – The Ultraspeaker Image Lab</h1>
-<p class="us-updated">Dernière mise à jour: 12 novembre 2026</p>
-<p><b>Titulaire:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
+<h1>Politique de confidentialité – The Ultraspeaker QR Lab</h1>
+<p class="us-updated">Dernière mise à jour : 11 novembre 2026</p>
+<p>Cette politique explique comment <b>The Ultraspeaker QR Lab</b> (le complément PowerPoint et sa version web, « l'application »), y compris la section QR et la section Références, traite les informations.</p>
+<p><b>Responsable du traitement :</b> Nicholas D. Charles (The Ultraspeaker). Contact : <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+
 <h2>En bref</h2>
-<p>The Ultraspeaker Image Lab <b>ne collecte, ne nous envoie et ne vend aucune donnée personnelle</b>. Les photos sont traitées sur votre appareil et ne sont jamais envoyées à des serveurs de The Ultraspeaker ou de tiers. Il n'y a ni compte, ni cookie, ni statistiques d'utilisation, ni publicité.</p>
-<h2>Ce que fait l'app avec vos photos</h2>
+<p>L'application <b>ne collecte pas, ne nous envoie pas et ne vend pas de données personnelles</b>. Il n'y a ni compte, ni statistiques d'utilisation, ni publicité, ni cookies. Les QR codes et les citations sont créés sur votre appareil. Pour rechercher des références scientifiques, l'application interroge trois services publics (Crossref, NCBI/PubMed et Unpaywall) en n'envoyant que ce dont la recherche a besoin.</p>
+
+<h2>Ce que l'application fait de vos contenus</h2>
 <ul>
-<li><b>Version web :</b> la photo que vous ouvrez ou faites glisser reste dans le navigateur. La photo réglée est téléchargée sur votre appareil ou, sur téléphone, transmise au menu de partage du système uniquement quand vous le choisissez.</li>
-<li><b>Volet PowerPoint :</b> l'app lit la photo sélectionnée sur la diapositive, la règle dans le volet et insère la version réglée sur la même diapositive. L'original reste dans la présentation, masqué, avec les réglages utilisés (enregistrés comme balises de l'image : <code>ULAB_ORIG</code>, <code>ULAB_PARAMS</code>, <code>ULAB_ROLE</code>). Tout reste dans le fichier, sous votre contrôle : la personne qui reçoit le fichier voit aussi l'original masqué.</li>
+<li>Le texte que vous saisissez pour un QR (adresses web, coordonnées, noms de réseaux Wi‑Fi, événements, etc.) sert uniquement à dessiner le QR code sur votre appareil.</li>
+<li>L'application lit le texte de la diapositive uniquement lorsque vous cliquez sur « Utiliser le texte sélectionné dans la diapositive », et ne modifie la présentation que lorsque vous insérez un QR, une citation ou les diapositives de bibliographie.</li>
+<li>Les logos que vous importez restent sur votre appareil et ne servent qu'au QR que vous créez.</li>
 </ul>
-<h2>Informations enregistrées sur l'appareil</h2>
+
+<h2>Section Références : services externes interrogés</h2>
+<p>Lorsque vous recherchez une référence, votre appareil contacte directement ces services publics et gratuits, sans passer par nos serveurs :</p>
 <ul>
-<li>Seulement la langue choisie, dans la mémoire locale du navigateur ou d'Office, sous la clé <code>ultraspeaker.lang</code>, commune à tous les Labs The Ultraspeaker. Les versions précédentes utilisaient <code>imagelab.lang</code> : au premier démarrage, la valeur est copiée dans la nouvelle clé et l'ancienne est supprimée.</li>
-<li>Vous pouvez effacer cette information en vidant les données du site dans le navigateur ou le cache des compléments Office.</li>
+<li><b>Crossref</b> (<code>api.crossref.org</code>) : données bibliographiques à partir du DOI, recherche par titre et informations sur les rétractations et corrections. Confidentialité : <a href="https://www.crossref.org/operations-and-sustainability/privacy/">Crossref</a>.</li>
+<li><b>NCBI E-utilities / PubMed</b> (<code>eutils.ncbi.nlm.nih.gov</code>, National Library of Medicine, États-Unis) : données à partir du PMID, recherche PubMed et résumés. Confidentialité : <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI / NLM</a>.</li>
+<li><b>Unpaywall</b> (<code>api.unpaywall.org</code>) : lien vers la version en libre accès de l'article. Site : <a href="https://unpaywall.org/">Unpaywall</a>.</li>
 </ul>
-<h2>Services tiers</h2>
+<p>Ces services reçoivent <b>uniquement le DOI, le PMID ou les mots de recherche que vous saisissez</b>, ainsi que l'adresse de contact de l'application (info@theultraspeaker.com) qu'ils demandent aux utilisateurs de leurs API. <b>Aucune de vos données personnelles</b> ni le contenu de vos diapositives n'est envoyé. Comme pour toute page web, ces services reçoivent l'adresse IP de votre appareil pour pouvoir répondre et la traitent selon leurs propres politiques.</p>
+<p>Les QR des citations ouvrent le DOI (doi.org), PubMed ou la version en libre accès : lorsqu'on les scanne, le site de destination applique ses propres règles de confidentialité.</p>
+
+<h2>Informations enregistrées</h2>
 <ul>
-<li>Les fichiers de l'app sont hébergés sur <b>GitHub Pages</b> (GitHub, Inc.). Comme tout site web, il reçoit l'adresse IP de l'appareil pour livrer les pages. Voir <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
-<li>Dans PowerPoint, l'app utilise la bibliothèque <b>Office.js</b>, chargée depuis les serveurs Microsoft. Voir <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
-<li>Nous n'utilisons aucun autre service externe, système de suivi ou réseau publicitaire.</li>
+<li><b>Sur votre appareil</b> (stockage local du navigateur ou d'Office) : réglages de design, langue, dernier contenu saisi, QR récents, modèles enregistrés et préférences d'insertion des citations. Dans la version web, également la liste des références.</li>
+<li><b>Dans le fichier de la présentation</b> : la liste des références citées (données bibliographiques publiques comme auteurs, titre, revue, DOI) et le style choisi, afin que la bibliographie accompagne le fichier. Toute personne qui reçoit le fichier peut voir ces données, comme elle voit les diapositives.</li>
+<li><b>Nom de l'intervenant</b> de la bibliographie PDF, si vous le saisissez, pour qu'il soit déjà rempli la fois suivante. Le PDF est créé sur votre appareil. Depuis le volet PowerPoint, les données de la bibliographie passent au navigateur dans l'adresse, après le signe #, qui n'est envoyé à aucun serveur.</li>
+<li><b>Clés utilisées</b> dans la mémoire du navigateur : <code>ultraspeaker.lang</code> (langue, commune à tous les Lab The Ultraspeaker) et <code>ultraspeaker.qr.*</code> (tout le reste).</li>
+<li><b>Les mots de passe Wi‑Fi ne sont jamais enregistrés</b> : ils ne sont conservés que tant que l'application est ouverte.</li>
 </ul>
+<p>Ces informations ne nous sont pas envoyées. Vous pouvez les effacer en vidant le cache du navigateur ou d'Office pour l'application, et en supprimant les références de la liste de la présentation.</p>
+
+<h2>Autres services techniques</h2>
+<ul>
+<li>Les fichiers de l'application sont hébergés sur GitHub Pages (GitHub, Inc.), qui peut traiter des données techniques comme l'adresse IP pour les fournir. Voir <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
+<li>Dans PowerPoint, l'application utilise la bibliothèque Office JavaScript fournie par Microsoft. Voir <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
+<li>Nous n'utilisons aucun autre service tiers, traceur ou réseau publicitaire.</li>
+</ul>
+
 <h2>Vos droits</h2>
-<p>Comme l'app ne traite aucune donnée personnelle, nous n'avons aucune donnée à consulter, corriger ou supprimer. Pour toute question, écrivez à <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Vous pouvez toujours vous adresser à votre autorité de protection des données.</p>
+<p>Comme nous ne collectons pas de données personnelles, nous n'avons aucune donnée à consulter, corriger ou supprimer. Vous pouvez nous écrire pour toute question ; pour les données traitées par les services externes, adressez-vous à eux via les politiques indiquées ci-dessus.</p>
+
 <h2>Mineurs</h2>
-<p>L'app est conçue pour un usage professionnel et ne s'adresse pas aux mineurs.</p>
+<p>L'application est conçue pour un usage professionnel et ne s'adresse pas aux mineurs.</p>
+
 <h2>Modifications</h2>
-<p>Si cette politique change, nous mettons à jour cette page et la date en haut.</p>
+<p>Si cette politique change, nous mettrons à jour cette page et la date en haut.</p>
 </div>
 <div data-lang="de" lang="de">
-<h1>Datenschutzerklärung – The Ultraspeaker Image Lab</h1>
-<p class="us-updated">Zuletzt aktualisiert: 12. November 2026</p>
-<p><b>Verantwortlich:</b> Nicholas D. Charles (The Ultraspeaker) · <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a></p>
+<h1>Datenschutzerklärung – The Ultraspeaker QR Lab</h1>
+<p class="us-updated">Zuletzt aktualisiert: 11. November 2026</p>
+<p>Diese Erklärung beschreibt, wie <b>The Ultraspeaker QR Lab</b> (das PowerPoint-Add-in und seine Webversion, „die App“), einschließlich der Bereiche QR und Literatur, mit Informationen umgeht.</p>
+<p><b>Verantwortlicher:</b> Nicholas D. Charles (The Ultraspeaker). Kontakt: <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>.</p>
+
 <h2>Kurz gesagt</h2>
-<p>The Ultraspeaker Image Lab <b>erhebt keine personenbezogenen Daten, sendet sie nicht an uns und verkauft sie nicht</b>. Fotos werden auf Ihrem Gerät bearbeitet und nie an Server von The Ultraspeaker oder Dritten gesendet. Es gibt keine Konten, Cookies, Nutzungsstatistiken oder Werbung.</p>
-<h2>Was die App mit Ihren Fotos macht</h2>
+<p>Die App <b>erhebt keine personenbezogenen Daten, sendet sie nicht an uns und verkauft sie nicht</b>. Es gibt keine Konten, keine Nutzungsstatistiken, keine Werbung und keine Cookies. QR-Codes und Zitate entstehen auf Ihrem Gerät. Für die Suche nach wissenschaftlichen Quellen fragt die App drei öffentliche Dienste ab (Crossref, NCBI/PubMed und Unpaywall) und sendet nur, was die Suche benötigt.</p>
+
+<h2>Was die App mit Ihren Inhalten macht</h2>
 <ul>
-<li><b>Webversion:</b> Das Foto, das Sie öffnen oder hineinziehen, bleibt im Browser. Das bearbeitete Foto wird auf Ihr Gerät heruntergeladen oder auf dem Handy nur dann an das Teilen-Menü des Systems übergeben, wenn Sie es auswählen.</li>
-<li><b>PowerPoint-Bereich:</b> Die App liest das auf der Folie ausgewählte Foto, bearbeitet es im Bereich und fügt die bearbeitete Version auf derselben Folie ein. Das Original bleibt ausgeblendet in der Präsentation, zusammen mit den verwendeten Einstellungen (als Tags des Bildes gespeichert: <code>ULAB_ORIG</code>, <code>ULAB_PARAMS</code>, <code>ULAB_ROLE</code>). Alles bleibt in der Datei unter Ihrer Kontrolle: Wer die Datei erhält, sieht auch das ausgeblendete Original.</li>
+<li>Der Text, den Sie für einen QR-Code eingeben (Webadressen, Kontaktdaten, WLAN-Namen, Termine usw.), dient nur dazu, den QR-Code auf Ihrem Gerät zu zeichnen.</li>
+<li>Die App liest Text aus der Folie nur, wenn Sie auf „Markierten Text der Folie verwenden“ klicken, und verändert die Präsentation nur, wenn Sie einen QR-Code, ein Zitat oder die Literaturfolien einfügen.</li>
+<li>Hochgeladene Logos bleiben auf Ihrem Gerät und werden nur in dem QR-Code verwendet, den Sie erstellen.</li>
 </ul>
-<h2>Auf dem Gerät gespeicherte Informationen</h2>
+
+<h2>Bereich Literatur: abgefragte externe Dienste</h2>
+<p>Wenn Sie eine Quelle suchen, kontaktiert Ihr Gerät diese kostenlosen öffentlichen Dienste direkt, ohne Umweg über unsere Server:</p>
 <ul>
-<li>Nur die gewählte Sprache, im lokalen Speicher des Browsers oder von Office, unter dem Schlüssel <code>ultraspeaker.lang</code>, den alle Labs von The Ultraspeaker teilen. Frühere Versionen nutzten <code>imagelab.lang</code>: Beim ersten Start wird der Wert in den neuen Schlüssel kopiert und der alte gelöscht.</li>
-<li>Sie können diese Information löschen, indem Sie die Websitedaten im Browser oder den Add-in-Cache von Office leeren.</li>
+<li><b>Crossref</b> (<code>api.crossref.org</code>): bibliografische Daten anhand der DOI, Titelsuche und Informationen zu Rücknahmen und Korrekturen. Datenschutz: <a href="https://www.crossref.org/operations-and-sustainability/privacy/">Crossref</a>.</li>
+<li><b>NCBI E-utilities / PubMed</b> (<code>eutils.ncbi.nlm.nih.gov</code>, U.S. National Library of Medicine): Daten anhand der PMID, PubMed-Suche und Abstracts. Datenschutz: <a href="https://www.ncbi.nlm.nih.gov/home/about/policies/">NCBI / NLM</a>.</li>
+<li><b>Unpaywall</b> (<code>api.unpaywall.org</code>): Link zur Open-Access-Version des Artikels. Website: <a href="https://unpaywall.org/">Unpaywall</a>.</li>
 </ul>
-<h2>Dienste Dritter</h2>
+<p>An diese Dienste werden <b>nur die DOI, die PMID oder die Suchbegriffe gesendet, die Sie eingeben</b>, zusammen mit der Kontaktadresse der App (info@theultraspeaker.com), um die die Dienste API-Nutzer bitten. <b>Keine personenbezogenen Daten von Ihnen</b> und keine Folieninhalte werden übertragen. Wie bei jeder Webseite erhalten diese Dienste die IP-Adresse Ihres Geräts, um antworten zu können, und verarbeiten sie nach ihren eigenen Richtlinien.</p>
+<p>Die QR-Codes der Zitate öffnen die DOI (doi.org), PubMed oder die Open-Access-Version: Wenn jemand sie scannt, gelten die Datenschutzregeln der Zielwebsite.</p>
+
+<h2>Gespeicherte Informationen</h2>
 <ul>
-<li>Die Dateien der App liegen auf <b>GitHub Pages</b> (GitHub, Inc.). Wie jede Website erhält es die IP-Adresse des Geräts, um die Seiten auszuliefern. Siehe <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
-<li>In PowerPoint nutzt die App die Bibliothek <b>Office.js</b>, die von Microsoft-Servern geladen wird. Siehe <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
-<li>Wir nutzen keine weiteren externen Dienste, Tracking-Systeme oder Werbenetzwerke.</li>
+<li><b>Auf Ihrem Gerät</b> (lokaler Speicher des Browsers oder von Office): Designeinstellungen, Sprache, zuletzt eingegebener Inhalt, letzte QR-Codes, gespeicherte Vorlagen und Einstellungen für das Einfügen von Zitaten. In der Webversion auch die Liste der Quellen.</li>
+<li><b>In der Präsentationsdatei</b>: die Liste der zitierten Quellen (öffentliche bibliografische Daten wie Autoren, Titel, Zeitschrift, DOI) und der gewählte Stil, damit das Literaturverzeichnis bei der Datei bleibt. Wer die Datei erhält, sieht diese Daten ebenso wie die Folien.</li>
+<li><b>Name des Referenten</b> für das PDF-Literaturverzeichnis, falls Sie ihn eingeben, damit er beim nächsten Mal schon ausgefüllt ist. Das PDF wird auf Ihrem Gerät erstellt. Aus dem PowerPoint-Bereich gelangen die Daten des Literaturverzeichnisses in der Adresse zum Browser, nach dem Zeichen #, das an keinen Server gesendet wird.</li>
+<li><b>Verwendete Schlüssel</b> im Browserspeicher: <code>ultraspeaker.lang</code> (Sprache, gemeinsam für alle Labs von The Ultraspeaker) und <code>ultraspeaker.qr.*</code> (alles andere).</li>
+<li><b>WLAN-Passwörter werden nie gespeichert</b>: Sie bleiben nur erhalten, solange die App geöffnet ist.</li>
 </ul>
+<p>Diese Informationen werden nicht an uns gesendet. Sie können sie löschen, indem Sie den Browser- oder Office-Cache der App leeren und Quellen aus der Liste der Präsentation entfernen.</p>
+
+<h2>Weitere technische Dienste</h2>
+<ul>
+<li>Die Dateien der App werden auf GitHub Pages (GitHub, Inc.) bereitgestellt; dabei können technische Daten wie die IP-Adresse verarbeitet werden. Siehe <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub</a>.</li>
+<li>In PowerPoint verwendet die App die von Microsoft bereitgestellte Office-JavaScript-Bibliothek. Siehe <a href="https://privacy.microsoft.com/privacystatement">Microsoft</a>.</li>
+<li>Wir nutzen keine weiteren Drittanbieterdienste, Tracker oder Werbenetzwerke.</li>
+</ul>
+
 <h2>Ihre Rechte</h2>
-<p>Da die App keine personenbezogenen Daten verarbeitet, haben wir keine Daten, die eingesehen, berichtigt oder gelöscht werden könnten. Bei Fragen schreiben Sie an <a href="mailto:info@theultraspeaker.com">info@theultraspeaker.com</a>. Sie können sich jederzeit an Ihre Datenschutzbehörde wenden.</p>
-<h2>Minderjährige</h2>
-<p>Die App ist für den beruflichen Einsatz gedacht und richtet sich nicht an Minderjährige.</p>
+<p>Da wir keine personenbezogenen Daten erheben, haben wir keine Daten, die eingesehen, berichtigt oder gelöscht werden könnten. Bei Fragen können Sie uns jederzeit schreiben; zu Daten, die die externen Dienste verarbeiten, wenden Sie sich bitte über deren oben genannte Richtlinien an sie.</p>
+
+<h2>Kinder</h2>
+<p>Die App ist für den beruflichen Einsatz gedacht und richtet sich nicht an Kinder.</p>
+
 <h2>Änderungen</h2>
 <p>Wenn sich diese Erklärung ändert, aktualisieren wir diese Seite und das Datum oben.</p>
 </div>
 </main>
   <footer class="us-footer">
-    <a class="us-cta" id="usCta" href="mailto:info@theultraspeaker.com"><img src="assets/arena-white.svg?v=20261112" alt=""><span data-t="cta">Richiedi un consiglio</span></a>
+    <a class="us-cta" id="usCta" href="mailto:info@theultraspeaker.com"><img src="assets/arena-white.svg" alt=""><span data-t="cta">Richiedi un consiglio</span></a>
     <p class="us-links"><a href="support.html" data-nav="support">Supporto</a><a href="privacy.html" data-nav="privacy">Privacy</a><a href="terms.html" data-nav="terms">Condizioni d'uso</a><a href="GUIDA-INSTALLAZIONE.html" data-nav="install">Installazione</a></p>
   </footer>
 </div>

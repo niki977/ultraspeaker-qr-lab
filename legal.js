@@ -1,4 +1,4 @@
-/* The Ultraspeaker Image Lab – pagine di servizio (Supporto, Privacy, Condizioni d'uso, Installazione).
+/* The Ultraspeaker QR Lab – pagine di servizio (Supporto, Privacy, Condizioni d'uso, Installazione).
    La lingua la gestisce shared/ultraspeaker-lang.js; qui restano i testi del menu e i link che portano ?lang=. */
 (function () {
   "use strict";
@@ -17,9 +17,9 @@
     // link interni nel testo (altre pagine del Lab): portano la lingua scelta
     document.querySelectorAll("main a[href$='.html']:not([href*=':'])").forEach((a) => { a.href = L.linkWithLang(a.getAttribute("href"), lang); });
     const g = document.getElementById("usGuide");
-    g.href = L.guideHref("image", lang); g.setAttribute("aria-label", t.guideTitle);
-    document.getElementById("usCta").href = "mailto:info@theultraspeaker.com?subject=" + encodeURIComponent(t.cta + " – Image Lab");
-    document.title = t[document.body.dataset.page] + " · The Ultraspeaker Image Lab";
+    g.href = L.guideHref("qr", lang); g.setAttribute("aria-label", t.guideTitle);
+    document.getElementById("usCta").href = "mailto:info@theultraspeaker.com?subject=" + encodeURIComponent(t.cta + " – QR Lab");
+    document.title = t[document.body.dataset.page] + " · The Ultraspeaker QR Lab";
     const u = new URL(location.href); u.searchParams.set("lang", lang); history.replaceState(null, "", u);
   }
   const lang = document.documentElement.lang;
